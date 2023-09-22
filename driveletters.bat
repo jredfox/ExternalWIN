@@ -7,3 +7,4 @@ for /f "delims=:" %%A in ('wmic logicaldisk get caption') do set "drives=!drives
 echo all unused letters = %drives%
 echo next unused letter = %drives:~0,1%
 echo last unused letter = %drives:~-1%
+pause

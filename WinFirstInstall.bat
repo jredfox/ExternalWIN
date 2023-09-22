@@ -11,7 +11,17 @@ diskpart /s %~dp0%\ld.txt
 set /p disk=Input Disk Number:
 set /p e=ERASE THE DRIVE (clean install) [Y/N]?
 IF /I %e% EQU Y GOTO ERASE
-IF /I %e% NEQ Y GOTO PAR
+IF /I %e% NEQ Y GOTO PARSEC
+
+:PARSEC
+set /p mer=Merge Previous Boot Partition [Y/N]?
+IF /I %mer% EQU Y (
+  diskpart /s %~dp0ListPar.txt
+  set /p oldsyspar=Input Previous Windows Boot Partition:
+  diskpart /s %~dp0PartitionMerge.txt
+  GOTO INSTALL
+)
+IF /I %mer% NEQ Y GOTO PAR
 
 :ERASE
 echo erasing disk %disk%....
@@ -22,6 +32,7 @@ echo partitioning the hard drive...
 diskpart /s %~dp0Partition.txt
 
 rem ########Install################
+:INSTALL
 dism /apply-image /imagefile:%wim% /index:%index% /applydir:W:\
 echo Creating Boot Files
 W:\Windows\System32\bcdboot W:\Windows /f ALL /s S:
@@ -33,11 +44,13 @@ IF /I %sid% NEQ Y GOTO POSTINSTALL
 xcopy %~dp0san_policy.xml W:\
 dism /Image:W:\ /Apply-Unattend:W:\san_policy.xml
 
-:POSTINSTALL
 rem #######POST INSTALL############
+:POSTINSTALL
 diskpart /s %~dp0ListPar.txt
 set /p syspar=Input System Partition(250 MB Usually):
 echo Closing EFI Boot
+set drive=S:
+mountvol %drive% /p
 diskpart /s %~dp0%closeboot.txt
 set /p winpar=Input Windows Partition(64+GB Usually):
 rem ####Grab the next Drive Letter#####
