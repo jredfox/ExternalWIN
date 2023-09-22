@@ -45,7 +45,7 @@ GOTO PAR
 
 :MERGE
 diskpart /s "%~dp0ListPar.txt"
-set /p oldsyspar=Input Previous Windows Boot Partition:
+set /p syspar=Input Previous Windows Boot Partition:
 diskpart /s "%~dp0PartitionMerge%dskext%"
 GOTO INSTALL
 
@@ -74,14 +74,14 @@ rem #######POST INSTALL############
 :POSTINSTALL
 diskpart /s "%~dp0ListPar.txt"
 IF NOT "%ISMBR%"=="T" ( 
-  set /p syspar="Input System Partition(250 MB Usually):"
+IF "%syspar%"=="" (
+    set /p syspar="Input System Partition(250 MB Usually):"
+  )
 )
 echo Closing Boot
 mountvol S: /p
-IF NOT "%ISMBR%"=="T" (
-  diskpart /s "%~dp0closeboot%dskext%"
-)
-set /p winpar=Input Windows Partition(64+GB Usually):
+IF NOT "%ISMBR%"=="T" ( diskpart /s "%~dp0closeboot%dskext%" )
+set /p winpar="Input Windows Partition(64+GB Usually):"
 rem ####Grab the next Drive Letter#####
 setlocal enableDelayedExpansion
 set let=0

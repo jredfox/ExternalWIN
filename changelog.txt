@@ -1,3 +1,10 @@
+build 19
+removed second prompt on WinInstall.bat System partition prompt
+removed second prompt on WinInstallVHDX.bat system and windows partition prompts during POSTINSTALL
+fixed asking for GB of VDISKS Partition too soon in WinInstallVHDX.bat
+changed %oldsyspar% to %syspar% in all scripts
+cleaned up POSTINSTALL on WinInstall.bat & WinInstallVHDX.bat
+
 build 18
 added WIM description as a requirement when capturing WIM now
 

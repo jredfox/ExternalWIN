@@ -1,4 +1,4 @@
 select disk %disk%
-select par %oldsyspar%
+select par %syspar%
 active
 assign letter=S

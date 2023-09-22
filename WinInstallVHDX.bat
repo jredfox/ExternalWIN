@@ -56,7 +56,6 @@ IF /I %legacy:~0,1% EQU Y (
 )
 
 rem ######### INIT DISK SETUP ###########
-set /p cdrive=Input VDISKS Partition Size in GB:
 diskpart /s "%~dp0ld.txt"
 set /p disk=Input Disk Number:
 set /p e=ERASE THE DRIVE [Y/N]?
@@ -73,16 +72,17 @@ IF /I %gtp:~0,1% NEQ Y GOTO PAR
 set /p cp1=Create System Partition [Y/N]?
 IF /I %cp1:~0,1% EQU Y ( diskpart /s "%~dp0ParSYS%dskext%" )
 set /p cp2=Create Windows VDISKS Partition [Y/N]?
+IF /I %cp2:~0,1% EQU Y ( set /p cdrive="Input VDISKS Partition Size in GB:" )
 IF /I %cp2:~0,1% EQU Y ( diskpart /s "%~dp0ParPrime.txt" )
 rem ##### IF We Did not Create System Par or Windows Par then Open System Par and Re-Assign Windows Par to W #####
-IF NOT EXIST S:\ ( 
+IF NOT EXIST S:\ (
 diskpart /s "%~dp0ListPar.txt"
-set /p oldsyspar="Input System Partition(Usually Around 250MB):" 
+set /p syspar="Input System Partition(Usually Around 250MB):"
 )
 IF NOT EXIST S:\ ( diskpart /s "%~dp0openboot%dskext%" )
 IF NOT EXIST W:\ (
 diskpart /s "%~dp0ListPar.txt"
-set /p winpar="Input Windows VDISKS Partition(64GB+):" 
+set /p winpar="Input Windows VDISKS Partition(64GB+):"
 )
 IF NOT EXIST W:\ (
 set let=W
@@ -91,6 +91,7 @@ diskpart /s "%~dp0reassignW.txt"
 GOTO INSTALL
 
 :PAR
+set /p cdrive=Input VDISKS Partition Size in GB:
 echo partitioning the hard drive...
 diskpart /s "%~dp0Partition%dskext%"
 
@@ -121,17 +122,17 @@ dism /Image:V:\ /Apply-Unattend:V:\san_policy.xml
 :POSTINSTALL
 diskpart /s "%~dp0ListPar.txt"
 IF NOT "%ISMBR%"=="T" ( 
-  set /p syspar="Input System Partition(250 MB Usually):"
+IF "%syspar%"=="" (
+    set /p syspar="Input System Partition(250 MB Usually):"
+  )
 )
 echo Closing Boot
 mountvol S: /p
-IF NOT "%ISMBR%"=="T" (
-  diskpart /s "%~dp0closeboot.txt"
-)
+IF NOT "%ISMBR%"=="T" ( diskpart /s "%~dp0closeboot.txt" )
 echo Closing VHDX
 diskpart /s "%~dp0dvhdx.txt"
 rem ####Grab the next Drive Letter & Re-Assign W:\#####
-set /p winpar=Input Windows(VDISKS) Partition(64+GB Usually):
+IF "%winpar%" EQU "" ( set /p winpar="Input Windows(VDISKS) Partition(64+GB Usually):" )
 set let=0
 set "drives=DEFGHIJKLMNOPQRSTUVWXYZABC"
 for /f "delims=:" %%A in ('wmic logicaldisk get caption') do set "drives=!drives:%%A=!"
