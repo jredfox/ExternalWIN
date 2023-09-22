@@ -1,17 +1,28 @@
 @ECHO OFF
 Setlocal EnableDelayedExpansion
-title ExternalWin VHDX Version RC 1.0.0 b12
+title ExternalWin VHDX Version RC 1.0.0 b13
 
 rem ############ CLEANUP ##################
+IF "%vdisk%"=="" ( GOTO CLEANUP ) else ( GOTO CLEANUP2 )
+:CLEANUP
 set vdisk=C:\windows.vhdx
 diskpart /s "%~dp0dvhdx.txt"
+mountvol W: /p
+mountvol S: /p
+mountvol V: /p
 del /f /q /a "%vdisk%"
+rem cls
+GOTO CREATE
+:CLEANUP2
 mountvol W: /p
 mountvol S: /p
 mountvol V: /p
 cls
+echo Custom VDISK Detected: %vdisk%
+GOTO SETVARS
 
 rem ############# CREATE VHDX #############
+:CREATE
 set /p iso=Input Windows Install.esd / Install.wim:
 dism /get-imageinfo /imagefile:"%iso%"
 set /p index=Input Windows ISO Index:
@@ -22,6 +33,7 @@ set /p con=VHDX Created in: %vdisk% Would you like to Install It [Y/N]?
 IF /I %con:~0,1% NEQ Y exit /b 0
 
 rem ####### SET VARS ####################
+:SETVARS
 set /p legacy=MBR LEGACY Installation[Y/N]?
 set OSL=VDISKS
 set EFIL=BOOTVHDX
@@ -34,7 +46,7 @@ IF /I %legacy:~0,1% EQU Y (
 )
 
 rem ######### INIT DISK SETUP ###########
-set /p cdrive=Input VHDX(S) Partition Size in GB:
+set /p cdrive=Input VDISKS Partition Size in GB:
 diskpart /s "%~dp0ld.txt"
 set /p disk=Input Disk Number:
 set /p e=ERASE THE DRIVE [Y/N]?
@@ -52,7 +64,7 @@ set /p prev=Create new System Partition [Y/N]?
 IF /I %prev:~0,1% EQU Y (
   
 )
-set /p parvhd=Create new VHDX(S) Partition [Y/N]?
+set /p parvhd=Create new VDISKS Partition [Y/N]?
 IF /I %parvhd:~0,1% EQU Y (
   
 )
@@ -99,7 +111,7 @@ IF NOT "%ISMBR%"=="T" (
 echo Closing VHDX
 diskpart /s "%~dp0dvhdx.txt"
 rem ####Grab the next Drive Letter & Re-Assign W:\#####
-set /p winpar=Input Windows(VHDXS) Partition(64+GB Usually):
+set /p winpar=Input Windows(VDISKS) Partition(64+GB Usually):
 set let=0
 set "drives=DEFGHIJKLMNOPQRSTUVWXYZABC"
 for /f "delims=:" %%A in ('wmic logicaldisk get caption') do set "drives=!drives:%%A=!"
