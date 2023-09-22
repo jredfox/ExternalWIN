@@ -30,7 +30,7 @@ IF /I %sid% EQU Y GOTO SIDS
 IF /I %sid% NEQ Y GOTO POSTINSTALL
 
 :SIDS
-xcopy %~dp0san_policy.xml W:\san_policy.xml
+xcopy %~dp0san_policy.xml W:\
 dism /Image:W:\ /Apply-Unattend:W:\san_policy.xml
 
 :POSTINSTALL
