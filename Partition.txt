@@ -2,6 +2,6 @@ select disk %disk%
 create partition primary size=250
 format quick fs=fat32 label= "EFIWTG"
 assign letter="S"
-create partition primary size=70000
+create partition primary size=%cdrive%000
 format quick fs=ntfs label="WTG"
 assign letter="W"
