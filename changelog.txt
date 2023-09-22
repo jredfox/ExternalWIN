@@ -1,6 +1,10 @@
+build 9
+fixed Boot labels saying EFI%wnum% when not merging on MBR disk installations
+
 build 8
+added MBR friendly label names as EFI for MBR BIOS boot didn't make sense
 * added a WARNING if your disk was MBR and you were not erasing or merging a previous boot partition. If they say no it merges 
-if they say yes continue it installs it anyways
+if they say yes otherwise merge with previous win boot partition
 
 build 7
 added MBR disk compatability for Computers Built < 2016
@@ -10,7 +14,7 @@ fixed ExternalWIN not working with spaces in the path
 
 build 6
 added CloseEFI.bat to close EFI in case the user inputs the wrong system partition
-added friendly EFI and Windows partition names
+added friendly EFI volume and Windows partition names
 fixed gpt attributes for when merging partitions
 
 build 5

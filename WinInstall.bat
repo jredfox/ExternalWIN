@@ -1,6 +1,6 @@
 @Echo Off
 rem #######Disk Image Selection#########
-title ExternalWin Version 1.0.0
+title ExternalWin Version RC 1.0.0 b10
 set /p wim=Mount Windows ISO ^& Input ^"Install.esd / Install.wim" located in resources:
 dism /get-imageinfo /imagefile:"%wim%"
 set /p index=Input Windows Image Index Number:
@@ -9,13 +9,14 @@ set /p legacy=MBR LEGACY Installation[Y/N]?
 set /p cdrive=Input Windows Partition Size in GB:
 
 rem #######SET VARS####################
-set EFIL=EFIW
 set OSL=Win%wnum%
 IF /I %legacy:~0,1% EQU Y ( 
 set dskext=-MBR.txt
 set ISMBR=T
+set EFIL=BIOSW
 ) else ( 
 set dskext=.txt
+set EFIL=EFIW
 )
 
 rem #######INIT DISK SETUP############
@@ -38,7 +39,7 @@ IF "%ISMBR%"=="T" (
   set /p flag=WARNING: MBR DISKS ONLY SUPPORTS 1 ACTIVE BOOT PARTITION. DO YOU WISH TO CONTINUE [Y/N]?
 )
 IF /I %flag:~0,1% NEQ Y GOTO MERGE
-set EFIL=EFIW%wnum%
+set EFIL=%EFIL%%wnum%
 GOTO PAR
 
 :MERGE
