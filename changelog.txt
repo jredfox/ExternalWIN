@@ -1,3 +1,7 @@
+build 11
+added WIM-Capture.bat & WIM-Apply.bat fore WINPE(Windows Media Creation Tool) image recovery or for external hard drive use
+moved utility bats to their own folder
+
 build 10
 added WIP VHDX installation script for unlimited amount of installations on MBR disks as well as simpler reset on External Hard Drive
 added quotes around diskpart script names to have less chance of it breaking

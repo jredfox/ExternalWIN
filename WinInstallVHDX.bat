@@ -12,7 +12,6 @@ rem ############# CREATE VHDX #############
 set /p iso=Input Windows Install.esd / Install.wim:
 dism /get-imageinfo /imagefile:"%iso%"
 set /p index=Input Windows ISO Index:
-set /p legacy=MBR LEGACY Installation[Y/N]?
 set /p vhdsize=Input VHDX Size In GB:
 diskpart /s "%~dp0createvhdx.txt"
 dism /Apply-Image /ImageFile:"%iso%" /index:"%index%" /ApplyDir:V:\
@@ -20,6 +19,7 @@ set /p con=VHDX Created in: %vdisk% Would you like to Install It [Y/N]?
 IF /I %con:~0,1% NEQ Y exit /b 0
 
 rem ####### SET VARS ####################
+set /p legacy=MBR LEGACY Installation[Y/N]?
 set OSL=VHDXS
 set EFIL=BOOTVHDX
 IF /I %legacy:~0,1% EQU Y ( 
