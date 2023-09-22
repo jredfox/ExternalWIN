@@ -1,4 +1,6 @@
-build 14
+build 15
+added fully working(GPT TESTED not MBR) PARSEC code to allow for multiple installation of VHDX Windows
+fixed bug on MBR Merging not using active
 hopefully fixed crashing during VHDX installations
 
 build 13

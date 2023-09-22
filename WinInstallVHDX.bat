@@ -5,7 +5,8 @@ title ExternalWin VHDX Version RC 1.0.0 b14
 rem ############ CLEANUP ##################
 IF "%vdisk%"=="" ( GOTO CLEANUP ) else ( GOTO CLEANUP2 )
 :CLEANUP
-set vdisk=C:\windows.vhdx
+md %userprofile%\Documents\VHDXS\%ComputerName%
+set vdisk=%userprofile%\Documents\VHDXS\%ComputerName%\windows.vhdx
 diskpart /s "%~dp0dvhdx.txt"
 mountvol W: /p
 mountvol S: /p
@@ -13,8 +14,9 @@ mountvol V: /p
 del /f /q /a "%vdisk%"
 cls
 IF EXIST "%vdisk%" (
-  echo ERR: Unable to Detach & Delete the vdisk during cleanup %vdisk%
-  echo ERR: PLEASE REBOOT YOUR PC Before trying again
+  echo ERR^: Unable to Detach ^& Delete the vdisk during cleanup %vdisk%
+  echo ERR^: PLEASE REBOOT YOUR PC Before trying again
+  set /p a=Press ENTER To Continue^.^.^.
   exit /b 0
 )
 GOTO CREATE
@@ -34,6 +36,7 @@ dism /get-imageinfo /imagefile:"%iso%"
 set /p index=Input Windows ISO Index:
 set /p vhdsize=Input VHDX Size In GB:
 diskpart /s "%~dp0createvhdx.txt"
+echo vdisk saved to %vdisk%
 dism /Apply-Image /ImageFile:"%iso%" /index:"%index%" /ApplyDir:V:\
 set /p con=VHDX Created in: %vdisk% Would you like to Install It [Y/N]?
 IF /I %con:~0,1% NEQ Y exit /b 0
@@ -66,13 +69,23 @@ GOTO PAR
 :PARSEC
 set /p gtp=Is Windows Previously Installed on this Disk [Y/N]?
 IF /I %gtp:~0,1% NEQ Y GOTO PAR
-set /p prev=Create new System Partition [Y/N]?
-IF /I %prev:~0,1% EQU Y (
-  
+set /p cp1=Create System Partition [Y/N]?
+IF /I %cp1:~0,1% EQU Y ( diskpart /s "%~dp0ParSYS%dskext%" )
+set /p cp2=Create Windows VDISKS Partition [Y/N]?
+IF /I %cp2:~0,1% EQU Y ( diskpart /s "%~dp0ParPrime.txt" )
+rem ##### IF We Did not Create System Par or Windows Par then Open System Par and Re-Assign Windows Par to W #####
+IF NOT EXIST S:\ ( 
+diskpart /s "%~dp0ListPar.txt"
+set /p oldsyspar="Input System Partition(Usually Around 250MB):" 
 )
-set /p parvhd=Create new VDISKS Partition [Y/N]?
-IF /I %parvhd:~0,1% EQU Y (
-  
+IF NOT EXIST S:\ ( diskpart /s "%~dp0openboot%dskext%" )
+IF NOT EXIST W:\ (
+diskpart /s "%~dp0ListPar.txt"
+set /p winpar="Input Windows VDISKS Partition(64GB+):" 
+)
+IF NOT EXIST W:\ (
+set let=W
+diskpart /s "%~dp0reassignW.txt"
 )
 GOTO INSTALL
 
@@ -112,7 +125,7 @@ IF NOT "%ISMBR%"=="T" (
 echo Closing Boot
 mountvol S: /p
 IF NOT "%ISMBR%"=="T" (
-  diskpart /s "%~dp0closeboot%dskext%"
+  diskpart /s "%~dp0closeboot.txt"
 )
 echo Closing VHDX
 diskpart /s "%~dp0dvhdx.txt"

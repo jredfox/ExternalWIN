@@ -1,7 +1,4 @@
-select disk %disk%
-select par %oldsyspar%
-active
-assign letter="S"
+sel disk "%disk%"
 create partition primary size="%cdrive%000"
 format quick fs=ntfs label="%OSL%"
 assign letter="W"

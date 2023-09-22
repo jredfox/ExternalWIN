@@ -1,0 +1,4 @@
+select disk %disk%
+create partition primary size=250
+format quick fs=fat32 label="%EFIL%"
+assign letter="S"
