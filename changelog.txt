@@ -1,3 +1,7 @@
+build 10
+added WIP VHDX installation script for unlimited amount of installations on MBR disks as well as simpler reset on External Hard Drive
+added quotes around diskpart script names to have less chance of it breaking
+
 build 9
 fixed Boot labels saying EFI%wnum% when not merging on MBR disk installations
 

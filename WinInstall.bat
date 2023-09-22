@@ -63,7 +63,7 @@ echo Creating Boot Files
 W:\Windows\System32\bcdboot W:\Windows /f ALL /s S:
 set /p sid=Stop Windows from Accessing Internal Disks [Y/N]?
 IF /I %sid:~0,1% EQU Y GOTO SIDS
-IF /I %sid% NEQ Y GOTO POSTINSTALL
+IF /I %sid:~0,1% NEQ Y GOTO POSTINSTALL
 
 :SIDS
 xcopy "%~dp0san_policy.xml" W:\

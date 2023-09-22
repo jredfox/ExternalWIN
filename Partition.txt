@@ -1,7 +1,7 @@
 select disk %disk%
 create partition primary size=250
-format quick fs=fat32 label=%EFIL%
+format quick fs=fat32 label="%EFIL%"
 assign letter="S"
-create partition primary size=%cdrive%000
-format quick fs=ntfs label=%OSL%
+create partition primary size="%cdrive%000"
+format quick fs=ntfs label="%OSL%"
 assign letter="W"
