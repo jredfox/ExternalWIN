@@ -7,6 +7,9 @@ set /p index=Input Windows Image Index Number:
 set /p cdrive=Input Windows Partition Size in GB:
 
 rem #INIT SETUP
+rem remove reserved drive letters
+mountvol W: /p
+mountvol S: /p
 diskpart /s %~dp0%\ld.txt
 set /p disk=Input Disk Number:
 set /p e=ERASE THE DRIVE (clean install) [Y/N]?
