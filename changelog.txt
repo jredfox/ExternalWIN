@@ -1,3 +1,7 @@
+build 16
+fixed wim capturing batch scripts
+fixed display msg in VHDX installation
+
 build 15
 added fully working(GPT TESTED not MBR) PARSEC code to allow for multiple installation of VHDX Windows
 fixed bug on MBR Merging not using active

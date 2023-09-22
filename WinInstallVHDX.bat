@@ -1,6 +1,6 @@
 @ECHO OFF
 Setlocal EnableDelayedExpansion
-title ExternalWin VHDX Version RC 1.0.0 b14
+title ExternalWin VHDX Version RC 1.0.0
 
 rem ############ CLEANUP ##################
 IF "%vdisk%"=="" ( GOTO CLEANUP ) else ( GOTO CLEANUP2 )
@@ -38,7 +38,8 @@ set /p vhdsize=Input VHDX Size In GB:
 diskpart /s "%~dp0createvhdx.txt"
 echo vdisk saved to %vdisk%
 dism /Apply-Image /ImageFile:"%iso%" /index:"%index%" /ApplyDir:V:\
-set /p con=VHDX Created in: %vdisk% Would you like to Install It [Y/N]?
+echo VHDX Created in^: %vdisk%
+set /p con=Would you like to Install It [Y/N]?
 IF /I %con:~0,1% NEQ Y exit /b 0
 
 rem ####### SET VARS ####################
