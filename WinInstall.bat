@@ -1,7 +1,8 @@
 @Echo Off
 rem #######Disk Image Selection#########
-title ExternalWin Version RC 1.0.0 b13
+title ExternalWin Version RC 1.0.0 b14
 set /p wim=Mount Windows ISO ^& Input ^"Install.esd / Install.wim" located in resources:
+set wim=%wim:"=%
 dism /get-imageinfo /imagefile:"%wim%"
 set /p index=Input Windows Image Index Number:
 set /p wnum=Input Windows Version Number:

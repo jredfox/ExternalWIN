@@ -1,6 +1,9 @@
+build 14
+hopefully fixed crashing during VHDX installations
+
 build 13
 known issue: PARSEC still isn't created yet
-fixed crashes on VHDX on MBR
+fixed some crashes on VHDX on MBR
 renamed VHDXS to VDISKS partition label
 completed INSTALL & POSTINSTALL sections of WinInstallVHDX.bat
 removed asking for system partition for MBR as it's not required

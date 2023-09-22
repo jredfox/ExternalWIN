@@ -1,6 +1,6 @@
 @ECHO OFF
 Setlocal EnableDelayedExpansion
-title ExternalWin VHDX Version RC 1.0.0 b13
+title ExternalWin VHDX Version RC 1.0.0 b14
 
 rem ############ CLEANUP ##################
 IF "%vdisk%"=="" ( GOTO CLEANUP ) else ( GOTO CLEANUP2 )
@@ -11,7 +11,12 @@ mountvol W: /p
 mountvol S: /p
 mountvol V: /p
 del /f /q /a "%vdisk%"
-rem cls
+cls
+IF EXIST "%vdisk%" (
+  echo ERR: Unable to Detach & Delete the vdisk during cleanup %vdisk%
+  echo ERR: PLEASE REBOOT YOUR PC Before trying again
+  exit /b 0
+)
 GOTO CREATE
 :CLEANUP2
 mountvol W: /p
@@ -24,6 +29,7 @@ GOTO SETVARS
 rem ############# CREATE VHDX #############
 :CREATE
 set /p iso=Input Windows Install.esd / Install.wim:
+set iso=%iso:"=%
 dism /get-imageinfo /imagefile:"%iso%"
 set /p index=Input Windows ISO Index:
 set /p vhdsize=Input VHDX Size In GB:
