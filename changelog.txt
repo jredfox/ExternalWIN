@@ -1,3 +1,7 @@
+build 17
+re-wrote WIMApply.bat and it works now
+improved wim capturing scripts. WIM for WINPE only captures entire drives now
+
 build 16
 fixed wim capturing batch scripts
 fixed display msg in VHDX installation
