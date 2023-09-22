@@ -1,3 +1,7 @@
+build 8
+* added a WARNING if your disk was MBR and you were not erasing or merging a previous boot partition. If they say no it merges 
+if they say yes continue it installs it anyways
+
 build 7
 added MBR disk compatability for Computers Built < 2016
 fixed Y\N taking "YES" as "NO"

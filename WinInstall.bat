@@ -31,15 +31,21 @@ IF /I %e:~0,1% NEQ Y GOTO PARSEC
 :PARSEC
 set /p mer=Merge Previous Boot Partition [Y/N]?
 IF /I %mer:~0,1% EQU Y (
-  diskpart /s "%~dp0ListPar.txt"
-  set /p oldsyspar=Input Previous Windows Boot Partition:
-  diskpart /s "%~dp0PartitionMerge%dskext%"
-  GOTO INSTALL
+  GOTO MERGE
 )
-IF /I %mer% NEQ Y (
- set EFIL=EFIW%wnum%
- GOTO PAR
+set flag=Y
+IF "%ISMBR%"=="T" (
+  set /p flag=WARNING: MBR DISKS ONLY SUPPORTS 1 ACTIVE BOOT PARTITION. DO YOU WISH TO CONTINUE [Y/N]?
 )
+IF /I %flag:~0,1% NEQ Y GOTO MERGE
+set EFIL=EFIW%wnum%
+GOTO PAR
+
+:MERGE
+diskpart /s "%~dp0ListPar.txt"
+set /p oldsyspar=Input Previous Windows Boot Partition:
+diskpart /s "%~dp0PartitionMerge%dskext%"
+GOTO INSTALL
 
 :ERASE
 echo erasing disk %disk%....
