@@ -1,4 +1,9 @@
-build 11
+build 12
+known issue: PARSEC still isn't created yet
+fixed crashes on VHDX on MBR
+renamed VHDXS to VDISKS partition label
+completed INSTALL & POSTINSTALL sections of WinInstallVHDX.bat
+removed asking for system partition for MBR as it's not required
 added WIM-Capture.bat & WIM-Apply.bat fore WINPE(Windows Media Creation Tool) image recovery or for external hard drive use
 moved utility bats to their own folder
 

@@ -1,6 +1,6 @@
 @Echo Off
 rem #######Disk Image Selection#########
-title ExternalWin Version RC 1.0.0 b10
+title ExternalWin Version RC 1.0.0 b12
 set /p wim=Mount Windows ISO ^& Input ^"Install.esd / Install.wim" located in resources:
 dism /get-imageinfo /imagefile:"%wim%"
 set /p index=Input Windows Image Index Number:
@@ -72,8 +72,10 @@ dism /Image:W:\ /Apply-Unattend:W:\san_policy.xml
 rem #######POST INSTALL############
 :POSTINSTALL
 diskpart /s "%~dp0ListPar.txt"
-set /p syspar=Input System Partition(250 MB Usually):
-echo Closing EFI Boot
+IF NOT "%ISMBR%"=="T" ( 
+  set /p syspar="Input System Partition(250 MB Usually):"
+)
+echo Closing Boot
 mountvol S: /p
 IF NOT "%ISMBR%"=="T" (
   diskpart /s "%~dp0closeboot%dskext%"

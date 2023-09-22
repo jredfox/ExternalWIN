@@ -1,13 +1,16 @@
 @ECHO OFF
 Setlocal EnableDelayedExpansion
-title ExternalWin VHDX Version RC 1.0.0 b10
+title ExternalWin VHDX Version RC 1.0.0 b12
+
 rem ############ CLEANUP ##################
 set vdisk=C:\windows.vhdx
 diskpart /s "%~dp0dvhdx.txt"
 del /f /q /a "%vdisk%"
 mountvol W: /p
 mountvol S: /p
-rem cls TODO: REMOVE REM
+mountvol V: /p
+cls
+
 rem ############# CREATE VHDX #############
 set /p iso=Input Windows Install.esd / Install.wim:
 dism /get-imageinfo /imagefile:"%iso%"
@@ -20,7 +23,7 @@ IF /I %con:~0,1% NEQ Y exit /b 0
 
 rem ####### SET VARS ####################
 set /p legacy=MBR LEGACY Installation[Y/N]?
-set OSL=VHDXS
+set OSL=VDISKS
 set EFIL=BOOTVHDX
 IF /I %legacy:~0,1% EQU Y ( 
   set dskext=-MBR.txt
@@ -62,11 +65,17 @@ diskpart /s "%~dp0Partition%dskext%"
 :INSTALL
 echo detatching VHDX %vdisk%
 diskpart /s "%~dp0dvhdx.txt"
-echo copying VHDX to it's new home UWU
-xcopy "%vdisk%" W:\
-echo deleting VHDX %vdisk%
-del /f /q /a "%vdisk%"
-set vdisk=W:\windows.vhdx
+:LOOP
+set /p vdiskhome=Enter Windows VHDX File Name:
+set vdiskhome=W:\%vdiskhome%.vhdx
+set vdiskhome=%vdiskhome:.vhdx.vhdx=.vhdx%
+IF EXIST "%vdiskhome%" (
+  echo File Already Exists %vdiskhome%
+  GOTO LOOP
+)
+echo copying VHDX to it's new home
+xcopy "%vdisk%" "%vdiskhome%*"
+set vdisk=%vdiskhome%
 diskpart /s "%~dp0avhdx.txt"
 echo Creating Boot Files
 V:\Windows\System32\bcdboot V:\Windows /f ALL /s S:
@@ -79,8 +88,10 @@ dism /Image:V:\ /Apply-Unattend:V:\san_policy.xml
 
 :POSTINSTALL
 diskpart /s "%~dp0ListPar.txt"
-set /p syspar=Input System Partition(250 MB Usually):
-echo Closing EFI Boot
+IF NOT "%ISMBR%"=="T" ( 
+  set /p syspar="Input System Partition(250 MB Usually):"
+)
+echo Closing Boot
 mountvol S: /p
 IF NOT "%ISMBR%"=="T" (
   diskpart /s "%~dp0closeboot%dskext%"
@@ -89,7 +100,6 @@ echo Closing VHDX
 diskpart /s "%~dp0dvhdx.txt"
 rem ####Grab the next Drive Letter & Re-Assign W:\#####
 set /p winpar=Input Windows(VHDXS) Partition(64+GB Usually):
-setlocal enableDelayedExpansion
 set let=0
 set "drives=DEFGHIJKLMNOPQRSTUVWXYZABC"
 for /f "delims=:" %%A in ('wmic logicaldisk get caption') do set "drives=!drives:%%A=!"
