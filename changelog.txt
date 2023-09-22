@@ -1,3 +1,6 @@
+build 18
+added WIM description as a requirement when capturing WIM now
+
 build 17
 re-wrote WIMApply.bat and it works now
 improved wim capturing scripts. WIM for WINPE only captures entire drives now
