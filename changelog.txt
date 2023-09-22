@@ -1,3 +1,9 @@
+build 7
+added MBR disk compatability for Computers Built < 2016
+fixed Y\N taking "YES" as "NO"
+fixed windows ISO not allowed to have spaces in their path
+fixed ExternalWIN not working with spaces in the path
+
 build 6
 added CloseEFI.bat to close EFI in case the user inputs the wrong system partition
 added friendly EFI and Windows partition names

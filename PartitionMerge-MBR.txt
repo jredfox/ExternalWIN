@@ -1,0 +1,6 @@
+select disk %disk%
+select par %oldsyspar%
+assign letter="S"
+create partition primary size=%cdrive%000
+format quick fs=ntfs label=%OSL%
+assign letter="W"
