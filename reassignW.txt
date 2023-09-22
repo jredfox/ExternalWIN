@@ -1,0 +1,3 @@
+sel disk %disk%
+sel par %winpar%
+assign letter=%let%
