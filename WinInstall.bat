@@ -5,6 +5,9 @@ set /p wim=Mount Windows ISO ^& Input ^"Install.esd / Install.wim" located in re
 dism /get-imageinfo /imagefile:%wim%
 set /p index=Input Windows Image Index Number:
 set /p cdrive=Input Windows Partition Size in GB:
+set /p wnum=Input Windows Version Number:
+set EFIL=EFIW
+set OSL=Win%wnum%
 
 rem #INIT SETUP
 rem remove reserved drive letters
@@ -24,7 +27,10 @@ IF /I %mer% EQU Y (
   diskpart /s %~dp0PartitionMerge.txt
   GOTO INSTALL
 )
-IF /I %mer% NEQ Y GOTO PAR
+IF /I %mer% NEQ Y (
+ set EFIL=EFIW%wnum%
+ GOTO PAR
+)
 
 :ERASE
 echo erasing disk %disk%....

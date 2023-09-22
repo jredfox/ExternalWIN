@@ -1,2 +1,7 @@
+build 6
+added CloseEFI.bat to close EFI in case the user inputs the wrong system partition
+added friendly EFI and Windows partition names
+fixed gpt attributes for when merging partitions
+
 build 5
 removed drive letters W:\ and S:\ before starting the installation process
