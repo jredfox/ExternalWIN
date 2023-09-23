@@ -1,8 +1,8 @@
-REM @Echo off
+@Echo off
 setlocal enableDelayedExpansion
 mountvol W: /p
 mountvol S: /p
-REM cls
+cls
 set /p wim=Input WIM/ESD:
 set wim=%wim:"=%
 dism /get-imageinfo /imagefile:"%wim%"
@@ -53,7 +53,7 @@ IF /I "%q2%" EQU "F" (set form=FAT32) ELSE IF /I "%q2%" EQU "N" (set form=NTFS) 
 diskpart /s "%~dp0detpar.txt"
 set /p label=Input Partition Label:
 set label=%label:"=%
-diskpart /s %~dp0formatpar.txt"
+diskpart /s "%~dp0formatpar.txt"
 
 rem #### INSTALL ####################
 dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:%let%:\
@@ -70,4 +70,5 @@ set let=%drives:~0,1%
 set winpar=%par%
 diskpart /s "%~dp0%reassignW.txt"
 )
+echo IF YOU FIND A WAY TO APPLY WIM RELIABLY WITHOUT ACCESS DENIED ERROR CODE:5 Then please report it to github.com/jredfox/ExternalWIN/issues
 pause

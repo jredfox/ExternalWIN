@@ -1,3 +1,6 @@
+build 20
+fixed some batch syntax errors that could result in crashes
+
 build 19
 added WIMApply-Universal.bat script. This will to RE-IMAGE System(Boot) partitions
 removed second prompt on WinInstall.bat System partition prompt
