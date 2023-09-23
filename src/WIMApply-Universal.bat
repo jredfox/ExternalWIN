@@ -62,13 +62,14 @@ rem ##### POST INSTALL ##############
 IF /I %type% EQU S (
 mountvol %let% /p
 diskpart /s "%~dp0closeboot%ext%"
-) ELSE (
+GOTO END
+)
 set let=0
 set "drives=DEFGHIJKLMNOPQRSTUVWXYZABC"
 for /f "delims=:" %%A in ('wmic logicaldisk get caption') do set "drives=!drives:%%A=!"
 set let=%drives:~0,1%
 set winpar=%par%
 diskpart /s "%~dp0%reassignW.txt"
-)
-echo IF YOU FIND A WAY TO APPLY WIM RELIABLY WITHOUT ACCESS DENIED ERROR CODE:5 Then please report it to github.com/jredfox/ExternalWIN/issues
+:END
+echo IF YOU FIND A WAY TO APPLY WIM RELIABLY WITHOUT FORMATTING IN WINPE(MEDIA CREATION TOOL BOOT) GETTING ACCESS DENIED ERROR CODE:5 Then please report it to github.com/jredfox/ExternalWIN/issues
 pause
