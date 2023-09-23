@@ -6,7 +6,7 @@ set wim=%wim:"=%
 dism /get-imageinfo /imagefile:"%wim%"
 set /p index=Input Windows Image Index Number:
 set /p wnum=Input Windows Version Number:
-set /p legacy=MBR LEGACY Installation[Y/N]?
+set /p legacy=MBR LEGACY Installation [Y/N]?
 set /p cdrive=Input Windows Partition Size in GB:
 
 rem #######SET VARS####################

@@ -1,6 +1,6 @@
 @Echo off
 setlocal enableDelayedExpansion
-REM This Script is Made to Overwrite(RE-IMAGE) Already Installed Paritition of Windows To Repair Boot or Full Install Please Use Another Script
+REM This Script is Made to Erase and RE-IMAGE Already Installed Paritition of Windows To Repair Boot/Recovery or Full Install Please Use Another Script
 set /p wim=Input WIM/ESD:
 set wim=%wim:"=%
 dism /get-imageinfo /imagefile:"%wim%"

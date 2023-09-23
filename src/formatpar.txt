@@ -1,0 +1,4 @@
+sel disk %disk%
+sel par %par%
+format quick fs="%form%" label="%label%"
+assign letter="%let%"
