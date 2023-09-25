@@ -11,6 +11,9 @@ diskpart /s "%~dp0dvhdx.txt"
 mountvol W: /p
 mountvol S: /p
 mountvol V: /p
+mountvol W: /d
+mountvol S: /d
+mountvol V: /d
 del /f /q /a "%vdisk%"
 cls
 IF EXIST "%vdisk%" (
@@ -24,6 +27,9 @@ GOTO CREATE
 mountvol W: /p
 mountvol S: /p
 mountvol V: /p
+mountvol W: /d
+mountvol S: /d
+mountvol V: /d
 cls
 echo Custom VDISK Detected: %vdisk%
 GOTO SETVARS
@@ -128,6 +134,7 @@ IF "%syspar%"=="" (
 )
 echo Closing Boot
 mountvol S: /p
+mountvol S: /d
 IF NOT "%ISMBR%"=="T" ( diskpart /s "%~dp0closeboot.txt" )
 echo Closing VHDX
 diskpart /s "%~dp0dvhdx.txt"

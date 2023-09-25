@@ -5,6 +5,7 @@ set /p wim=Input WIM/ESD:
 set wim=%wim:"=%
 dism /get-imageinfo /imagefile:"%wim%"
 set /p index=Input Index:
+mountvol W: /p
 :SEL
 diskpart /s "%~dp0ld.txt"
 set /p disk=Input Disk Number:

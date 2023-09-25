@@ -2,6 +2,8 @@
 setlocal enableDelayedExpansion
 mountvol W: /p
 mountvol S: /p
+mountvol W: /d
+mountvol S: /d
 cls
 set /p wim=Input WIM/ESD:
 set wim=%wim:"=%

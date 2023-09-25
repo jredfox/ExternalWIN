@@ -25,6 +25,8 @@ rem #######INIT DISK SETUP############
 rem remove reserved drive letters
 mountvol W: /p
 mountvol S: /p
+mountvol W: /d
+mountvol S: /d
 diskpart /s "%~dp0ld.txt"
 set /p disk=Input Disk Number:
 set /p e=ERASE THE DRIVE (clean install) [Y/N]?
@@ -81,6 +83,7 @@ IF "%syspar%"=="" (
 )
 echo Closing Boot
 mountvol S: /p
+mountvol S: /d
 IF NOT "%ISMBR%"=="T" ( diskpart /s "%~dp0closeboot%dskext%" )
 set /p winpar="Input Windows Partition(64+GB Usually):"
 rem ####Grab the next Drive Letter#####
