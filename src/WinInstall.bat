@@ -73,6 +73,12 @@ echo Attempting to create Boot files by running BCDBoot for older Windows
 echo ###################################################################
 W:\Windows\System32\bcdboot W:\Windows /s S:
 )
+REM ############ CUSTOM BIOS NAMES #####################################
+set /p biosname=Enter Bios Name Default is "Windows Boot Manager":
+set biosname=%biosname:"=%
+W:\Windows\System32\bcdedit.exe /store S:\Boot\BCD /set {bootmgr} description "%biosname%"
+W:\Windows\System32\bcdedit.exe /store S:\EFI\Microsoft\Boot\BCD /set {bootmgr} description "%biosname%"
+
 set /p sid=Stop Windows from Accessing Internal Disks [Y/N]?
 IF /I %sid:~0,1% EQU Y GOTO SIDS
 IF /I %sid:~0,1% NEQ Y GOTO POSTINSTALL

@@ -1,5 +1,6 @@
 Bug Fixes:
-Look into bcdedit one last time bcdedit /set {default}
+bcdedit /store S:\EFI\Microsoft\Boot\BCD /set {bootmgr} description "%biosname%"
+bcdedit /store S:\boot\BCD /set {bootmgr} description "%biosname%"
 
 Features:
 Local account if possible

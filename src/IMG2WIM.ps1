@@ -7,6 +7,7 @@ $extn = [IO.Path]::GetExtension($Image)
 if($extn -eq ".WIM")
 {
   Write-Host "Error: Cannot Convert WIM $Image TO WIM As it's Already a WIM"
+  exit 1
 }
 #start cleanup
 $wimfile = "$Directory\" + (Get-Item -Path $Image).BaseName + ".wim"
