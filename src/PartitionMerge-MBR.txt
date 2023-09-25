@@ -1,5 +1,5 @@
-select disk %disk%
-select par %syspar%
+select disk "%disk%"
+select par "%syspar%"
 active
 assign letter="S"
 create partition primary size="%cdrive%000"

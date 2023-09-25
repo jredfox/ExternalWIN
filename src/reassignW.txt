@@ -1,3 +1,3 @@
-sel disk %disk%
-sel par %winpar%
-assign letter=%let%
+sel disk "%disk%"
+sel par "%winpar%"
+assign letter="%let%"

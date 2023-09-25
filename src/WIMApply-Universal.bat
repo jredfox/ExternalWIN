@@ -43,8 +43,8 @@ set let=S
 diskpart /s "%~dp0openboot%ext%"
 ) ELSE (
 IF /I %type% EQU R (
-diskpart /s "%~dp0openrecovery%ext%"
 set let=R
+diskpart /s "%~dp0openrecovery%ext%"
 ) ELSE (
     set let=W
   )
@@ -69,11 +69,14 @@ dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:%let%:\
 
 rem ##### POST INSTALL ##############
 IF /I %type% EQU S (
-mountvol %let% /p
+mountvol S: /p
+mountvol S: /d
 diskpart /s "%~dp0closeboot%ext%"
 GOTO END
 )
 IF /I %type% EQU R (
+ mountvol R: /p
+ mountvol R: /d
  diskpart /s "%~dp0closerecovery%ext%"
  GOTO END
 )
@@ -84,5 +87,4 @@ set let=%drives:~0,1%
 set winpar=%par%
 diskpart /s "%~dp0%reassignW.txt"
 :END
-echo IF YOU FIND A WAY TO APPLY WIM RELIABLY WITHOUT FORMATTING IN WINPE(MEDIA CREATION TOOL BOOT) GETTING ACCESS DENIED ERROR CODE:5 Then please report it to github.com/jredfox/ExternalWIN/issues
 pause

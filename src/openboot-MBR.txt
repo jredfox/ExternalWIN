@@ -1,4 +1,5 @@
-select disk %disk%
-select par %syspar%
+select disk "%disk%"
+select par "%syspar%"
 active
+select par "%syspar%"
 assign letter=S
