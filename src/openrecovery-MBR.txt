@@ -1,4 +1,5 @@
 select disk "%disk%"
 select par "%par%"
 set id=07 override
+select par "%par%"
 assign letter=R
