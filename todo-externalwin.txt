@@ -1,5 +1,4 @@
 Bug Fixes:
-Support recovery par on apply WIM
 Look into bcdedit one last time bcdedit /set {default}
 
 Features:

@@ -1,3 +1,4 @@
 select disk "%disk%"
 clean
+select disk "%disk%"
 convert gpt

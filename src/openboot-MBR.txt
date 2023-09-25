@@ -1,5 +1,6 @@
 select disk "%disk%"
 select par "%syspar%"
+set id=07 override
 active
-select par "%syspar%"
+select par "%par%"
 assign letter=S

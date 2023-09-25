@@ -1,5 +1,4 @@
 sel disk "%disk%"
 sel par "%syspar%"
-set id=07 override
-sel par "%syspar%"
 active
+set id=07 override
