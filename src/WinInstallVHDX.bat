@@ -118,6 +118,14 @@ set vdisk=%vdiskhome%
 diskpart /s "%~dp0avhdx.txt"
 echo Creating Boot Files
 V:\Windows\System32\bcdboot V:\Windows /f ALL /s S:
+IF %ERRORLEVEL% NEQ 0 (
+echo[
+echo[
+echo ###################################################################
+echo Attempting to create Boot file by running BCDBoot for older Windows
+echo ###################################################################
+V:\Windows\System32\bcdboot V:\Windows /s S:
+)
 set /p sid=Stop Windows from Accessing Internal Disks [Y/N]?
 IF /I %sid:~0,1% EQU Y ( GOTO SIDS ) else ( GOTO POSTINSTALL )
 

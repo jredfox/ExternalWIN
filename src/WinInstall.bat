@@ -62,9 +62,17 @@ diskpart /s "%~dp0Partition%dskext%"
 
 rem ########Install################
 :INSTALL
-REM dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:W:\
+dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:W:\
 echo Creating Boot Files
 W:\Windows\System32\bcdboot W:\Windows /f ALL /s S:
+IF %ERRORLEVEL% NEQ 0 (
+echo[
+echo[
+echo ###################################################################
+echo Attempting to create Boot file by running BCDBoot for older Windows
+echo ###################################################################
+W:\Windows\System32\bcdboot W:\Windows /s S:
+)
 set /p sid=Stop Windows from Accessing Internal Disks [Y/N]?
 IF /I %sid:~0,1% EQU Y GOTO SIDS
 IF /I %sid:~0,1% NEQ Y GOTO POSTINSTALL
