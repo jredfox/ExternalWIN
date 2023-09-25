@@ -1,0 +1,9 @@
+Bug Fixes:
+Support recovery par on apply WIM
+Look into bcdedit one last time bcdedit /set {default}
+
+Features:
+Local account if possible
+WIM MERGE
+WIM Mount/UNMOUNT
+Use Double WIM to preserve original data For installing Windows without deleting data
