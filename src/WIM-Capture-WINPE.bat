@@ -1,4 +1,5 @@
 @ECHO OFF
+setlocal enableDelayedExpansion
 set /p wim=File Save As:
 set /p desc=Enter Description:
 diskpart /s "%~dp0ld.txt"

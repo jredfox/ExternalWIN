@@ -1,4 +1,5 @@
 @ECHO OFF
+setlocal enableDelayedExpansion
 set /p wim=Enter File Name:
 set wim=%wim:"=%
 set /p desc=Enter Description:

@@ -1,4 +1,5 @@
 @Echo Off
+setlocal enableDelayedExpansion
 rem #######Disk Image Selection#########
 title ExternalWin Version RC 1.0.0
 set /p wim=Mount Windows ISO ^& Input ^"Install.esd / Install.wim" located in resources:
@@ -59,7 +60,7 @@ diskpart /s "%~dp0Partition%dskext%"
 
 rem ########Install################
 :INSTALL
-dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:W:\
+REM dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:W:\
 echo Creating Boot Files
 W:\Windows\System32\bcdboot W:\Windows /f ALL /s S:
 set /p sid=Stop Windows from Accessing Internal Disks [Y/N]?
@@ -83,7 +84,6 @@ mountvol S: /p
 IF NOT "%ISMBR%"=="T" ( diskpart /s "%~dp0closeboot%dskext%" )
 set /p winpar="Input Windows Partition(64+GB Usually):"
 rem ####Grab the next Drive Letter#####
-setlocal enableDelayedExpansion
 set let=0
 set "drives=DEFGHIJKLMNOPQRSTUVWXYZABC"
 for /f "delims=:" %%A in ('wmic logicaldisk get caption') do set "drives=!drives:%%A=!"
