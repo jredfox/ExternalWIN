@@ -2,8 +2,10 @@
 setlocal enableDelayedExpansion
 mountvol W: /p
 mountvol S: /p
+mountvol R: /p
 mountvol W: /d
 mountvol S: /d
+mountvol R: /d
 cls
 set /p wim=Input WIM/ESD:
 set wim=%wim:"=%
@@ -40,7 +42,12 @@ set syspar=%par%
 set let=S
 diskpart /s "%~dp0openboot%ext%"
 ) ELSE (
-set let=W
+IF /I %type% EQU R (
+diskpart /s "%~dp0openrecovery%ext%"
+set let=R
+) ELSE (
+    set let=W
+  )
 )
 
 :SELF
@@ -65,6 +72,10 @@ IF /I %type% EQU S (
 mountvol %let% /p
 diskpart /s "%~dp0closeboot%ext%"
 GOTO END
+)
+IF /I %type% EQU R (
+ diskpart /s "%~dp0closerecovery%ext%"
+ GOTO END
 )
 set let=0
 set "drives=DEFGHIJKLMNOPQRSTUVWXYZABC"

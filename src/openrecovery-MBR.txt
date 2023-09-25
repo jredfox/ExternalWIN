@@ -1,0 +1,4 @@
+select disk %disk%
+select par %par%
+set id=07 override
+assign letter=R

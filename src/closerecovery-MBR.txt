@@ -1,0 +1,4 @@
+sel disk %disk%
+sel par %par%
+set id=27 override
+remove letter=R
