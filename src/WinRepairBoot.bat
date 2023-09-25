@@ -40,7 +40,7 @@ IF %ERRORLEVEL% NEQ 0 (
 echo[
 echo[
 echo ###################################################################
-echo Attempting to create Boot file by running BCDBoot for older Windows
+echo Attempting to create Boot files by running BCDBoot for older Windows
 echo ###################################################################
 %let%:\Windows\System32\bcdboot %let%:\Windows /s S:
 )
