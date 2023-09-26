@@ -1,9 +1,4 @@
-Bug Fixes:
-bcdedit /store S:\EFI\Microsoft\Boot\BCD /set {bootmgr} description "%biosname%"
-bcdedit /store S:\boot\BCD /set {bootmgr} description "%biosname%"
-
 Features:
-Local account if possible
-WIM MERGE
-WIM Mount/UNMOUNT
+ESD to WIM Get compression info before converting
+WIM MERGe on capture WIM
 Use Double WIM to preserve original data For installing Windows without deleting data
