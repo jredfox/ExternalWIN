@@ -1,0 +1,1 @@
+Get-WindowsImage -Mounted | ForEach {Measure-Command {Dismount-WindowsImage -Discard -Path $_.Path}}
