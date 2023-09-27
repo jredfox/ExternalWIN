@@ -3,6 +3,7 @@ setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 powershell -ExecutionPolicy Bypass -File "%~dp0dismountallwims.ps1"
 powershell -ExecutionPolicy Bypass -File "%~dp0dismountallvwims.ps1"
+pause
 exit /b 0
 
 :checkAdmin
