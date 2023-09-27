@@ -6,6 +6,7 @@ set wim=%wim:"=%
 set /p dir=Input Directory To Extract TO:
 set dir=%dir:.wim=%
 set dir=%dir:.esd=%
+set /p all=Extract All Indexes [Y\N]?
 for /L %%i in (1, 1, 256) Do (
 mkdir "%dir%\%%i"
 dism /apply-image /imagefile:"%wim%" /index:%%i /applydir:"%dir%\%%i"
@@ -14,6 +15,7 @@ rmdir /s /q "%dir%\%%i"
 GOTO END
 )
 echo Extracted Index %%i Successfully from "%wim%"
+IF /I %all:~0,1% NEQ Y GOTO END
 )
 :END
 pause

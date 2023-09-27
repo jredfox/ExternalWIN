@@ -21,7 +21,7 @@ echo Finished Extracting Index %%A
 echo[
 )
 :END
-echo Done Converting ESD to WIM
+echo Done WIM/ESD File to it's destination
 IF %sp% EQU true (pause)
 exit /b 0
 
