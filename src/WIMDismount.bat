@@ -1,11 +1,9 @@
 @Echo off
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
-set /p=Enter WIM Image to Dismount:
-set wim=%wim:"=%
+set /p wim=Enter WIM Image to Dismount:
 powershell -ExecutionPolicy Bypass -File "%~dp0dismountwim.ps1" -Image "%wim%"
-diskpart /s "%~dp0dvhdx.txt"
-del /F "%vdisk%" /s /q /a
+pause
 exit /b 0
 
 :checkAdmin

@@ -20,6 +20,7 @@ pause
 exit /b 1
 )
 call :NextDrive
+mkdir C:\Temp\Mnt\
 call %~dp0createvhdx-expand.bat "%vdisk%" "25" "NTFS" "WIM Mount" "%let%"
 for /L %%i in (1, 1, 256) Do (
 mkdir "%let%:\%%i"
