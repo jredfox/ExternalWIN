@@ -1,5 +1,5 @@
 @Echo off
-set type=expandable
+set type=fixed
 set vdisk=%~1
 set vhdsize=%~2
 set fs=%~3

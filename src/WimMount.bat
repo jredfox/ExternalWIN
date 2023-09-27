@@ -9,7 +9,7 @@ diskpart /s "%~dp0dvhdx.txt"
 del /F "%vdisk%" /s /q /a
 REM #####################
 call :NextDrive
-call %~dp0createvhdx-expand.bat "%vdisk%" "10" "NTFS" "WIM Mount" "%let%"
+call %~dp0createvhdx-expand.bat "%vdisk%" "25" "NTFS" "WIM Mount" "%let%"
 for /L %%i in (1, 1, 256) Do (
 mkdir "%let%:\%%i"
 dism /Mount-Image /ImageFile:"%wim%" /Index:%%i /MountDir:"%let%:\%%i"
