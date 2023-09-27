@@ -9,6 +9,11 @@ if($extn -eq ".WIM")
   Write-Host "Error: Cannot Convert WIM $Image TO WIM As it's Already a WIM"
   exit 1
 }
+if($extn -eq ".ESD")
+{
+  cmd.exe /c "$PSScriptRoot\ESD2WIM.bat" "$Image"
+  exit
+}
 #start cleanup
 $wimfile = "$Directory\" + (Get-Item -Path $Image).BaseName + ".wim"
 if (test-path $wimfile) {
@@ -19,18 +24,11 @@ DisMount-DiskImage -ImagePath $Image | Out-Null
 #support ISO and other possible virtual disk images
 if ($extn -ne ".VHD" -and $extn -ne ".VHDX")
 {
-   if($extn -ne ".ESD")
-   {
-        $name = (Get-Item -Path $Image).BaseName
-         $MountedVhd = Mount-DiskImage -ImagePath $Image -PassThru
-         $drive = (Get-DiskImage -ImagePath $Image | Get-Volume).DriveLetter + ":"
-         dism /Capture-Image /ImageFile:"$wimfile" /CaptureDir:"$drive" /Name:"$name"
-         DisMount-DiskImage -ImagePath $Image | Out-Null
-   }
-   else 
-   {
-      cmd.exe /c "$PSScriptRoot\ESD2WIM.bat" "$Image"
-   }
+   $name = (Get-Item -Path $Image).BaseName
+   $MountedVhd = Mount-DiskImage -ImagePath $Image -PassThru
+   $drive = (Get-DiskImage -ImagePath $Image | Get-Volume).DriveLetter + ":"
+   dism /Capture-Image /ImageFile:"$wimfile" /CaptureDir:"$drive" /Name:"$name"
+   DisMount-DiskImage -ImagePath $Image | Out-Null
    exit
 }
 $MountPath = "C:\Temp\VHD\" # This folder must pre-exist
