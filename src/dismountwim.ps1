@@ -8,10 +8,10 @@ Measure-Command {
   if($_.ImagePath -eq $Image) 
   {
      if($Discard -eq "false") {
-       Dismount-WindowsImage -Commit -Path $_.Path
+       Dismount-WindowsImage -Path $_.Path -Save
      }
      else {
-       Dismount-WindowsImage -Discard -Path $_.Path
+       Dismount-WindowsImage -Path $_.Path -Discard
      }
      $vdiskpath = $_.Path
   }
