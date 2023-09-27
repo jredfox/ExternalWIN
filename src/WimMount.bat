@@ -2,7 +2,14 @@
 setlocal enableDelayedExpansion
 set /p wim=Enter WIM Image to Mount:
 set wim=%wim:"=%
-set vdisk=%wim:.wim=.vhdx%
+call :BaseName "%wim%"
+set mntindex=0
+:NAME
+set vdisk=C:\Temp\Mnt\%basename%-%mntindex%.vhdx
+IF EXIST "%vdisk%" (
+set /A mntindex = %mntindex% + 1
+GOTO NAME
+)
 REM #### CLEANUP ########
 powershell -ExecutionPolicy Bypass -File "%~dp0dismountwim.ps1" "%wim%"
 diskpart /s "%~dp0dvhdx.txt"
@@ -19,7 +26,9 @@ GOTO END
 )
 echo Mounted "%wim%" at index "%%i" to "%let%:\%%i"
 )
-GOTO :END
+
+REM ##### Exit the Script the code below is batch functions
+GOTO END
 
 rem ####Grab the next Drive Letter#####
 :NextDrive
@@ -27,8 +36,12 @@ set let=0
 set "drives=DEFGHIJKLMNOPQRSTUVWXYZABC"
 for /f "delims=:" %%A in ('wmic logicaldisk get caption') do set "drives=!drives:%%A=!"
 set let=%drives:~0,1%
-GOTO EOF
+exit /b
+
+rem #### Get's the filename including the extension
+:BaseName
+set basename=%~n1
+exit /b
 
 :END
 pause
-:EOF
