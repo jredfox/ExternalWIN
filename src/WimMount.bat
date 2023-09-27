@@ -1,5 +1,6 @@
 @Echo off
 setlocal enableDelayedExpansion
+call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 set /p wim=Enter WIM Image to Mount:
 set wim=%wim:"=%
 call :BaseName "%wim%"
@@ -10,11 +11,14 @@ IF EXIST "%vdisk%" (
 set /A mntindex = %mntindex% + 1
 GOTO NAME
 )
-REM #### CLEANUP ########
-powershell -ExecutionPolicy Bypass -File "%~dp0dismountwim.ps1" "%wim%"
-diskpart /s "%~dp0dvhdx.txt"
-del /F "%vdisk%" /s /q /a
-REM #####################
+REM #### ERROR HANDLING ####
+powershell -ExecutionPolicy Bypass -File "%~dp0mountcheck.ps1" -Image "%wim%"
+IF %ERRORLEVEL% NEQ 0 (
+echo ERROR IMAGE File is already Mounted "%wim%"
+echo[
+pause
+exit /b 1
+)
 call :NextDrive
 call %~dp0createvhdx-expand.bat "%vdisk%" "25" "NTFS" "WIM Mount" "%let%"
 for /L %%i in (1, 1, 256) Do (
@@ -45,3 +49,12 @@ exit /b
 
 :END
 pause
+exit /b 0
+
+:checkAdmin
+net session >nul 2>&1
+IF %ERRORLEVEL% NEQ 0 (
+echo %~1
+pause
+exit /b 1
+)

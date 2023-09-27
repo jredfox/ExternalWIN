@@ -1,5 +1,6 @@
 @Echo off
 setlocal enableDelayedExpansion
+call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 REM This Script is Made to Erase and RE-IMAGE Already Installed Paritition of Windows To Repair Boot/Recovery or Full Install Please Use Another Script
 set /p wim=Input WIM/ESD:
 set wim=%wim:"=%
@@ -27,3 +28,12 @@ set let=%drives:~0,1%
 echo Assiging W:\ to %let%:\
 diskpart /s "%~dp0%avl.txt"
 pause
+exit /b 0
+
+:checkAdmin
+net session >nul 2>&1
+IF %ERRORLEVEL% NEQ 0 (
+echo %~1
+pause
+exit /b 1
+)

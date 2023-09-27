@@ -1,5 +1,6 @@
 @ECHO OFF
 setlocal enableDelayedExpansion
+call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 set /p wim=Enter File Name:
 set wim=%wim:"=%
 set /p desc=Enter Description:
@@ -15,3 +16,12 @@ dism /capture-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%ComputerName%
 IF ERRORLEVEL 1 echo ######################### & echo Try Changing "%let%" to "%let:~0,1%:" or "%let:~0,1%" to capture the entire drive. This is a DISM.exe bug not an issue with the script & echo#########################
 echo "SAVED WIM TO: %wim%"
 pause
+exit /b 0
+
+:checkAdmin
+net session >nul 2>&1
+IF %ERRORLEVEL% NEQ 0 (
+echo %~1
+pause
+exit /b 1
+)

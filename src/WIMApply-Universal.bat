@@ -1,5 +1,6 @@
 @Echo off
 setlocal enableDelayedExpansion
+call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 mountvol W: /p
 mountvol S: /p
 mountvol R: /p
@@ -88,3 +89,12 @@ set winpar=%par%
 diskpart /s "%~dp0%reassignW.txt"
 :END
 pause
+exit /b 0
+
+:checkAdmin
+net session >nul 2>&1
+IF %ERRORLEVEL% NEQ 0 (
+echo %~1
+pause
+exit /b 1
+)

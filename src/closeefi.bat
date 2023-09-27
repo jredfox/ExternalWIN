@@ -1,4 +1,5 @@
 @Echo Off
+call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 diskpart /s %~dp0ld.txt
 set /p disk=Input Disk Num:
 diskpart /s %~dp0ListPar.txt
@@ -7,3 +8,12 @@ echo Closing EFI Boot
 mountvol S: /p
 diskpart /s %~dp0%closeboot.txt
 pause
+exit /b 0
+
+:checkAdmin
+net session >nul 2>&1
+IF %ERRORLEVEL% NEQ 0 (
+echo %~1
+pause
+exit /b 1
+)

@@ -1,6 +1,6 @@
 param(
 [Parameter(Mandatory=$true)]
-[string]$DisMount,
+[string]$Image,
 [string]$Discard
 )
 Get-WindowsImage -Mounted | ForEach {

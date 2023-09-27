@@ -1,5 +1,6 @@
 @ECHO OFF
 Setlocal EnableDelayedExpansion
+call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 title ExternalWin VHDX Version RC 1.0.0
 
 rem ############ CLEANUP ##################
@@ -157,3 +158,12 @@ diskpart /s "%~dp0%reassignW.txt"
 echo ####################FINISHED############################
 title %cd%
 pause
+exit /b 0
+
+:checkAdmin
+net session >nul 2>&1
+IF %ERRORLEVEL% NEQ 0 (
+echo %~1
+pause
+exit /b 1
+)
