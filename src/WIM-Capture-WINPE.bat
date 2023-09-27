@@ -23,5 +23,5 @@ net session >nul 2>&1
 IF %ERRORLEVEL% NEQ 0 (
 echo %~1
 pause
-exit /b 1
+exit 1
 )
