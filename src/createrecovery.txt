@@ -1,0 +1,4 @@
+select disk "%disk%"
+create partition primary size=1000
+format quick fs=ntfs label="Recovery"
+assign letter="R"

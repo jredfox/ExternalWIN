@@ -1,6 +1,7 @@
 @Echo Off
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
+call :PP ""
 rem #######Disk Image Selection#########
 title ExternalWin Version RC 1.0.0
 set /p wim=Mount Windows ISO ^& Input ^"Install.esd / Install.wim" located in resources:
@@ -26,8 +27,10 @@ rem #######INIT DISK SETUP############
 rem remove reserved drive letters
 mountvol W: /p
 mountvol S: /p
+mountvol R: /p
 mountvol W: /d
 mountvol S: /d
+mountvol R: /d
 diskpart /s "%~dp0ld.txt"
 set /p disk=Input Disk Number:
 set /p e=ERASE THE DRIVE (clean install) [Y/N]?
@@ -73,20 +76,37 @@ echo ###################################################################
 echo Attempting to create Boot files by running BCDBoot for older Windows
 echo ###################################################################
 W:\Windows\System32\bcdboot W:\Windows /s S:
+IF %ERRORLEVEL% NEQ 0 (echo "Windows 7 and below can't run bcdboot on a GPT partition Try Running AddBootEntry.bat after Installation is Complete")
 )
+
+set /p sid=Stop Windows from Accessing Internal Disks [Y/N]?
+IF /I %sid:~0,1% EQU Y GOTO SIDS
+IF /I %sid:~0,1% NEQ Y GOTO ENDSIDS
+
+:SIDS
+xcopy "%~dp0san_policy.xml" W:\
+dism /Image:W:\ /Apply-Unattend:W:\san_policy.xml
+:ENDSIDS
+
 REM ############ CUSTOM BIOS NAMES #####################################
+:BIOSNAME
 set /p biosname=Enter Bios Name Default is "Windows Boot Manager":
 set biosname=%biosname:"=%
 W:\Windows\System32\bcdedit.exe /store S:\Boot\BCD /set {bootmgr} description "%biosname%"
 W:\Windows\System32\bcdedit.exe /store S:\EFI\Microsoft\Boot\BCD /set {bootmgr} description "%biosname%"
 
-set /p sid=Stop Windows from Accessing Internal Disks [Y/N]?
-IF /I %sid:~0,1% EQU Y GOTO SIDS
-IF /I %sid:~0,1% NEQ Y GOTO POSTINSTALL
-
-:SIDS
-xcopy "%~dp0san_policy.xml" W:\
-dism /Image:W:\ /Apply-Unattend:W:\san_policy.xml
+REM ###### Create & Register Recovery Files ####################
+set /p rp=Do You Want to Create a Recovery Partition [Y\N]?
+IF /I %rp:~0,1% NEQ Y GOTO POSTINSTALL
+diskpart /s "%~dp0createrecovery.txt"
+md R:\Recovery\WindowsRE
+xcopy /h W:\Windows\System32\Recovery\Winre.wim R:\Recovery\WindowsRE\
+W:\Windows\System32\Reagentc /Setreimage /Path R:\Recovery\WindowsRE /Target W:\Windows
+diskpart /s "%~dp0ListPar.txt"
+set /p par=Input Recovery Partition:
+mountvol R: /p
+mountvol R: /d
+diskpart /s "%~dp0closerecovery%dskext%"
 
 rem #######POST INSTALL############
 :POSTINSTALL
@@ -108,6 +128,7 @@ for /f "delims=:" %%A in ('wmic logicaldisk get caption') do set "drives=!drives
 set let=%drives:~0,1%
 echo Assiging W:\ to %let%:\
 diskpart /s "%~dp0%reassignW.txt"
+call :RPP ""
 echo External Installation of Windows Completed :)
 title %cd%
 pause
@@ -120,3 +141,20 @@ echo %~1
 pause
 exit 1
 )
+GOTO EOF
+
+:PP
+REM ######## WinPE support change the power plan to maximize perforamnce #########
+IF EXIST "X:\" (
+FOR /f "delims=" %%a in ('POWERCFG -GETACTIVESCHEME') DO @SET powerplan="%%a"
+powercfg /s 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
+echo changed powerplan of !powerplan! to high performance 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
+GOTO EOF
+)
+
+:RPP
+IF EXIST "X:\" (
+powercfg /s !powerplan!
+GOTO EOF
+)
+:EOF
