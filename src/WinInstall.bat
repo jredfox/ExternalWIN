@@ -1,7 +1,7 @@
 @Echo Off
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
-call :PP ""
+call :PP
 rem #######Disk Image Selection#########
 title ExternalWin Version RC 1.0.0
 set /p wim="Mount Windows ISO & Input (Install.esd / Install.wim) located in resources:"
@@ -128,7 +128,7 @@ for /f "delims=:" %%A in ('wmic logicaldisk get caption') do set "drives=!drives
 set let=%drives:~0,1%
 echo Assiging W:\ to %let%:\
 diskpart /s "%~dp0%reassignW.txt"
-call :RPP ""
+call :RPP
 echo External Installation of Windows Completed :)
 title %cd%
 pause
