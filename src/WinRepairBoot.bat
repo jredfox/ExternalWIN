@@ -3,7 +3,7 @@ setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 :SEL
 diskpart /s "%~dp0ld.txt"
-set /p disk=Input Disk Number:
+set /p disk="Input Disk Number:"
 set /p ISMBR="Is This Disk LEGACY MBR (NO * In GPT Section) [Y/N]?"
 IF /I %ISMBR:~0,1% EQU Y ( 
 set ISMBR=T
@@ -13,7 +13,7 @@ set ISMBR=F
 set ext=.txt
 )
 diskpart /s "%~dp0ListPar.txt"
-set /p par=Input System(BOOT) Partition:
+set /p par="Input System(BOOT) Partition:"
 diskpart /s "%~dp0detpar.txt"
 set /p ays=Are You Sure This is the Correct Partition [Y/N]?
 IF /I %ays:~0,1% NEQ Y GOTO SEL
@@ -25,7 +25,7 @@ diskpart /s "%~dp0openboot%ext%"
 :SELW
 REM Assign Windows Partition to W
 diskpart /s "%~dp0ListPar.txt"
-set /p par=Input Windows Partition:
+set /p par="Input Windows Partition:"
 set winpar=%par%
 diskpart /s "%~dp0detpar.txt"
 set /p ays=Are You Sure This is the Correct Partition [Y/N]?
@@ -33,17 +33,19 @@ IF /I %ays:~0,1% NEQ Y GOTO SELW
 set let=W
 diskpart /s "%~dp0reassignW.txt"
 IF %ERRORLEVEL% NEQ 0 (set /p let="Enter Drive Letter Normally C:")
+set let=%let:"=%
 set let=%let:~0,1%
 
 echo Repairing Boot^.^.^.
-%let%:\Windows\System32\bcdboot %let%:\Windows /f ALL /s S:
-IF %ERRORLEVEL% NEQ 0 (
-echo[
-echo[
-echo ###################################################################
-echo Attempting to create Boot files by running BCDBoot for older Windows
-echo ###################################################################
-%let%:\Windows\System32\bcdboot %let%:\Windows /s S:
+set bootdrive=W
+!bootdrive!:\Windows\System32\bcdboot %let%:\Windows /f ALL /s S:
+IF !ERRORLEVEL! NEQ 0 (
+echo Error Running BCDBOOT Attempting to inject Current Windows Boot Manager into Older Windows
+set /p bootdrive="enter BCDBOOT Drive(Normally C):"
+set bootdrive=!bootdrive:"=!
+set bootdrive=!bootdrive:~0,1!
+!bootdrive!:\Windows\System32\bcdboot %let%:\Windows /f ALL /s S:
+IF !ERRORLEVEL! NEQ 0 (!bootdrive!:\Windows\System32\bcdboot %let%:\Windows /s S:)
 )
 
 REM Close Boot

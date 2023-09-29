@@ -4,13 +4,13 @@ call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order 
 call :PP ""
 rem #######Disk Image Selection#########
 title ExternalWin Version RC 1.0.0
-set /p wim=Mount Windows ISO ^& Input ^"Install.esd / Install.wim" located in resources:
+set /p wim="Mount Windows ISO & Input (Install.esd / Install.wim) located in resources:"
 set wim=%wim:"=%
 dism /get-imageinfo /imagefile:"%wim%"
-set /p index=Input Windows Image Index Number:
-set /p wnum=Input Windows Version Number:
+set /p index="Input Windows Image Index Number:"
+set /p wnum="Input Windows Version Number:"
 set /p legacy=MBR LEGACY Installation [Y/N]?
-set /p cdrive=Input Windows Partition Size in GB:
+set /p cdrive="Input Windows Partition Size in GB:"
 
 rem #######SET VARS####################
 set OSL=Win%wnum%
@@ -32,7 +32,7 @@ mountvol W: /d
 mountvol S: /d
 mountvol R: /d
 diskpart /s "%~dp0ld.txt"
-set /p disk=Input Disk Number:
+set /p disk="Input Disk Number:"
 set /p e=ERASE THE DRIVE (clean install) [Y/N]?
 IF /I %e:~0,1% EQU Y GOTO ERASE
 IF /I %e:~0,1% NEQ Y GOTO PARSEC
@@ -44,7 +44,7 @@ IF /I %mer:~0,1% EQU Y (
 )
 set flag=Y
 IF "%ISMBR%"=="T" (
-  set /p flag=WARNING: MBR DISKS ONLY SUPPORTS 1 ACTIVE BOOT PARTITION. DO YOU WISH TO CONTINUE [Y/N]?
+  set /p flag="WARNING: MBR DISKS ONLY SUPPORTS 1 ACTIVE BOOT PARTITION. DO YOU WISH TO CONTINUE [Y/N]?"
 )
 IF /I %flag:~0,1% NEQ Y GOTO MERGE
 set EFIL=%EFIL%%wnum%
@@ -52,7 +52,7 @@ GOTO PAR
 
 :MERGE
 diskpart /s "%~dp0ListPar.txt"
-set /p syspar=Input Previous Windows Boot Partition:
+set /p syspar="Input Previous Windows Boot Partition:"
 diskpart /s "%~dp0PartitionMerge%dskext%"
 GOTO INSTALL
 
@@ -68,15 +68,15 @@ rem ########Install################
 :INSTALL
 dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:W:\
 echo Creating Boot Files
-W:\Windows\System32\bcdboot W:\Windows /f ALL /s S:
-IF %ERRORLEVEL% NEQ 0 (
-echo[
-echo[
-echo ###################################################################
-echo Attempting to create Boot files by running BCDBoot for older Windows
-echo ###################################################################
-W:\Windows\System32\bcdboot W:\Windows /s S:
-IF %ERRORLEVEL% NEQ 0 (echo "Windows 7 and below can't run bcdboot on a GPT partition Try Running AddBootEntry.bat after Installation is Complete")
+set bootdrive=W
+!bootdrive!:\Windows\System32\bcdboot W:\Windows /f ALL /s S:
+IF !ERRORLEVEL! NEQ 0 (
+echo Error Running BCDBOOT Attempting to inject Current Windows Boot Manager into Older Windows
+set /p bootdrive="enter BCDBOOT Drive(Normally C):"
+set bootdrive=!bootdrive:"=!
+set bootdrive=!bootdrive:~0,1!
+!bootdrive!:\Windows\System32\bcdboot W:\Windows /f ALL /s S:
+IF !ERRORLEVEL! NEQ 0 (!bootdrive!:\Windows\System32\bcdboot W:\Windows /s S:)
 )
 
 set /p sid=Stop Windows from Accessing Internal Disks [Y/N]?
@@ -90,10 +90,10 @@ dism /Image:W:\ /Apply-Unattend:W:\san_policy.xml
 
 REM ############ CUSTOM BIOS NAMES #####################################
 :BIOSNAME
-set /p biosname=Enter Bios Name Default is "Windows Boot Manager":
+set /p biosname="Enter Bios Name Default is Windows Boot Manager:"
 set biosname=%biosname:"=%
-W:\Windows\System32\bcdedit.exe /store S:\Boot\BCD /set {bootmgr} description "%biosname%"
-W:\Windows\System32\bcdedit.exe /store S:\EFI\Microsoft\Boot\BCD /set {bootmgr} description "%biosname%"
+%bootdrive%:\Windows\System32\bcdedit.exe /store S:\Boot\BCD /set {bootmgr} description "%biosname%"
+%bootdrive%:\Windows\System32\bcdedit.exe /store S:\EFI\Microsoft\Boot\BCD /set {bootmgr} description "%biosname%"
 
 REM ###### Create & Register Recovery Files ####################
 set /p rp=Do You Want to Create a Recovery Partition [Y\N]?
@@ -103,7 +103,7 @@ md R:\Recovery\WindowsRE
 xcopy /h W:\Windows\System32\Recovery\Winre.wim R:\Recovery\WindowsRE\
 W:\Windows\System32\Reagentc /Setreimage /Path R:\Recovery\WindowsRE /Target W:\Windows
 diskpart /s "%~dp0ListPar.txt"
-set /p par=Input Recovery Partition:
+set /p par="Input Recovery Partition(1,000 MB Usually):"
 mountvol R: /p
 mountvol R: /d
 diskpart /s "%~dp0closerecovery%dskext%"

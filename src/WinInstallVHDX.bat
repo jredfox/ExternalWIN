@@ -37,11 +37,11 @@ GOTO SETVARS
 
 rem ############# CREATE VHDX #############
 :CREATE
-set /p iso=Input Windows Install.esd / Install.wim:
+set /p iso="Input Windows Install.esd / Install.wim:"
 set iso=%iso:"=%
 dism /get-imageinfo /imagefile:"%iso%"
-set /p index=Input Windows ISO Index:
-set /p vhdsize=Input VHDX Size In GB:
+set /p index="Input Windows ISO Index:"
+set /p vhdsize="Input VHDX Size In GB:"
 diskpart /s "%~dp0createvhdx.txt"
 echo vdisk saved to %vdisk%
 dism /Apply-Image /ImageFile:"%iso%" /index:"%index%" /ApplyDir:V:\
@@ -64,7 +64,7 @@ IF /I %legacy:~0,1% EQU Y (
 
 rem ######### INIT DISK SETUP ###########
 diskpart /s "%~dp0ld.txt"
-set /p disk=Input Disk Number:
+set /p disk="Input Disk Number:"
 set /p e=ERASE THE DRIVE [Y/N]?
 IF /I %e:~0,1% EQU Y ( GOTO ERASE ) else ( GOTO PARSEC )
 
@@ -98,7 +98,7 @@ diskpart /s "%~dp0reassignW.txt"
 GOTO INSTALL
 
 :PAR
-set /p cdrive=Input VDISKS Partition Size in GB:
+set /p cdrive="Input VDISKS Partition Size in GB:"
 echo partitioning the hard drive...
 diskpart /s "%~dp0Partition%dskext%"
 
@@ -106,7 +106,7 @@ diskpart /s "%~dp0Partition%dskext%"
 echo detatching VHDX %vdisk%
 diskpart /s "%~dp0dvhdx.txt"
 :LOOP
-set /p vdiskhome=Enter Windows VHDX File Name:
+set /p vdiskhome="Enter Windows VHDX File Name:"
 set vdiskhome=W:\%vdiskhome%.vhdx
 set vdiskhome=%vdiskhome:.vhdx.vhdx=.vhdx%
 IF EXIST "%vdiskhome%" (
