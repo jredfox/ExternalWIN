@@ -37,7 +37,7 @@ set let=%let:"=%
 set let=%let:~0,1%
 
 echo Repairing Boot^.^.^.
-set bootdrive=W
+set bootdrive=%let%
 !bootdrive!:\Windows\System32\bcdboot %let%:\Windows /f ALL /s S:
 IF !ERRORLEVEL! NEQ 0 (
 echo Error Running BCDBOOT Attempting to inject Current Windows Boot Manager into Older Windows
