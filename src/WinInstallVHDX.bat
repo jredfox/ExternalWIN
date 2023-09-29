@@ -114,7 +114,7 @@ IF EXIST "%vdiskhome%" (
   GOTO LOOP
 )
 echo copying VHDX to it's new home
-xcopy "%vdisk%" "%vdiskhome%*"
+copy "%vdisk%" "%vdiskhome%"
 set vdisk=%vdiskhome%
 diskpart /s "%~dp0avhdx.txt"
 echo Creating Boot Files
