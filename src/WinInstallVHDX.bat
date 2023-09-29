@@ -118,9 +118,9 @@ xcopy "%vdisk%" "%vdiskhome%*"
 set vdisk=%vdiskhome%
 diskpart /s "%~dp0avhdx.txt"
 echo Creating Boot Files
-V:\Windows\System32\bcdboot V:\Windows /f ALL /s S:
 set windrive=V
 set bootdrive=%windrive%
+V:\Windows\System32\bcdboot V:\Windows /f ALL /s S:
 IF !ERRORLEVEL! NEQ 0 (
 echo Error Running BCDBOOT Attempting to inject Current Windows Boot Manager into Older Windows
 set /p bootdrive="enter BCDBOOT Drive(Normally C):"
