@@ -1,4 +1,4 @@
-@Echo Off
+REM @Echo Off
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 call :PP

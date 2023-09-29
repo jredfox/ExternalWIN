@@ -2,7 +2,7 @@ select disk "%disk%"
 select par "%syspar%"
 active
 set id=07 override
-select par "%par%"
+select par "%syspar%"
 assign letter="S"
 create partition primary size="%cdrive%000"
 format quick fs=ntfs label="%OSL%"
