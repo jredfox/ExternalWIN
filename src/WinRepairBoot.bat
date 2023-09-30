@@ -35,6 +35,28 @@ diskpart /s "%~dp0reassignW.txt"
 IF %ERRORLEVEL% NEQ 0 (set /p let="Enter Drive Letter Normally C:")
 set let=%let:"=%
 set let=%let:~0,1%
+REM ########## Start VDISK STUFFS #################
+set searchDirectory=%let%:
+for %%f in ("%searchDirectory%\*.vhd" "%searchDirectory%\*.vhdx") do (
+    set hasVHD=T
+	GOTO ENDLOOP1
+)
+:ENDLOOP1
+IF "!hasVHD!" NEQ "" (set /p vr="Is this a VDISK Repair [Y\N]?")
+IF /I "!vr:~0,1!" EQU "Y" (
+call :PRINTVDISKS
+set /p vdisk=Enter VDISK File:
+)
+IF /I "!vr:~0,1!" EQU "Y" (
+set vdisk=!vdisk:"=!
+echo vdisk is !vdisk!
+mountvol V: /p
+mountvol V: /d
+diskpart /s "%~dp0dvhdx.txt"
+diskpart /s "%~dp0avhdx.txt"
+set let=V
+)
+REM ############## END VDISK STUFFS #############
 
 echo Repairing Boot^.^.^.
 set bootdrive=%let%
@@ -72,4 +94,9 @@ IF %ERRORLEVEL% NEQ 0 (
 echo %~1
 pause
 exit 1
+)
+
+:PRINTVDISKS
+for %%f in ("%searchDirectory%\*.vhd" "%searchDirectory%\*.vhdx") do (
+    echo VDISK: %%f
 )

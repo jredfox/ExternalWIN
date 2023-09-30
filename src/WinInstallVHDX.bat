@@ -6,8 +6,8 @@ title ExternalWin VHDX Version RC 1.0.0
 rem ############ CLEANUP ##################
 IF "%vdisk%"=="" ( GOTO CLEANUP ) else ( GOTO CLEANUP2 )
 :CLEANUP
-md %userprofile%\Documents\VHDXS\%ComputerName%
-set vdisk=%userprofile%\Documents\VHDXS\%ComputerName%\windows.vhdx
+md %userprofile%\Documents\%ComputerName%\VDISKS\
+set vdisk=%userprofile%\Documents\%ComputerName%\VDISKS\windows.vhdx
 diskpart /s "%~dp0dvhdx.txt"
 mountvol W: /p
 mountvol S: /p
@@ -107,6 +107,14 @@ echo detatching VHDX %vdisk%
 diskpart /s "%~dp0dvhdx.txt"
 :LOOP
 set /p vdiskhome="Enter Windows VHDX File Name:"
+ECHO.%vdiskhome% | FIND /I "\">Nul && ( 
+echo VDISK Name Cannot Contain Path Characters
+GOTO LOOP
+)
+ECHO.%vdiskhome% | FIND /I "/">Nul && ( 
+echo VDISK Name Cannot Contain Path Characters
+GOTO LOOP
+)
 set vdiskhome=W:\%vdiskhome%.vhdx
 set vdiskhome=%vdiskhome:.vhdx.vhdx=.vhdx%
 IF EXIST "%vdiskhome%" (

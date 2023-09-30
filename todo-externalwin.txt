@@ -1,5 +1,5 @@
 TODO:
-Fix WinRepairBoot.bat with VHDX files not having the target path of V:\ and not mounting/unmounting them
 Fix MBR System Partitions Getting Drive letters when booted from a different active partition
-Add Boot Entries.bat - add a boot entry like linux or a windows that's installed that is too old or too new to support bcdboot
-Cleanup Boot Entries.bat - removes any boot entries that doesn't exist
+BootAdd.bat - add a boot entry like linux or a windows that's installed that is too old or too new to support bcdboot
+BootCleanup.bat - removes any boot entries that doesn't exist
+BootRemove.bat - remove a boot entry even if it's valid dangerous
