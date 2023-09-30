@@ -158,3 +158,4 @@ IF EXIST "X:\" (
 powercfg /s !powerplan!
 )
 exit /b
+
