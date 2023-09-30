@@ -178,3 +178,4 @@ echo %~1
 pause
 exit 1
 )
+exit /b

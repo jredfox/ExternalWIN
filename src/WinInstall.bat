@@ -38,6 +38,7 @@ IF /I %e:~0,1% EQU Y GOTO ERASE
 IF /I %e:~0,1% NEQ Y GOTO PARSEC
 
 :PARSEC
+set secinstall=T
 set /p mer=Merge Previous Boot Partition [Y/N]?
 IF /I %mer:~0,1% EQU Y (
   GOTO MERGE
@@ -53,15 +54,25 @@ GOTO PAR
 :MERGE
 diskpart /s "%~dp0ListPar.txt"
 set /p syspar="Input Previous Windows Boot Partition:"
+IF "%ISMBR%"=="T" (
+echo disabling active partition^.^.^.
+call "%~dp0disableactivepar.bat"
+)
 diskpart /s "%~dp0PartitionMerge%dskext%"
 GOTO INSTALL
 
 :ERASE
-echo erasing disk %disk%....
+echo erasing disk %disk%^.^.^.^.
 diskpart /s "%~dp0Clean%dskext%"
 
 :PAR
-echo partitioning the hard drive...
+echo partitioning the hard drive^.^.^.
+IF "%secinstall%" NEQ "" (
+IF "%ISMBR%"=="T" (
+echo disabling active partition^.^.^.
+call "%~dp0disableactivepar.bat"
+)
+)
 diskpart /s "%~dp0Partition%dskext%"
 
 rem ########Install################
