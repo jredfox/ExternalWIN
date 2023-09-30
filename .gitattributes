@@ -3,7 +3,7 @@
 
 # Explicitly declare text files you want to always be normalized and converted
 # to native line endings on checkout.
-*.bat text
-*.ps1 text
-*.txt text
-*.cmd text
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+*.txt text eol=crlf
+*.cmd text eol=crlf
