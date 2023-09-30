@@ -75,6 +75,7 @@ GOTO PAR
 
 :PARSEC
 set /p gtp=Is Windows Previously Installed on this Disk [Y/N]?
+IF "%ISMBR%"=="T" ( call "%~dp0disableactivepar.bat" )
 IF /I %gtp:~0,1% NEQ Y GOTO PAR
 set /p cp1=Create System Partition [Y/N]?
 IF /I %cp1:~0,1% EQU Y ( diskpart /s "%~dp0ParSYS%dskext%" )

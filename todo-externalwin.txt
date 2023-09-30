@@ -1,5 +1,4 @@
 TODO:
-finish applying mbr letter fix to install and boot scripts
 BootAdd.bat - add a boot entry like linux or a windows that's installed that is too old or too new to support bcdboot
 BootCleanup.bat - removes any boot entries that doesn't exist
 BootRemove.bat - remove a boot entry even if it's valid dangerous

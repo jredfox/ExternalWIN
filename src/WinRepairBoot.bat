@@ -20,6 +20,7 @@ IF /I %ays:~0,1% NEQ Y GOTO SEL
 
 REM Open Boot and Assign Letter S
 set syspar=%par%
+IF "%ISMBR%"=="T" ( call "%~dp0disableactivepar.bat" )
 diskpart /s "%~dp0openboot%ext%"
 
 :SELW
