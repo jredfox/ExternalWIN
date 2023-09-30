@@ -86,6 +86,7 @@ IF /I %sid:~0,1% NEQ Y GOTO ENDSIDS
 :SIDS
 xcopy "%~dp0san_policy.xml" W:\
 dism /Image:W:\ /Apply-Unattend:W:\san_policy.xml
+
 :ENDSIDS
 
 REM ############ CUSTOM BIOS NAMES #####################################
@@ -128,11 +129,11 @@ for /f "delims=:" %%A in ('wmic logicaldisk get caption') do set "drives=!drives
 set let=%drives:~0,1%
 echo Assiging W:\ to %let%:\
 diskpart /s "%~dp0%reassignW.txt"
-call :RPP
+call :REVPP
 echo External Installation of Windows Completed :)
 title %cd%
 pause
-exit /b 0
+exit /b
 
 :checkAdmin
 net session >nul 2>&1
@@ -141,7 +142,7 @@ echo %~1
 pause
 exit 1
 )
-GOTO EOF
+exit /b
 
 :PP
 REM ######## WinPE support change the power plan to maximize perforamnce #########
@@ -149,12 +150,11 @@ IF EXIST "X:\" (
 FOR /f "delims=" %%a in ('POWERCFG -GETACTIVESCHEME') DO @SET powerplan="%%a"
 powercfg /s 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
 echo changed powerplan of !powerplan! to high performance 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
-GOTO EOF
 )
+exit /b
 
-:RPP
+:REVPP
 IF EXIST "X:\" (
 powercfg /s !powerplan!
-GOTO EOF
 )
-:EOF
+exit /b
