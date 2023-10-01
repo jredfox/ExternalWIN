@@ -9,6 +9,8 @@ set wim=%wim:"=%
 dism /get-imageinfo /imagefile:"%wim%"
 set /p index="Input Windows Image Index Number:"
 set /p wnum="Input Windows Version Number:"
+diskpart /s "%~dp0ld.txt"
+set /p disk="Input Disk Number:"
 set /p legacy=MBR LEGACY Installation [Y/N]?
 set /p sizebase="Input Windows Partition Size in GB:"
 
@@ -37,8 +39,6 @@ mountvol R: /p
 mountvol W: /d
 mountvol S: /d
 mountvol R: /d
-diskpart /s "%~dp0ld.txt"
-set /p disk="Input Disk Number:"
 set /p e=ERASE THE DRIVE (clean install) [Y/N]?
 IF /I %e:~0,1% EQU Y GOTO ERASE
 IF /I %e:~0,1% NEQ Y GOTO PARSEC

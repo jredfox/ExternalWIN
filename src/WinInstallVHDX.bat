@@ -53,6 +53,8 @@ IF /I %con:~0,1% NEQ Y exit /b 0
 
 rem ####### SET VARS ####################
 :SETVARS
+diskpart /s "%~dp0ld.txt"
+set /p disk="Input Disk Number:"
 set /p legacy=MBR LEGACY Installation[Y/N]?
 set fsprime=NTFS
 set labelprime=VDISKS
@@ -69,8 +71,6 @@ IF /I %legacy:~0,1% EQU Y (
 )
 
 rem ######### INIT DISK SETUP ###########
-diskpart /s "%~dp0ld.txt"
-set /p disk="Input Disk Number:"
 set /p e=ERASE THE DRIVE [Y/N]?
 IF /I %e:~0,1% EQU Y ( GOTO ERASE ) else ( GOTO PARSEC )
 
@@ -83,8 +83,9 @@ GOTO PAR
 set /p gtp=Is Windows Previously Installed on this Disk [Y/N]?
 IF "%ISMBR%"=="T" ( call "%~dp0disableactivepar.bat" )
 IF /I %gtp:~0,1% NEQ Y GOTO PAR
-set /p cp1=Create System Partition [Y/N]?
+set /p cp1=Create System Boot Partition [Y/N]?
 IF /I %cp1:~0,1% EQU Y ( diskpart /s "%~dp0ParSYS%dskext%" )
+call "%~dp0CreateMSRPar.bat"
 set /p cp2=Create Windows VDISKS Partition [Y/N]?
 IF /I %cp2:~0,1% EQU Y ( 
 set /p sizeprime="Input VDISKS Partition Size in GB:"
