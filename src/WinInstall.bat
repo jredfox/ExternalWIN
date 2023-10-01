@@ -16,14 +16,7 @@ rem #######SET VARS####################
 set sizeprime=%sizebase%000
 set labelprime=Win%wnum%
 set letprime=W
-:SELFF
-set /p fs="Enter Windows File Format [N=NTFS (DEFAULT), F=FAT32 (USB <= 32GB), X=EXFAT]:"
-set fs=%fs:~0,1%
-IF /I "%fs%" NEQ "F" IF /I "%fs%" NEQ "N" IF /I "%fs%" NEQ "X" (
-echo Invalid File Format "%fs%"
-GOTO SELFF
-)
-IF /I "%fs%" EQU "F" (set fsprime=FAT32) ELSE IF /I "%fs%" EQU "N" (set fsprime=NTFS) ELSE IF /I "%fs%" EQU "X" (set fsprime=EXFAT)
+set fsprime=NTFS
 set sizesys=280
 set letsys=S
 IF /I %legacy:~0,1% EQU Y ( 
