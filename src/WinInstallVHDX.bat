@@ -4,6 +4,8 @@ call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order 
 title ExternalWin VHDX Version RC 1.0.0
 
 rem ############ CLEANUP ##################
+set letvdisk=V
+set labelvhdx=VDISK
 IF "%vdisk%"=="" ( GOTO CLEANUP ) else ( GOTO CLEANUP2 )
 :CLEANUP
 md %userprofile%\Documents\%ComputerName%\VDISKS\
@@ -52,8 +54,12 @@ IF /I %con:~0,1% NEQ Y exit /b 0
 rem ####### SET VARS ####################
 :SETVARS
 set /p legacy=MBR LEGACY Installation[Y/N]?
-set OSL=VDISKS
-set EFIL=BOOTVHDX
+set fsprime=NTFS
+set labelprime=VDISKS
+set letprime=W
+set sizesys=280
+set labelsys=BOOTVHDX
+set letsys=S
 IF /I %legacy:~0,1% EQU Y ( 
   set dskext=-MBR.txt
   set ISMBR=T
@@ -80,7 +86,7 @@ IF /I %gtp:~0,1% NEQ Y GOTO PAR
 set /p cp1=Create System Partition [Y/N]?
 IF /I %cp1:~0,1% EQU Y ( diskpart /s "%~dp0ParSYS%dskext%" )
 set /p cp2=Create Windows VDISKS Partition [Y/N]?
-IF /I %cp2:~0,1% EQU Y ( set /p cdrive="Input VDISKS Partition Size in GB:" )
+IF /I %cp2:~0,1% EQU Y ( set /p sizeprime="Input VDISKS Partition Size in GB:" )
 IF /I %cp2:~0,1% EQU Y ( diskpart /s "%~dp0ParPrime.txt" )
 rem ##### IF We Did not Create System Par or Windows Par then Open System Par and Re-Assign Windows Par to W #####
 IF NOT EXIST S:\ (
@@ -100,7 +106,7 @@ diskpart /s "%~dp0Assign.txt"
 GOTO INSTALL
 
 :PAR
-set /p cdrive="Input VDISKS Partition Size in GB:"
+set /p sizeprime="Input VDISKS Partition Size in GB:"
 echo partitioning the hard drive...
 diskpart /s "%~dp0Partition%dskext%"
 
