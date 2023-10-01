@@ -134,7 +134,7 @@ set recovery=F
 set /p rp=Do You Want to Create a Recovery Partition [Y\N]?
 IF /I %rp:~0,1% NEQ Y GOTO POSTINSTALL
 set recovery=T
-set sizerecovery=1000
+set sizerecovery=1024
 set labelrecovery=Recovery
 set letrecovery=R
 diskpart /s "%~dp0Createrecovery.txt"
@@ -158,7 +158,7 @@ mountvol R: /d
 IF NOT "%ISMBR%"=="T" ( diskpart /s "%~dp0Closeboot%dskext%" )
 set /p par="Input Windows Partition(64+GB Usually):"
 diskpart /s "%~dp0Assign-RND.txt"
-IF %recovery% EQU T (set /p parrecovery="Input Recovery Partition(1,000 MB Usually):")
+IF %recovery% EQU T (set /p parrecovery="Input Recovery Partition(1GB Usually):")
 IF %recovery% EQU T (diskpart /s "%~dp0Closerecovery%dskext%")
 call :REVPP
 echo External Installation of Windows Completed :)
