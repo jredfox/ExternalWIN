@@ -80,7 +80,8 @@ GOTO INSTALL
 
 :ERASE
 echo Erasing the Disk %disk%^.^.^.^.
-call "%~dp0Clean.bat"
+diskpart /s "%~dp0Clean%dskext%"
+pause
 
 :PAR
 echo Partitioning the hard drive^.^.^.
