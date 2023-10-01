@@ -2,4 +2,4 @@ create vdisk file="%vdisk%" maximum="%vhdsize%000" type="%type%"
 attach vdisk
 create partition primary
 format quick fs="%fs%" label="%label%"
-assign letter=%let%
+assign letter="%letvdisk%"

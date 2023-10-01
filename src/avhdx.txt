@@ -1,4 +1,4 @@
 select vdisk file="%vdisk%"
 ATTACH vdisk
 sel par 1
-assign letter=V
+assign letter="%letvdisk%"
