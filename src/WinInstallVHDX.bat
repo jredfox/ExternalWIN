@@ -70,7 +70,7 @@ IF /I %e:~0,1% EQU Y ( GOTO ERASE ) else ( GOTO PARSEC )
 
 :ERASE
 echo erasing disk %disk%....
-call "%~dp0Clean.bat"
+diskpart /s "%~dp0Clean%dskext%"
 GOTO PAR
 
 :PARSEC
