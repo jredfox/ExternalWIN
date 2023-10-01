@@ -1,4 +1,4 @@
 sel disk "%disk%"
-create partition primary size="%cdrive%000"
-format quick fs=ntfs label="%OSL%"
-assign letter="W"
+create partition primary size="%sizeprime%"
+format quick fs="%fsprime%" label="%labelprime%"
+assign letter="%letprime%"

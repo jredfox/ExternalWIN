@@ -3,4 +3,4 @@ select par "%syspar%"
 active
 set id=07 override
 select par "%syspar%"
-assign letter=S
+assign letter="%letsys%"

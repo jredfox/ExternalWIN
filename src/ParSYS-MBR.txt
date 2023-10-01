@@ -1,5 +1,5 @@
 select disk "%disk%"
-create partition primary size=250
+create partition primary size=%sizesys%
 active
-format quick fs=fat32 label="%EFIL%"
-assign letter="S"
+format quick fs=FAT32 label="%labelsys%"
+assign letter="%letsys%"
