@@ -31,7 +31,7 @@ set /p ays=Are You Sure This is the Correct Partition [Y/N]?
 IF /I %ays:~0,1% NEQ Y GOTO SEL
 
 :TYPE
-set /p type="Set Par Type [S/B=Boot, W=Windows, R=Recovery]:"
+set /p type="Set Par Type [S/B=Boot, W=Windows or Storage, R=Recovery]:"
 set type=%type:~0,1%
 IF /I "%type%" EQU "B" set type=S
 IF /I "%type%" NEQ "S" IF /I "%type%" NEQ "W" IF /I "%type%" NEQ "R" (
@@ -53,7 +53,8 @@ diskpart /s "%~dp0openrecovery%ext%"
 
 :SELF
 diskpart /s "%~dp0detpar.txt"
-set /p q2="Input File System Format[F=FAT32(SYSTEM / WIN USB), N=NTFS(Win or Recovery), X=EXFAT(WIN USB)]:"
+REM The reason why we can't assume NTFS or FAT32 for boot is because this is a Universal Script that can apply any WIM image to any partition
+set /p q2="Input File System Format[F=FAT32(SYSTEM BOOT / USB), N=NTFS(Windows), X=EXFAT(USB)]:"
 set q2=%q2:~0,1%
 IF /I "%q2%" NEQ "F" IF /I "%q2%" NEQ "N" IF /I "%q2%" NEQ "X" (
 echo Invalid File Format "%q2%"
