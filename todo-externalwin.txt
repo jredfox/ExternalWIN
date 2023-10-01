@@ -1,5 +1,0 @@
-TODO:
-BootAdd.bat - add a boot entry like linux or a windows that's installed that is too old or too new to support bcdboot
-BootCleanup.bat - removes any boot entries that doesn't exist
-BootRemove.bat - remove a boot entry even if it's valid dangerous
-BootEditName - edit the main LEGACY OR EFI BIOS's display name. Note: you have to boot a few times before it updates sometimes

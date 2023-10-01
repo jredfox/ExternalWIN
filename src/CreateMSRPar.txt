@@ -1,0 +1,2 @@
+select disk %disk%
+create partition msr size=128
