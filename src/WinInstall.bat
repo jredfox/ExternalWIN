@@ -76,8 +76,6 @@ diskpart /s "%~dp0OpenBoot%dskext%"
 call "%~dp0CreateMSRPar.bat"
 echo Creating Windows Partition of %sizeprime% MB
 diskpart /s "%~dp0ParPrime.txt"
-GOTO RECOVERY
-pause
 GOTO INSTALL
 
 :ERASE
@@ -97,7 +95,6 @@ diskpart /s "%~dp0ParSYS%dskext%"
 call "%~dp0CreateMSRPar.bat"
 echo Creating Windows Partition of %sizeprime% MB
 diskpart /s "%~dp0ParPrime.txt"
-GOTO RECOVERY
 
 rem ########Install################
 :INSTALL
@@ -150,7 +147,7 @@ rem #######POST INSTALL############
 diskpart /s "%~dp0ListPar.txt"
 IF NOT "%ISMBR%"=="T" ( 
 IF "%syspar%"=="" (
-    set /p syspar="Input System Partition(250 MB Usually):"
+    set /p syspar="Input System(BOOT) Partition(280 MB Usually):"
   )
 )
 echo Closing Boot

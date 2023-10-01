@@ -21,7 +21,7 @@ IF /I %ays:~0,1% NEQ Y GOTO SEL
 REM Open Boot and Assign Letter S
 set syspar=%par%
 IF "%ISMBR%"=="T" ( call "%~dp0disableactivepar.bat" )
-diskpart /s "%~dp0openboot%ext%"
+diskpart /s "%~dp0Openboot%ext%"
 
 :SELW
 REM Assign Windows Partition to W
@@ -32,7 +32,7 @@ diskpart /s "%~dp0detpar.txt"
 set /p ays=Are You Sure This is the Correct Partition [Y/N]?
 IF /I %ays:~0,1% NEQ Y GOTO SELW
 set let=W
-diskpart /s "%~dp0reassignW.txt"
+diskpart /s "%~dp0Assign.txt"
 IF %ERRORLEVEL% NEQ 0 (set /p let="Enter Drive Letter Normally C:")
 set let=%let:"=%
 set let=%let:~0,1%
@@ -74,15 +74,11 @@ IF !ERRORLEVEL! NEQ 0 (!bootdrive!:\Windows\System32\bcdboot %let%:\Windows /s S
 REM Close Boot
 mountvol S: /p
 mountvol S: /d
-diskpart /s "%~dp0closeboot%ext%"
+diskpart /s "%~dp0Closeboot%ext%"
 rem ####Grab the next Drive Letter#####
 IF %let% EQU C GOTO END
-set let=W
-set "drives=DEFGHIJKLMNOPQRSTUVWXYZABC"
-for /f "delims=:" %%A in ('wmic logicaldisk get caption') do set "drives=!drives:%%A=!"
-set let=%drives:~0,1%
-echo Assiging W:\ to %let%:\
-diskpart /s "%~dp0%reassignW.txt"
+set par=%winpar%
+diskpart /s "%~dp0%Assign-RND.txt"
 :END
 echo Repairing Boot Completed
 title %cd%

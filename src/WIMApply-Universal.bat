@@ -72,21 +72,16 @@ rem ##### POST INSTALL ##############
 IF /I %type% EQU S (
 mountvol S: /p
 mountvol S: /d
-diskpart /s "%~dp0closeboot%ext%"
+diskpart /s "%~dp0Closeboot%ext%"
 GOTO END
 )
 IF /I %type% EQU R (
  mountvol R: /p
  mountvol R: /d
- diskpart /s "%~dp0closerecovery%ext%"
+ diskpart /s "%~dp0Closerecovery%ext%"
  GOTO END
 )
-set let=0
-set "drives=DEFGHIJKLMNOPQRSTUVWXYZABC"
-for /f "delims=:" %%A in ('wmic logicaldisk get caption') do set "drives=!drives:%%A=!"
-set let=%drives:~0,1%
-set winpar=%par%
-diskpart /s "%~dp0%reassignW.txt"
+diskpart /s "%~dp0%Assign-RND.txt"
 :END
 pause
 exit /b 0

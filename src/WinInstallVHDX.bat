@@ -70,7 +70,7 @@ IF /I %e:~0,1% EQU Y ( GOTO ERASE ) else ( GOTO PARSEC )
 
 :ERASE
 echo erasing disk %disk%....
-diskpart /s "%~dp0Clean%dskext%"
+call "%~dp0Clean.bat"
 GOTO PAR
 
 :PARSEC
@@ -87,14 +87,15 @@ IF NOT EXIST S:\ (
 diskpart /s "%~dp0ListPar.txt"
 set /p syspar="Input System Partition(Usually Around 250MB):"
 )
-IF NOT EXIST S:\ ( diskpart /s "%~dp0openboot%dskext%" )
+IF NOT EXIST S:\ ( diskpart /s "%~dp0Openboot%dskext%" )
 IF NOT EXIST W:\ (
 diskpart /s "%~dp0ListPar.txt"
 set /p winpar="Input Windows VDISKS Partition(64GB+):"
 )
 IF NOT EXIST W:\ (
+set par=%winpar%
 set let=W
-diskpart /s "%~dp0reassignW.txt"
+diskpart /s "%~dp0Assign.txt"
 )
 GOTO INSTALL
 
@@ -156,17 +157,13 @@ IF "%syspar%"=="" (
 echo Closing Boot
 mountvol S: /p
 mountvol S: /d
-IF NOT "%ISMBR%"=="T" ( diskpart /s "%~dp0closeboot.txt" )
+IF NOT "%ISMBR%"=="T" ( diskpart /s "%~dp0Closeboot.txt" )
 echo Closing VHDX
 diskpart /s "%~dp0dvhdx.txt"
 rem ####Grab the next Drive Letter & Re-Assign W:\#####
 IF "%winpar%" EQU "" ( set /p winpar="Input Windows(VDISKS) Partition(64+GB Usually):" )
-set let=0
-set "drives=DEFGHIJKLMNOPQRSTUVWXYZABC"
-for /f "delims=:" %%A in ('wmic logicaldisk get caption') do set "drives=!drives:%%A=!"
-set let=%drives:~0,1%
-echo Assiging W:\ to %let%:\
-diskpart /s "%~dp0%reassignW.txt"
+set par=%winpar%
+diskpart /s "%~dp0%Assign-RND.txt"
 echo ####################FINISHED############################
 title %cd%
 pause

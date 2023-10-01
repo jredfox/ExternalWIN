@@ -16,7 +16,7 @@ set dskext=-MBR.txt
 set store=S:\EFI\Microsoft\Boot\BCD
 set dskext=.txt
 )
-diskpart /s "%~dp0openboot%dskext%"
+diskpart /s "%~dp0Openboot%dskext%"
 :SELBOOT
 bcdedit.exe /store "%store%" /enum
 set /p guid="Enter GUID:"
@@ -25,7 +25,7 @@ set guid=%guid:}=%
 bcdedit.exe /store "%store%" /delete "{%guid%}"
 set /p q2=Delete Another Entry [Y/N]?
 IF /I "%q2:~0,1%" EQU "Y" GOTO SELBOOT
-diskpart /s "%~dp0closeboot%dskext%"
+diskpart /s "%~dp0Closeboot%dskext%"
 pause
 exit /b
 
