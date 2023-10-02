@@ -3,7 +3,6 @@ setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 mountvol W: /p
 mountvol S: /p
-mountvol R: /p
 mountvol W: /d
 mountvol S: /d
 mountvol R: /d
@@ -83,7 +82,6 @@ diskpart /s "%~dp0Closeboot%ext%"
 GOTO END
 )
 IF /I %type% EQU R (
- mountvol R: /p
  mountvol R: /d
  diskpart /s "%~dp0Closerecovery%ext%"
  GOTO END
@@ -100,3 +98,4 @@ echo %~1
 pause
 exit 1
 )
+exit /b

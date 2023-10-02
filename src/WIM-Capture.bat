@@ -9,8 +9,8 @@ set /p disk=Input Disk Number:
 diskpart /s "%~dp0dd.txt"
 set /p let=Enter Drive:
 set let=%let:"=%
-md %userprofile%\Documents\%ComputerName%
-set wim=%userprofile%\Documents\%ComputerName%\%wim%.wim
+md %userprofile%\Documents\%ComputerName%\WIMS
+set wim=%userprofile%\Documents\%ComputerName%\WIMS\%wim%.wim
 set wim=%wim:.wim.wim=.wim%
 dism /capture-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%ComputerName%" /Description:"%desc%" /compress:max
 IF ERRORLEVEL 1 echo ######################### & echo Try Changing "%let%" to "%let:~0,1%:" or "%let:~0,1%" to capture the entire drive. This is a DISM.exe bug not an issue with the script & echo#########################

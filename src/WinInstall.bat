@@ -35,7 +35,6 @@ rem #######INIT DISK SETUP############
 rem remove reserved drive letters
 mountvol W: /p
 mountvol S: /p
-mountvol R: /p
 mountvol W: /d
 mountvol S: /d
 mountvol R: /d
@@ -146,7 +145,6 @@ IF "%syspar%"=="" (
 echo Closing Boot
 mountvol S: /p
 mountvol S: /d
-mountvol R: /p
 mountvol R: /d
 IF NOT "%ISMBR%"=="T" ( diskpart /s "%~dp0Closeboot%dskext%" )
 set /p par="Input Windows Partition(64+GB Usually):"
