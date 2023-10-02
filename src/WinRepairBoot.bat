@@ -81,7 +81,10 @@ echo Closing BOOT
 mountvol S: /p
 mountvol S: /d
 diskpart /s "%~dp0Closeboot%ext%"
-rem ####Grab the next Drive Letter#####
+IF "%vdisk%" NEQ "" (
+echo Closing VHDX
+diskpart /s "%~dp0dvhdx.txt"
+)
 IF "%ISCDRIVE%" EQU "T" GOTO END
 set par=%winpar%
 diskpart /s "%~dp0%Assign-RND.txt"
