@@ -11,14 +11,13 @@ IF "%vdisk%"=="" ( GOTO CLEANUP ) else ( GOTO CLEANUP2 )
 md %userprofile%\Documents\%ComputerName%\VDISKS\
 set vdisk=%userprofile%\Documents\%ComputerName%\VDISKS\windows.vhdx
 diskpart /s "%~dp0dvhdx.txt"
-mountvol W: /p
-mountvol S: /p
-mountvol V: /p
-mountvol W: /d
-mountvol S: /d
-mountvol V: /d
-del /f /q /a "%vdisk%"
-cls
+mountvol W: /p >nul
+mountvol S: /p >nul
+mountvol V: /p >nul
+mountvol W: /d >nul
+mountvol S: /d >nul
+mountvol V: /d >nul
+del /f /q /a "%vdisk%" >nul
 IF EXIST "%vdisk%" (
   echo ERR^: Unable to Detach ^& Delete the vdisk during cleanup %vdisk%
   echo ERR^: PLEASE REBOOT YOUR PC Before trying again
@@ -27,13 +26,12 @@ IF EXIST "%vdisk%" (
 )
 GOTO CREATE
 :CLEANUP2
-mountvol W: /p
-mountvol S: /p
-mountvol V: /p
-mountvol W: /d
-mountvol S: /d
-mountvol V: /d
-cls
+mountvol W: /p >nul
+mountvol S: /p >nul
+mountvol V: /p >nul
+mountvol W: /d >nul
+mountvol S: /d >nul
+mountvol V: /d >nul
 echo Custom VDISK Detected: %vdisk%
 GOTO SETVARS
 
@@ -170,8 +168,8 @@ IF "%syspar%"=="" (
   )
 )
 echo Closing Boot
-mountvol S: /p
-mountvol S: /d
+mountvol S: /p >nul
+mountvol S: /d >nul
 IF NOT "%ISMBR%"=="T" ( diskpart /s "%~dp0Closeboot.txt" )
 echo Closing VHDX
 diskpart /s "%~dp0dvhdx.txt"

@@ -31,13 +31,13 @@ set dskext=.txt
 set labelsys=EFIW
 )
 
-rem #######INIT DISK SETUP############
-rem remove reserved drive letters
-mountvol W: /p
-mountvol S: /p
-mountvol W: /d
-mountvol S: /d
-mountvol R: /d
+REM #######INIT DISK SETUP############
+REM remove reserved drive letters
+mountvol W: /p >nul
+mountvol S: /p >nul
+mountvol W: /d >nul
+mountvol S: /d >nul
+mountvol R: /d >nul
 set /p e=ERASE THE DRIVE (clean install) [Y/N]?
 IF /I %e:~0,1% EQU Y GOTO ERASE
 IF /I %e:~0,1% NEQ Y GOTO PARSEC
@@ -111,7 +111,7 @@ IF /I %sid:~0,1% NEQ Y GOTO ENDSIDS
 reg load HKLM\OfflineSystem W:\Windows\System32\Config\SYSTEM
 reg import "%~dp0DisableDiskAccess.reg"
 reg unload HKLM\OfflineSystem
-REM this is the old code that only works for Win10+ and only supported amd64 and x86 not even x64 or ARM64 which is microsoft surface and future devices
+REM this is the old code that only works for Win10+ and only supported AMD64 and x86 or ARM64 which is microsoft surface and future devices. Older Windows 10 doesnt' regonize the arch of AMD64 so errors on that to
 REM xcopy "%~dp0san_policy.xml" W:\
 REM dism /Image:W:\ /Apply-Unattend:W:\san_policy.xml
 :ENDSIDS
@@ -161,9 +161,9 @@ IF "%syspar%"=="" (
   )
 )
 echo Closing Boot
-mountvol S: /p
-mountvol S: /d
-mountvol R: /d
+mountvol S: /p >nul
+mountvol S: /d >nul
+mountvol R: /d >nul
 IF NOT "%ISMBR%"=="T" ( diskpart /s "%~dp0Closeboot%dskext%" )
 set /p par="Input Windows Partition(64+GB Usually):"
 diskpart /s "%~dp0Assign-RND.txt"

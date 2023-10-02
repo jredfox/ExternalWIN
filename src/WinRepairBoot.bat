@@ -19,6 +19,8 @@ set /p ays=Are You Sure This is the Correct Partition [Y/N]?
 IF /I %ays:~0,1% NEQ Y GOTO SEL
 
 REM Open Boot and Assign Letter S
+mountvol S: /p >nul
+mountvol S: /d >nul
 set syspar=%par%
 set letsys=S
 set letvdisk=V
@@ -56,8 +58,8 @@ set vdisk=!vdisk:"=!
 )
 IF /I "!vr:~0,1!" EQU "Y" (
 echo vdisk is !vdisk!
-mountvol V: /p
-mountvol V: /d
+mountvol V: /p >nul
+mountvol V: /d >nul
 diskpart /s "%~dp0dvhdx.txt"
 diskpart /s "%~dp0avhdx.txt"
 set let=V
@@ -78,8 +80,8 @@ IF !ERRORLEVEL! NEQ 0 (!bootdrive!:\Windows\System32\bcdboot %let%:\Windows /s S
 
 REM Close Boot
 echo Closing BOOT
-mountvol S: /p
-mountvol S: /d
+mountvol S: /p >nul
+mountvol S: /d >nul
 diskpart /s "%~dp0Closeboot%ext%"
 IF "%vdisk%" NEQ "" (
 echo Closing VHDX

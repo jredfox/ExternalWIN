@@ -1,12 +1,11 @@
 @Echo off
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
-mountvol W: /p
-mountvol S: /p
-mountvol W: /d
-mountvol S: /d
-mountvol R: /d
-cls
+mountvol W: /p >nul
+mountvol S: /p >nul
+mountvol W: /d >nul
+mountvol S: /d >nul
+mountvol R: /d >nul
 set /p wim=Input WIM/ESD:
 set wim=%wim:"=%
 dism /get-imageinfo /imagefile:"%wim%"
@@ -76,13 +75,13 @@ dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:%let%:\
 
 rem ##### POST INSTALL ##############
 IF /I %type% EQU S (
-mountvol S: /p
-mountvol S: /d
+mountvol S: /p >nul
+mountvol S: /d >nul
 diskpart /s "%~dp0Closeboot%ext%"
 GOTO END
 )
 IF /I %type% EQU R (
- mountvol R: /d
+ mountvol R: /d >nul
  diskpart /s "%~dp0Closerecovery%ext%"
  GOTO END
 )
