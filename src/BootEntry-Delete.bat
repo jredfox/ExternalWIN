@@ -4,6 +4,7 @@ call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order 
 mountvol S: /p
 mountvol S: /d
 cls
+set letsys=S
 diskpart /s "%~dp0ld.txt"
 set /p disk="Input Disk Number:"
 diskpart /s "%~dp0ListPar.txt"

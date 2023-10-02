@@ -1,6 +1,9 @@
 @Echo off
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
+set letsys=S
+diskpart /s %~dp0ld.txt
 set /p disk=Enter disk:
+diskpart /s %~dp0ListPar.txt
 set /p syspar=Enter Par:
 diskpart /s "%~dp0Openboot-MBR.txt"
 

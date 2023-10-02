@@ -54,8 +54,8 @@ diskpart /s "%~dp0Openrecovery%ext%"
 
 :SELF
 diskpart /s "%~dp0detpar.txt"
-REM The reason why we can't assume NTFS or FAT32 for boot is because this is a Universal Script that can apply any WIM image to any partition
-set /p q2="Input File System Format[F=FAT32(SYSTEM BOOT / USB), N=NTFS(Windows), X=EXFAT(USB)]:"
+REM The reason why we can't assume NTFS or FAT32 for boot/windows is because this is a Universal Script that can apply any WIM image to any partition
+set /p q2="Input File System Format[F=FAT32(SYSTEM BOOT / USB), N=NTFS(Windows or Storage), X=EXFAT(USB)]:"
 set q2=%q2:~0,1%
 IF /I "%q2%" NEQ "F" IF /I "%q2%" NEQ "N" IF /I "%q2%" NEQ "X" (
 echo Invalid File Format "%q2%"
