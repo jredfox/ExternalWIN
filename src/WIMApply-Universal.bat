@@ -38,15 +38,18 @@ IF /I "%type%" NEQ "S" IF /I "%type%" NEQ "W" IF /I "%type%" NEQ "R" (
 echo INVALID TYPE "%type%"
 GOTO TYPE
 )
-IF /I %type% EQU S (
-set syspar=%par%
+REM TODO THIS IS ALL FUCKED HERE
+IF /I !type! EQU S (
+set syspar=!par!
 set let=S
-diskpart /s "%~dp0Openboot%ext%"
+set letsys=!let!
+diskpart /s "%~dp0Openboot!ext!"
 ) ELSE (
-IF /I %type% EQU R (
+IF /I !type! EQU R (
 set let=R
-set parrecovery=%par%
-diskpart /s "%~dp0Openrecovery%ext%"
+set letrecovery=!let!
+set parrecovery=!par!
+diskpart /s "%~dp0Openrecovery!ext!"
 ) ELSE (
     set let=W
   )
