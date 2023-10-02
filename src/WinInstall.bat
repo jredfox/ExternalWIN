@@ -108,9 +108,12 @@ IF /I %sid:~0,1% EQU Y GOTO SIDS
 IF /I %sid:~0,1% NEQ Y GOTO ENDSIDS
 
 :SIDS
-xcopy "%~dp0san_policy.xml" W:\
-dism /Image:W:\ /Apply-Unattend:W:\san_policy.xml
-REM Stops windows from accessing internal disks
+reg load HKLM\OfflineSystem W:\Windows\System32\Config\SYSTEM
+reg import "%~dp0DisableDiskAccess.reg"
+reg unload HKLM\OfflineSystem
+REM this is the old code that only works for Win10+ and only supported amd64 and x86 not even x64 or ARM64 which is microsoft surface and future devices
+REM xcopy "%~dp0san_policy.xml" W:\
+REM dism /Image:W:\ /Apply-Unattend:W:\san_policy.xml
 :ENDSIDS
 
 REM ############ CUSTOM BIOS NAMES #####################################
@@ -124,7 +127,7 @@ REM ###### Create & Register Recovery Files ####################
 :RECOVERY
 set recovery=F
 set /p rp=Do You Want to Create a Recovery Partition [Y\N]?
-IF /I %rp:~0,1% NEQ Y GOTO POSTINSTALL
+IF /I %rp:~0,1% NEQ Y GOTO ENDRECOVERY
 set recovery=T
 set sizerecovery=1024
 set labelrecovery=Recovery
@@ -133,6 +136,21 @@ diskpart /s "%~dp0Createrecovery.txt"
 md R:\Recovery\WindowsRE
 xcopy /h W:\Windows\System32\Recovery\Winre.wim R:\Recovery\WindowsRE\
 W:\Windows\System32\Reagentc /Setreimage /Path R:\Recovery\WindowsRE /Target W:\Windows
+:ENDRECOVERY
+
+REM ########## BACKUP SYSTEM BOOT, REGISTRY #####################
+set backupdir=W:\ExternalWIN\Backups
+set rbackupdir=R:\ExternalWIN\Backups
+md "%backupdir%"
+set bootfile=%backupdir%\boot.wim
+set name=Boot of Windows %wnum%
+echo Backuping Up Boot to %bootfile%
+dism /capture-image /imagefile:"%bootfile%" /capturedir:"S:" /name:"%name%" /Description:"%name%" /compress:max
+IF EXIST "R:\" (
+md "%rbackupdir%"
+copy "%bootfile%" "%rbackupdir%\boot.wim"
+)
+REM echo Backing up Registry
 
 rem #######POST INSTALL############
 :POSTINSTALL
