@@ -1,4 +1,4 @@
 TODO:
--WinInstallVHDX.bat
--WinRepairBoot.bat
--look at all other batch files
+- finish debugging WIMApply-Universal.bat
+- look into if boot entries could be added again using harddisk instead of volume
+- re-test everything again
