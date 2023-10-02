@@ -4,7 +4,7 @@ diskpart /s %~dp0ld.txt
 set /p disk=Enter Disk:
 diskpart /s %~dp0ListPar.txt
 set /p syspar=Enter Par:
-diskpart /s "%~dp0openboot.txt"
+diskpart /s "%~dp0Openboot.txt"
 pause
 exit /b 0
 

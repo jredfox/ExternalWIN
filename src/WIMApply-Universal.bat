@@ -41,11 +41,12 @@ GOTO TYPE
 IF /I %type% EQU S (
 set syspar=%par%
 set let=S
-diskpart /s "%~dp0openboot%ext%"
+diskpart /s "%~dp0Openboot%ext%"
 ) ELSE (
 IF /I %type% EQU R (
 set let=R
-diskpart /s "%~dp0openrecovery%ext%"
+set parrecovery=%par%
+diskpart /s "%~dp0Openrecovery%ext%"
 ) ELSE (
     set let=W
   )
