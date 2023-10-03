@@ -103,6 +103,11 @@ set bootdrive=!bootdrive:~0,1!
 IF !ERRORLEVEL! NEQ 0 (!bootdrive!:\Windows\System32\bcdboot W:\Windows /s S:)
 )
 
+REM ############## STOP WINDOWS 10 & 11 From Requiring the Internet
+reg load HKLM\OfflineSOFTWARE W:\Windows\System32\Config\SOFTWARE
+reg add HKLM\OfflineSOFTWARE\Microsoft\Windows\CurrentVersion\OOBE /v BypassNRO /t REG_DWORD /d 1 /f
+reg unload HKLM\OfflineSOFTWARE
+
 set /p sid=Stop Windows from Accessing Internal Disks [Y/N]?
 IF /I %sid:~0,1% EQU Y GOTO SIDS
 IF /I %sid:~0,1% NEQ Y GOTO ENDSIDS
