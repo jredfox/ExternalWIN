@@ -138,7 +138,7 @@ xcopy /h W:\Windows\System32\Recovery\Winre.wim R:\Recovery\WindowsRE\
 W:\Windows\System32\Reagentc /Setreimage /Path R:\Recovery\WindowsRE /Target W:\Windows
 :ENDRECOVERY
 
-REM ########## BACKUP SYSTEM BOOT, REGISTRY #####################
+REM ########## BACKUP SYSTEM BOOT #####################
 set backupdir=W:\ExternalWIN\Backups
 set rbackupdir=R:\ExternalWIN\Backups
 md "%backupdir%"
@@ -150,7 +150,7 @@ IF EXIST "R:\" (
 md "%rbackupdir%"
 copy "%bootfile%" "%rbackupdir%\boot.wim"
 )
-REM echo Backing up Registry
+echo It's Recommended to use REG-Backup.bat for your new Windows Installation as well as Wim-Capture.bat to backup your Windows Partition
 
 rem #######POST INSTALL############
 :POSTINSTALL
