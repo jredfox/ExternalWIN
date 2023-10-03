@@ -104,6 +104,7 @@ IF !ERRORLEVEL! NEQ 0 (!bootdrive!:\Windows\System32\bcdboot W:\Windows /s S:)
 )
 
 REM ############## STOP WINDOWS 10 & 11 From Requiring the Internet
+echo OOBE Bypass NRO. Out of Box Experience Bypassing Network Requirement Option
 reg load HKLM\OfflineSOFTWARE W:\Windows\System32\Config\SOFTWARE
 reg add HKLM\OfflineSOFTWARE\Microsoft\Windows\CurrentVersion\OOBE /v BypassNRO /t REG_DWORD /d 1 /f
 reg unload HKLM\OfflineSOFTWARE
