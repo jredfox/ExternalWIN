@@ -6,8 +6,8 @@ set /p wim=Input WIM/ESD:
 set wim=%wim:"=%
 dism /get-imageinfo /imagefile:"%wim%"
 set /p index=Input Index:
-mountvol W: /p
-mountvol W: /d
+mountvol W: /p >nul
+mountvol W: /d >nul
 :SEL
 diskpart /s "%~dp0ld.txt"
 set /p disk=Input Disk Number:
@@ -21,12 +21,7 @@ set /p label1=Input Volume Name of %volume%^:
 diskpart /s "%~dp0formatvol.txt"
 dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:W:\
 REM ##### RE-ASSING W:\ #############
-set let=0
-set "drives=DEFGHIJKLMNOPQRSTUVWXYZABC"
-for /f "delims=:" %%A in ('wmic logicaldisk get caption') do set "drives=!drives:%%A=!"
-set let=%drives:~0,1%
-echo Assiging W:\ to %let%:\
-diskpart /s "%~dp0%avl.txt"
+diskpart /s "%~dp0%AssignVol-RND.txt"
 pause
 exit /b 0
 

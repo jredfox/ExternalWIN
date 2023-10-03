@@ -1,2 +1,2 @@
-select disk %disk%
+sel disk "%disk%"
 create partition msr size=128

@@ -28,5 +28,5 @@ for /l %%i in (1, 1, %PartitionCount%) do (
 :END
 IF "!found!" NEQ "T" (
 echo Creating MSR Partition as it wasn't found
-diskpart /s "%~dp0CreateMSRPar.txt"
+diskpart /s "%~dp0ParMSR.txt"
 )

@@ -1,5 +1,5 @@
 select disk "%disk%"
-select par "%par%"
+select par "%parrecovery%"
 set id=07 override
-select par "%par%"
-assign letter=R
+select par "%parrecovery%"
+assign letter="%letrecovery%"

@@ -4,19 +4,20 @@ call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order 
 title ExternalWin VHDX Version RC 1.0.0
 
 rem ############ CLEANUP ##################
+set letvdisk=V
+set labelvhdx=VDISK
 IF "%vdisk%"=="" ( GOTO CLEANUP ) else ( GOTO CLEANUP2 )
 :CLEANUP
 md %userprofile%\Documents\%ComputerName%\VDISKS\
 set vdisk=%userprofile%\Documents\%ComputerName%\VDISKS\windows.vhdx
 diskpart /s "%~dp0dvhdx.txt"
-mountvol W: /p
-mountvol S: /p
-mountvol V: /p
-mountvol W: /d
-mountvol S: /d
-mountvol V: /d
-del /f /q /a "%vdisk%"
-cls
+mountvol W: /p >nul
+mountvol S: /p >nul
+mountvol V: /p >nul
+mountvol W: /d >nul
+mountvol S: /d >nul
+mountvol V: /d >nul
+del /f /q /a "%vdisk%" >nul
 IF EXIST "%vdisk%" (
   echo ERR^: Unable to Detach ^& Delete the vdisk during cleanup %vdisk%
   echo ERR^: PLEASE REBOOT YOUR PC Before trying again
@@ -25,13 +26,12 @@ IF EXIST "%vdisk%" (
 )
 GOTO CREATE
 :CLEANUP2
-mountvol W: /p
-mountvol S: /p
-mountvol V: /p
-mountvol W: /d
-mountvol S: /d
-mountvol V: /d
-cls
+mountvol W: /p >nul
+mountvol S: /p >nul
+mountvol V: /p >nul
+mountvol W: /d >nul
+mountvol S: /d >nul
+mountvol V: /d >nul
 echo Custom VDISK Detected: %vdisk%
 GOTO SETVARS
 
@@ -51,9 +51,15 @@ IF /I %con:~0,1% NEQ Y exit /b 0
 
 rem ####### SET VARS ####################
 :SETVARS
+diskpart /s "%~dp0ld.txt"
+set /p disk="Input Disk Number:"
 set /p legacy=MBR LEGACY Installation[Y/N]?
-set OSL=VDISKS
-set EFIL=BOOTVHDX
+set fsprime=NTFS
+set labelprime=VDISKS
+set letprime=W
+set sizesys=280
+set labelsys=BOOTVHDX
+set letsys=S
 IF /I %legacy:~0,1% EQU Y ( 
   set dskext=-MBR.txt
   set ISMBR=T
@@ -63,8 +69,6 @@ IF /I %legacy:~0,1% EQU Y (
 )
 
 rem ######### INIT DISK SETUP ###########
-diskpart /s "%~dp0ld.txt"
-set /p disk="Input Disk Number:"
 set /p e=ERASE THE DRIVE [Y/N]?
 IF /I %e:~0,1% EQU Y ( GOTO ERASE ) else ( GOTO PARSEC )
 
@@ -77,31 +81,41 @@ GOTO PAR
 set /p gtp=Is Windows Previously Installed on this Disk [Y/N]?
 IF "%ISMBR%"=="T" ( call "%~dp0disableactivepar.bat" )
 IF /I %gtp:~0,1% NEQ Y GOTO PAR
-set /p cp1=Create System Partition [Y/N]?
+set /p cp1=Create System Boot Partition [Y/N]?
 IF /I %cp1:~0,1% EQU Y ( diskpart /s "%~dp0ParSYS%dskext%" )
+call "%~dp0CreateMSRPar.bat"
 set /p cp2=Create Windows VDISKS Partition [Y/N]?
-IF /I %cp2:~0,1% EQU Y ( set /p cdrive="Input VDISKS Partition Size in GB:" )
+IF /I %cp2:~0,1% EQU Y ( 
+set /p sizeprime="Input VDISKS Partition Size in GB:"
+set sizeprime=!sizeprime!000
+)
 IF /I %cp2:~0,1% EQU Y ( diskpart /s "%~dp0ParPrime.txt" )
 rem ##### IF We Did not Create System Par or Windows Par then Open System Par and Re-Assign Windows Par to W #####
 IF NOT EXIST S:\ (
 diskpart /s "%~dp0ListPar.txt"
-set /p syspar="Input System Partition(Usually Around 250MB):"
+set /p syspar="Input System Partition(Usually Around 280MB):"
 )
-IF NOT EXIST S:\ ( diskpart /s "%~dp0openboot%dskext%" )
+IF NOT EXIST S:\ ( diskpart /s "%~dp0Openboot%dskext%" )
 IF NOT EXIST W:\ (
 diskpart /s "%~dp0ListPar.txt"
 set /p winpar="Input Windows VDISKS Partition(64GB+):"
 )
 IF NOT EXIST W:\ (
+set par=%winpar%
 set let=W
-diskpart /s "%~dp0reassignW.txt"
+diskpart /s "%~dp0Assign.txt"
 )
 GOTO INSTALL
 
 :PAR
-set /p cdrive="Input VDISKS Partition Size in GB:"
+set /p sizeprime="Input VDISKS Partition Size in GB:"
+set sizeprime=%sizeprime%000
 echo partitioning the hard drive...
-diskpart /s "%~dp0Partition%dskext%"
+echo Creating System Boot Partition
+diskpart /s "%~dp0ParSYS%dskext%"
+call "%~dp0CreateMSRPar.bat"
+echo Creating Windows Partition of %sizeprime% MB
+diskpart /s "%~dp0ParPrime.txt"
 
 :INSTALL
 echo detatching VHDX %vdisk%
@@ -150,23 +164,19 @@ dism /Image:V:\ /Apply-Unattend:V:\san_policy.xml
 diskpart /s "%~dp0ListPar.txt"
 IF NOT "%ISMBR%"=="T" ( 
 IF "%syspar%"=="" (
-    set /p syspar="Input System Partition(250 MB Usually):"
+    set /p syspar="Input System Partition(280 MB Usually):"
   )
 )
 echo Closing Boot
-mountvol S: /p
-mountvol S: /d
-IF NOT "%ISMBR%"=="T" ( diskpart /s "%~dp0closeboot.txt" )
+mountvol S: /p >nul
+mountvol S: /d >nul
+IF NOT "%ISMBR%"=="T" ( diskpart /s "%~dp0Closeboot.txt" )
 echo Closing VHDX
 diskpart /s "%~dp0dvhdx.txt"
 rem ####Grab the next Drive Letter & Re-Assign W:\#####
 IF "%winpar%" EQU "" ( set /p winpar="Input Windows(VDISKS) Partition(64+GB Usually):" )
-set let=0
-set "drives=DEFGHIJKLMNOPQRSTUVWXYZABC"
-for /f "delims=:" %%A in ('wmic logicaldisk get caption') do set "drives=!drives:%%A=!"
-set let=%drives:~0,1%
-echo Assiging W:\ to %let%:\
-diskpart /s "%~dp0%reassignW.txt"
+set par=%winpar%
+diskpart /s "%~dp0%Assign-RND.txt"
 echo ####################FINISHED############################
 title %cd%
 pause

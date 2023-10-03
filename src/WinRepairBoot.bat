@@ -19,21 +19,28 @@ set /p ays=Are You Sure This is the Correct Partition [Y/N]?
 IF /I %ays:~0,1% NEQ Y GOTO SEL
 
 REM Open Boot and Assign Letter S
+mountvol S: /p >nul
+mountvol S: /d >nul
 set syspar=%par%
+set letsys=S
+set letvdisk=V
 IF "%ISMBR%"=="T" ( call "%~dp0disableactivepar.bat" )
-diskpart /s "%~dp0openboot%ext%"
+diskpart /s "%~dp0Openboot%ext%"
 
 :SELW
 REM Assign Windows Partition to W
 diskpart /s "%~dp0ListPar.txt"
 set /p par="Input Windows Partition:"
-set winpar=%par%
 diskpart /s "%~dp0detpar.txt"
 set /p ays=Are You Sure This is the Correct Partition [Y/N]?
 IF /I %ays:~0,1% NEQ Y GOTO SELW
 set let=W
-diskpart /s "%~dp0reassignW.txt"
-IF %ERRORLEVEL% NEQ 0 (set /p let="Enter Drive Letter Normally C:")
+set winpar=%par%
+diskpart /s "%~dp0Assign.txt"
+IF %ERRORLEVEL% NEQ 0 (
+set ISCDRIVE=T
+set /p let="Enter Drive Letter Normally C:"
+)
 set let=%let:"=%
 set let=%let:~0,1%
 REM ########## Start VDISK STUFFS #################
@@ -47,12 +54,12 @@ IF "!hasVHD!" NEQ "" (set /p vr="Is this a VDISK Repair [Y\N]?")
 IF /I "!vr:~0,1!" EQU "Y" (
 call :PRINTVDISKS
 set /p vdisk=Enter VDISK File:
+set vdisk=!vdisk:"=!
 )
 IF /I "!vr:~0,1!" EQU "Y" (
-set vdisk=!vdisk:"=!
 echo vdisk is !vdisk!
-mountvol V: /p
-mountvol V: /d
+mountvol V: /p >nul
+mountvol V: /d >nul
 diskpart /s "%~dp0dvhdx.txt"
 diskpart /s "%~dp0avhdx.txt"
 set let=V
@@ -72,17 +79,17 @@ IF !ERRORLEVEL! NEQ 0 (!bootdrive!:\Windows\System32\bcdboot %let%:\Windows /s S
 )
 
 REM Close Boot
-mountvol S: /p
-mountvol S: /d
-diskpart /s "%~dp0closeboot%ext%"
-rem ####Grab the next Drive Letter#####
-IF %let% EQU C GOTO END
-set let=W
-set "drives=DEFGHIJKLMNOPQRSTUVWXYZABC"
-for /f "delims=:" %%A in ('wmic logicaldisk get caption') do set "drives=!drives:%%A=!"
-set let=%drives:~0,1%
-echo Assiging W:\ to %let%:\
-diskpart /s "%~dp0%reassignW.txt"
+echo Closing BOOT
+mountvol S: /p >nul
+mountvol S: /d >nul
+diskpart /s "%~dp0Closeboot%ext%"
+IF "%vdisk%" NEQ "" (
+echo Closing VHDX
+diskpart /s "%~dp0dvhdx.txt"
+)
+IF "%ISCDRIVE%" EQU "T" GOTO END
+set par=%winpar%
+diskpart /s "%~dp0%Assign-RND.txt"
 :END
 echo Repairing Boot Completed
 title %cd%

@@ -1,5 +1,5 @@
 create vdisk file="%vdisk%" maximum="%vhdsize%000" type=fixed
 attach vdisk
 create partition primary
-format quick label=vhdx
-assign letter=V
+format quick label="%labelvhdx%"
+assign letter="%letvdisk%"

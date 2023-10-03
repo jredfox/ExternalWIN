@@ -1,13 +1,11 @@
 @Echo off
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
-mountvol W: /p
-mountvol S: /p
-mountvol R: /p
-mountvol W: /d
-mountvol S: /d
-mountvol R: /d
-cls
+mountvol W: /p >nul
+mountvol S: /p >nul
+mountvol W: /d >nul
+mountvol S: /d >nul
+mountvol R: /d >nul
 set /p wim=Input WIM/ESD:
 set wim=%wim:"=%
 dism /get-imageinfo /imagefile:"%wim%"
@@ -31,29 +29,36 @@ set /p ays=Are You Sure This is the Correct Partition [Y/N]?
 IF /I %ays:~0,1% NEQ Y GOTO SEL
 
 :TYPE
-set /p type="Set Par Type [S/B=Boot, W=Windows, R=Recovery]:"
+set /p type="Set Par Type [S/B=Boot, W=Windows or Storage, R=Recovery]:"
 set type=%type:~0,1%
 IF /I "%type%" EQU "B" set type=S
 IF /I "%type%" NEQ "S" IF /I "%type%" NEQ "W" IF /I "%type%" NEQ "R" (
 echo INVALID TYPE "%type%"
 GOTO TYPE
 )
-IF /I %type% EQU S (
-set syspar=%par%
+REM ##### OPEN BOOT / RECOVERY & ASSIGN VARS ##############
+IF /I !type! EQU S (
 set let=S
-diskpart /s "%~dp0openboot%ext%"
-) ELSE (
-IF /I %type% EQU R (
+set letsys=!let!
+set syspar=!par!
+)
+IF /I !type! EQU S (diskpart /s "%~dp0Openboot!ext!")
+
+IF /I !type! EQU R (
 set let=R
-diskpart /s "%~dp0openrecovery%ext%"
-) ELSE (
-    set let=W
-  )
+set letrecovery=!let!
+set parrecovery=!par!
+)
+IF /I !type! EQU R (diskpart /s "%~dp0Openrecovery!ext!")
+
+IF /I !type! EQU W (
+set let=W
 )
 
 :SELF
 diskpart /s "%~dp0detpar.txt"
-set /p q2="Input File System Format[F=FAT32(SYSTEM / WIN USB), N=NTFS(Win or Recovery), X=EXFAT(WIN USB)]:"
+REM The reason why we can't assume NTFS or FAT32 for boot/windows is because this is a Universal Script that can apply any WIM image to any partition
+set /p q2="Input File System Format[F=FAT32(SYSTEM BOOT / USB), N=NTFS(Windows or Storage), X=EXFAT(USB)]:"
 set q2=%q2:~0,1%
 IF /I "%q2%" NEQ "F" IF /I "%q2%" NEQ "N" IF /I "%q2%" NEQ "X" (
 echo Invalid File Format "%q2%"
@@ -70,23 +75,17 @@ dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:%let%:\
 
 rem ##### POST INSTALL ##############
 IF /I %type% EQU S (
-mountvol S: /p
-mountvol S: /d
-diskpart /s "%~dp0closeboot%ext%"
+mountvol S: /p >nul
+mountvol S: /d >nul
+diskpart /s "%~dp0Closeboot%ext%"
 GOTO END
 )
 IF /I %type% EQU R (
- mountvol R: /p
- mountvol R: /d
- diskpart /s "%~dp0closerecovery%ext%"
+ mountvol R: /d >nul
+ diskpart /s "%~dp0Closerecovery%ext%"
  GOTO END
 )
-set let=0
-set "drives=DEFGHIJKLMNOPQRSTUVWXYZABC"
-for /f "delims=:" %%A in ('wmic logicaldisk get caption') do set "drives=!drives:%%A=!"
-set let=%drives:~0,1%
-set winpar=%par%
-diskpart /s "%~dp0%reassignW.txt"
+diskpart /s "%~dp0%Assign-RND.txt"
 :END
 pause
 exit /b 0
@@ -98,3 +97,4 @@ echo %~1
 pause
 exit 1
 )
+exit /b
