@@ -2,5 +2,6 @@ select disk "%disk%"
 clean
 sel disk "%disk%"
 convert gpt
+sel disk "%disk%"
 sel par 1
 delete par override

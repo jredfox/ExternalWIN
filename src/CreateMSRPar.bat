@@ -1,5 +1,9 @@
 @Echo Off
 setlocal enabledelayedexpansion
+IF "%ISMBR%" EQU "T" (
+exit /b
+)
+
 REM GPT Disks supports 128 partitions and the for loop starts at 1 and goes to 128
 set PartitionCount=128
 
