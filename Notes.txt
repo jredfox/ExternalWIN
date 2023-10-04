@@ -1,0 +1,20 @@
+NOTES
+__________________
+
+- You MUST RUN these scripts on WINDOWS 10 and above Even if your installing something older then Windows 10. The commands for DISM and others didn't exist or didn't contain all the options required. 
+- If you don't have a windows 10 Installed run these scripts in Windows 10 Installation Media (WinPE) USB.
+- You Must have Unallocated space in order to install Windows on any disk If your not Erasing it. It will not shrink or overwrite a partition in order to make space for the installation
+- Factory Reset(Recovery Partition) Doesn't work for MBR LEGACY Disks on an External Hard Drive or USB but will work on an Internal Hard drive
+- You cannot capture an internal hard drive as a WIM and install it to an External hard drive (May be able to by messing with the registry but I haven't been able to get it to work)
+- Windows 7 and below cannot be installed to an external harddrive without generic Intel or AMD USB 3.0 or above drivers. It will crash even in safemode
+- Windows 7 Even if installed on an externally will always have the Internal Disk Access as San Policy value of 4 didn't exist in windows 7 and below Be aware
+- Windows 8-8.1 cannot be installed to a USB flash drive but can be installed to an external Harddrive(crashes)
+- Windows 11 CAN be installed on an MBR LEGACY Disk without a TPM or Secure Boot being enabled (unsupported hardware). As my install doesn't check for these thing
+- Windows XP & Vista are untested. XP doesn't have a WIM file so unless you can install it to a fresh drive and Capture it as a WIM before booting it you couldn't install it anyways
+__________________
+
+Dictionary
+__________________
+Harddrive: HDD / SDD or any drive that's not a soft drive or usb flash drive
+SoftDrive: Floppy or anything older then floppy
+Flash Drive: USB Flash Drive Stick
