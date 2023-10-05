@@ -103,6 +103,13 @@ set bootdrive=!bootdrive:~0,1!
 IF !ERRORLEVEL! NEQ 0 (!bootdrive!:\Windows\System32\bcdboot W:\Windows /s S:)
 )
 
+REM ############ CUSTOM BIOS NAMES #####################################
+:BIOSNAME
+set /p biosname="Enter Bios Name Default is Windows Boot Manager:"
+set biosname=%biosname:"=%
+%bootdrive%:\Windows\System32\bcdedit.exe /store S:\Boot\BCD /set {bootmgr} description "%biosname%"
+%bootdrive%:\Windows\System32\bcdedit.exe /store S:\EFI\Microsoft\Boot\BCD /set {bootmgr} description "%biosname%"
+
 REM ############## STOP WINDOWS 10 & 11 From Requiring the Internet
 echo OOBE Bypass NRO. Out of Box Experience Bypassing Network Requirement Option
 reg load HKLM\OfflineSOFTWARE W:\Windows\System32\Config\SOFTWARE
@@ -121,13 +128,6 @@ REM this is the old code that only works for Win10+ and only supported AMD64 and
 REM xcopy "%~dp0san_policy.xml" W:\
 REM dism /Image:W:\ /Apply-Unattend:W:\san_policy.xml
 :ENDSIDS
-
-REM ############ CUSTOM BIOS NAMES #####################################
-:BIOSNAME
-set /p biosname="Enter Bios Name Default is Windows Boot Manager:"
-set biosname=%biosname:"=%
-%bootdrive%:\Windows\System32\bcdedit.exe /store S:\Boot\BCD /set {bootmgr} description "%biosname%"
-%bootdrive%:\Windows\System32\bcdedit.exe /store S:\EFI\Microsoft\Boot\BCD /set {bootmgr} description "%biosname%"
 
 REM ###### Create & Register Recovery Files ####################
 :RECOVERY
