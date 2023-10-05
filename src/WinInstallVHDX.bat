@@ -9,16 +9,16 @@ set letvdisk=V
 set labelvhdx=VDISK
 IF "%vdisk%"=="" ( GOTO CLEANUP ) else ( GOTO CLEANUP2 )
 :CLEANUP
-md %userprofile%\Documents\%ComputerName%\VDISKS\
+md "%userprofile%\Documents\%ComputerName%\VDISKS\" >nul 2>&1
 set vdisk=%userprofile%\Documents\%ComputerName%\VDISKS\windows.vhdx
-diskpart /s "%~dp0dvhdx.txt"
+diskpart /s "%~dp0dvhdx.txt" >nul
 mountvol W: /p >nul
 mountvol S: /p >nul
 mountvol V: /p >nul
 mountvol W: /d >nul
 mountvol S: /d >nul
 mountvol V: /d >nul
-del /f /q /a "%vdisk%" >nul
+del /f /q /a "%vdisk%" >nul 2>&1
 IF EXIST "%vdisk%" (
   echo ERR^: Unable to Detach ^& Delete the vdisk during cleanup %vdisk%
   echo ERR^: PLEASE REBOOT YOUR PC Before trying again
