@@ -58,7 +58,7 @@ GOTO PAR
 
 :MERGE
 diskpart /s "%~dp0ListPar.txt"
-set /p syspar="Input Previous System(BOOT) Partition(280 MB Usually):"
+set /p syspar="Input Previous Windows Boot Partition(280 MB Usually):"
 IF "%ISMBR%"=="T" (
 echo disabling active partition^.^.^.
 call "%~dp0disableactivepar.bat"

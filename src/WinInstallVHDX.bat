@@ -1,6 +1,7 @@
 @ECHO OFF
 Setlocal EnableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
+call :PP
 title ExternalWin VHDX Version RC 1.0.0
 
 rem ############ CLEANUP ##################
@@ -122,6 +123,7 @@ echo detatching VHDX %vdisk%
 diskpart /s "%~dp0dvhdx.txt"
 :LOOP
 set /p vdiskhome="Enter Windows VHDX File Name:"
+set vdiskhome=%vdiskhome:"=%
 ECHO.%vdiskhome% | FIND /I "\">Nul && ( 
 echo VDISK Name Cannot Contain Path Characters
 GOTO LOOP
@@ -153,12 +155,30 @@ set bootdrive=!bootdrive:~0,1!
 IF !ERRORLEVEL! NEQ 0 (!bootdrive!:\Windows\System32\bcdboot %windrive%:\Windows /s S:)
 )
 
+REM ############## STOP WINDOWS 10 & 11 From Requiring the Internet
+echo OOBE Bypass NRO. Out of Box Experience Bypassing Network Requirement Option
+reg load HKLM\OfflineSOFTWARE V:\Windows\System32\Config\SOFTWARE
+reg add HKLM\OfflineSOFTWARE\Microsoft\Windows\CurrentVersion\OOBE /v BypassNRO /t REG_DWORD /d 1 /f
+reg unload HKLM\OfflineSOFTWARE
+
 set /p sid=Stop Windows from Accessing Internal Disks [Y/N]?
-IF /I %sid:~0,1% EQU Y ( GOTO SIDS ) else ( GOTO POSTINSTALL )
+IF /I %sid:~0,1% EQU Y ( GOTO SIDS ) else ( GOTO ENDSIDS )
 
 :SIDS
-xcopy "%~dp0san_policy.xml" V:\
-dism /Image:V:\ /Apply-Unattend:V:\san_policy.xml
+reg load HKLM\OfflineSystem V:\Windows\System32\Config\SYSTEM
+reg import "%~dp0DisableDiskAccess.reg"
+reg unload HKLM\OfflineSystem
+REM this is the old code that only works for Win10+ and only supported AMD64 and x86 or ARM64 which is microsoft surface and future devices. Older Windows 10 doesnt' regonize the arch of AMD64 so errors on that to
+REM xcopy "%~dp0san_policy.xml" W:\
+REM dism /Image:W:\ /Apply-Unattend:W:\san_policy.xml
+:ENDSIDS
+
+REM ############ CUSTOM BIOS NAMES #####################################
+:BIOSNAME
+set /p biosname="Enter Bios Name Default is Windows Boot Manager:"
+set biosname=%biosname:"=%
+%bootdrive%:\Windows\System32\bcdedit.exe /store S:\Boot\BCD /set {bootmgr} description "%biosname%"
+%bootdrive%:\Windows\System32\bcdedit.exe /store S:\EFI\Microsoft\Boot\BCD /set {bootmgr} description "%biosname%"
 
 :POSTINSTALL
 diskpart /s "%~dp0ListPar.txt"
@@ -177,6 +197,7 @@ rem ####Grab the next Drive Letter & Re-Assign W:\#####
 IF "%winpar%" EQU "" ( set /p winpar="Input Windows(VDISKS) Partition(64+GB Usually):" )
 set par=%winpar%
 diskpart /s "%~dp0%Assign-RND.txt"
+call :REVPP
 echo ####################FINISHED############################
 title %cd%
 pause
@@ -188,5 +209,20 @@ IF %ERRORLEVEL% NEQ 0 (
 echo %~1
 pause
 exit 1
+)
+exit /b
+
+:PP
+REM ######## WinPE support change the power plan to maximize perforamnce #########
+IF EXIST "X:\" (
+FOR /f "delims=" %%a in ('POWERCFG -GETACTIVESCHEME') DO @SET powerplan="%%a"
+powercfg /s 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
+echo changed powerplan of !powerplan! to high performance 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
+)
+exit /b
+
+:REVPP
+IF EXIST "X:\" (
+powercfg /s !powerplan!
 )
 exit /b
