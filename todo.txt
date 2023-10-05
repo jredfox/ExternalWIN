@@ -1,2 +1,2 @@
-TODO:
-- re-test everything again
+BootEntryName.bat
+File Explorer popup partial fix

@@ -11,6 +11,7 @@ __________________
 - Windows 8-8.1 cannot be installed to a USB flash drive but can be installed to an external Harddrive(crashes)
 - Windows 11 CAN be installed on an MBR LEGACY Disk without a TPM or Secure Boot being enabled (unsupported hardware). As my install doesn't check for these things
 - Windows XP & Vista are untested. XP doesn't have a WIM file so unless you can install it to a fresh drive and Capture it as a WIM before booting it you couldn't install it anyways
+- File Explorer (Windows Explorer Now) Popups when Partitioning the harddrive cannot fully be disabled. Please close any "You Need To Format" Popups
 __________________
 
 Dictionary
