@@ -14,6 +14,12 @@ __________________
 - File Explorer (Windows Explorer Now) Popups when Partitioning the harddrive cannot fully be disabled. Please close any "You Need To Format" Popups
 __________________
 
+How to Select Windows Install.esd / Install.wi
+- mount ISO either by right clicking and mount or double clicking and opening it
+- find the sources folder go inside
+- find install.esd or install.wim
+- SHIFT+RIGHT CLICK --> Copy As Path
+
 Dictionary
 __________________
 Harddrive: HDD / SDD or any drive that's not a soft drive or usb flash drive

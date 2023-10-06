@@ -4,7 +4,7 @@ call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order 
 call :PP
 rem #######Disk Image Selection#########
 title ExternalWin Version RC 1.0.0
-set /p wim="Mount Windows ISO & Input (Install.esd / Install.wim) located in resources:"
+set /p wim="Mount Windows ISO & Input (Install.esd / Install.wim) located in sources:"
 set wim=%wim:"=%
 dism /get-imageinfo /imagefile:"%wim%"
 set /p index="Input Windows Image Index Number:"
