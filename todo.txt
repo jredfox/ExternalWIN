@@ -1,2 +1,1 @@
-BootEntryName.bat
 File Explorer popup partial fix

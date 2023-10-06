@@ -38,6 +38,7 @@ mountvol S: /p >nul
 mountvol W: /d >nul
 mountvol S: /d >nul
 mountvol R: /d >nul
+call "%~dp0FileExplorerPopUp-Disable.bat"
 set /p e=ERASE THE DRIVE (clean install) [Y/N]?
 IF /I %e:~0,1% EQU Y GOTO ERASE
 IF /I %e:~0,1% NEQ Y GOTO PARSEC
@@ -176,6 +177,7 @@ diskpart /s "%~dp0Assign-RND.txt"
 IF %recovery% EQU T (set /p parrecovery="Input Recovery Partition(1GB Usually):")
 IF %recovery% EQU T (diskpart /s "%~dp0Closerecovery%dskext%")
 call :REVPP
+call "%~dp0FileExplorerPopUp-Enable.bat"
 echo External Installation of Windows Completed :)
 title %cd%
 pause
@@ -204,4 +206,3 @@ IF EXIST "X:\" (
 powercfg /s !powerplan!
 )
 exit /b
-
