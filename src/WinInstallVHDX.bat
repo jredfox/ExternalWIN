@@ -80,12 +80,13 @@ IF /I %legacy:~0,1% EQU Y (
 rem ######### INIT DISK SETUP ###########
 set /p e=ERASE THE DRIVE [Y/N]?
 IF "%Custom%" EQU "T" ( 
-call "%~dp0FileExplorerPopUp-Disable.bat" 
+call "%~dp0FileExplorerPopUp-Disable.bat" >nul 2>&1
 timeout /t 1 /NOBREAK >nul
 )
 IF /I %e:~0,1% EQU Y ( GOTO ERASE ) else ( GOTO PARSEC )
 
 :ERASE
+set /p sizeprime="Input VDISKS Partition Size in GB:"
 echo erasing disk %disk%....
 diskpart /s "%~dp0Clean%dskext%"
 GOTO PAR
@@ -93,7 +94,10 @@ GOTO PAR
 :PARSEC
 set /p gtp=Is Windows Previously Installed on this Disk [Y/N]?
 IF "%ISMBR%"=="T" ( call "%~dp0disableactivepar.bat" )
-IF /I %gtp:~0,1% NEQ Y GOTO PAR
+IF /I %gtp:~0,1% NEQ Y (
+set /p sizeprime="Input VDISKS Partition Size in GB:"
+GOTO PAR
+)
 set /p cp1=Create System Boot Partition [Y/N]?
 IF /I %cp1:~0,1% EQU Y ( diskpart /s "%~dp0ParSYS%dskext%" )
 call "%~dp0CreateMSRPar.bat"
@@ -121,7 +125,6 @@ diskpart /s "%~dp0Assign.txt"
 GOTO INSTALL
 
 :PAR
-set /p sizeprime="Input VDISKS Partition Size in GB:"
 set sizeprime=%sizeprime%000
 echo partitioning the hard drive...
 echo Creating System Boot Partition
