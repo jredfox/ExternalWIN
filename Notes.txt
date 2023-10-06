@@ -14,11 +14,16 @@ __________________
 - File Explorer (Windows Explorer Now) Popups when Partitioning the harddrive cannot fully be disabled. Please close any "You Need To Format" Popups
 __________________
 
-How to Select Windows Install.esd / Install.wi
+FAQ:
+__________________________
+1. Q: How to Select Windows Install.esd or Install.wim ?
 - mount ISO either by right clicking and mount or double clicking and opening it
 - find the sources folder go inside
 - find install.esd or install.wim
 - SHIFT+RIGHT CLICK --> Copy As Path
+2. Q: I ran Your WinInstall.bat or a different Script and now when I Plugin a USB / External Harddrive It doesn't pop open the files it must be a virus?
+   A: This is not a virus I simply disable popups of file explorer during the installation process. If it's still disabled after installing
+or you closed the script before it's done you will have to run FileExplorerPopUp-Enable.bat which will restore the default file explorer popup settings
 
 Dictionary
 __________________
