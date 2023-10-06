@@ -39,8 +39,8 @@ mountvol S: /p >nul
 mountvol W: /d >nul
 mountvol S: /d >nul
 mountvol R: /d >nul
-call "%~dp0FileExplorerPopUp-Disable.bat"
 set /p e=ERASE THE DRIVE (clean install) [Y/N]?
+call "%~dp0FileExplorerPopUp-Disable.bat"
 IF /I %e:~0,1% EQU Y GOTO ERASE
 IF /I %e:~0,1% NEQ Y GOTO PARSEC
 
