@@ -51,10 +51,10 @@ diskpart /s "%~dp0createvhdx.txt"
 echo vdisk saved to %vdisk%
 dism /Apply-Image /ImageFile:"%iso%" /index:"%index%" /ApplyDir:V:\
 echo VHDX Created in^: %vdisk%
+diskpart /s "%~dp0dvhdx.txt" >nul
 set /p con=Would you like to Install It [Y/N]?
 IF /I %con:~0,1% NEQ Y (
 call "%~dp0FileExplorerPopUp-Enable.bat"
-diskpart /s "%~dp0dvhdx.txt" >nul
 exit /b 0
 )
 
@@ -135,7 +135,7 @@ diskpart /s "%~dp0ParPrime.txt"
 
 :INSTALL
 echo detatching VHDX %vdisk%
-diskpart /s "%~dp0dvhdx.txt"
+diskpart /s "%~dp0dvhdx.txt" >nul
 :LOOP
 set /p vdiskhome="Enter Windows VHDX File Name:"
 set vdiskhome=%vdiskhome:"=%
