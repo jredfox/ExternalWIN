@@ -184,7 +184,7 @@ reg add HKLM\OfflineSOFTWARE\Microsoft\Windows\CurrentVersion\OOBE /v BypassNRO 
 reg unload HKLM\OfflineSOFTWARE
 
 set /p sid=Stop Windows from Accessing Internal Disks [Y/N]?
-IF /I %sid:~0,1% EQU Y ( GOTO SIDS ) else ( GOTO ENDSIDS )
+IF /I %sid:~0,1% EQU Y ( GOTO SIDS ) ELSE ( GOTO ENDSIDS )
 
 :SIDS
 reg load HKLM\OfflineSystem V:\Windows\System32\Config\SYSTEM
