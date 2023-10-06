@@ -26,6 +26,7 @@ set guid=%guid:}=%
 bcdedit.exe /store "%store%" /delete "{%guid%}"
 set /p q2=Delete Another Entry [Y/N]?
 IF /I "%q2:~0,1%" EQU "Y" GOTO SELBOOT
+timeout /t 2
 diskpart /s "%~dp0Closeboot%dskext%"
 pause
 exit /b
