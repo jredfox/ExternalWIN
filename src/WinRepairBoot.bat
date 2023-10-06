@@ -90,7 +90,7 @@ diskpart /s "%~dp0dvhdx.txt"
 )
 IF "%ISCDRIVE%" EQU "T" GOTO END
 set par=%winpar%
-diskpart /s "%~dp0%Assign-RND.txt"
+diskpart /s "%~dp0Assign-RND.txt"
 :END
 echo Repairing Boot Completed
 title %cd%

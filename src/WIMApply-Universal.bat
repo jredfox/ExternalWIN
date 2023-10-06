@@ -86,7 +86,7 @@ IF /I %type% EQU R (
  diskpart /s "%~dp0Closerecovery%ext%"
  GOTO END
 )
-diskpart /s "%~dp0%Assign-RND.txt"
+diskpart /s "%~dp0Assign-RND.txt"
 :END
 pause
 exit /b 0

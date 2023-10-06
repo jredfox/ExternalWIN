@@ -1,15 +1,15 @@
 @ECHO OFF
 Setlocal EnableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
-call :PP
 title ExternalWin VHDX Version RC 1.0.0
-call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
+call :PP
 
 rem ############ CLEANUP ##################
 set letvdisk=V
 set labelvhdx=VDISK
 IF "%vdisk%"=="" ( GOTO CLEANUP ) else ( GOTO CLEANUP2 )
 :CLEANUP
+call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
 md "%userprofile%\Documents\%ComputerName%\VDISKS\" >nul 2>&1
 set vdisk=%userprofile%\Documents\%ComputerName%\VDISKS\windows.vhdx
 diskpart /s "%~dp0dvhdx.txt" >nul
@@ -34,6 +34,7 @@ mountvol V: /p >nul
 mountvol W: /d >nul
 mountvol S: /d >nul
 mountvol V: /d >nul
+set Custom=T
 echo Custom VDISK Detected: %vdisk%
 GOTO SETVARS
 
@@ -44,12 +45,17 @@ set iso=%iso:"=%
 dism /get-imageinfo /imagefile:"%iso%"
 set /p index="Input Windows ISO Index:"
 set /p vhdsize="Input VHDX Size In GB:"
+call "%~dp0FileExplorerPopUp-Disable.bat"
 diskpart /s "%~dp0createvhdx.txt"
 echo vdisk saved to %vdisk%
 dism /Apply-Image /ImageFile:"%iso%" /index:"%index%" /ApplyDir:V:\
 echo VHDX Created in^: %vdisk%
 set /p con=Would you like to Install It [Y/N]?
-IF /I %con:~0,1% NEQ Y exit /b 0
+IF /I %con:~0,1% NEQ Y (
+call "%~dp0FileExplorerPopUp-Enable.bat"
+diskpart /s "%~dp0dvhdx.txt" >nul
+exit /b 0
+)
 
 rem ####### SET VARS ####################
 :SETVARS
@@ -72,6 +78,7 @@ IF /I %legacy:~0,1% EQU Y (
 
 rem ######### INIT DISK SETUP ###########
 set /p e=ERASE THE DRIVE [Y/N]?
+IF "%Custom%" EQU "T" ( call "%~dp0FileExplorerPopUp-Disable.bat" )
 IF /I %e:~0,1% EQU Y ( GOTO ERASE ) else ( GOTO PARSEC )
 
 :ERASE
@@ -197,8 +204,9 @@ diskpart /s "%~dp0dvhdx.txt"
 rem ####Grab the next Drive Letter & Re-Assign W:\#####
 IF "%winpar%" EQU "" ( set /p winpar="Input Windows(VDISKS) Partition(64+GB Usually):" )
 set par=%winpar%
-diskpart /s "%~dp0%Assign-RND.txt"
+diskpart /s "%~dp0Assign-RND.txt"
 call :REVPP
+call "%~dp0FileExplorerPopUp-Enable.bat"
 echo ####################FINISHED############################
 title %cd%
 pause

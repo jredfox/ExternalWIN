@@ -7,7 +7,7 @@ diskpart /s %~dp0ListPar.txt
 set /p syspar=Input System Partition(280 MB Usually):
 echo Closing EFI Boot
 mountvol S: /p
-diskpart /s %~dp0%Closeboot.txt
+diskpart /s %~dp0Closeboot.txt
 pause
 exit /b 0
 

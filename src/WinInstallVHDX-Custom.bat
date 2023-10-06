@@ -3,7 +3,7 @@ call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order 
 call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
 set /p vdisk="Input VHDX File:"
 set vdisk=%vdisk:"=%
-call "%~dp0%WinInstallVHDX.bat"
+call "%~dp0WinInstallVHDX.bat"
 exit /b 0
 
 :checkAdmin

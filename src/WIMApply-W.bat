@@ -22,7 +22,7 @@ set /p label1=Input Volume Name of %volume%^:
 diskpart /s "%~dp0formatvol.txt"
 dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:W:\
 REM ##### RE-ASSING W:\ #############
-diskpart /s "%~dp0%AssignVol-RND.txt"
+diskpart /s "%~dp0AssignVol-RND.txt"
 pause
 exit /b 0
 
