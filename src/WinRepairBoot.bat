@@ -1,6 +1,7 @@
 @ECHO OFF
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
+call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
 :SEL
 diskpart /s "%~dp0ld.txt"
 set /p disk="Input Disk Number:"

@@ -3,6 +3,7 @@ Setlocal EnableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 call :PP
 title ExternalWin VHDX Version RC 1.0.0
+call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
 
 rem ############ CLEANUP ##################
 set letvdisk=V

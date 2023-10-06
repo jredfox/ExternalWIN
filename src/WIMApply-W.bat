@@ -1,6 +1,7 @@
 @Echo off
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
+call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
 REM This Script is Made to Erase and RE-IMAGE Already Installed Paritition of Windows To Repair Boot/Recovery or Full Install Please Use Another Script
 set /p wim=Input WIM/ESD:
 set wim=%wim:"=%

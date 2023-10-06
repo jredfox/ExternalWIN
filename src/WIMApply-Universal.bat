@@ -1,6 +1,7 @@
 @Echo off
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
+call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
 mountvol W: /p >nul
 mountvol S: /p >nul
 mountvol W: /d >nul
