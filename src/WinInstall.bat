@@ -135,7 +135,7 @@ REM dism /Image:W:\ /Apply-Unattend:W:\san_policy.xml
 REM ###### Create & Register Recovery Files ####################
 :RECOVERY
 set recovery=F
-set /p rp=Do You Want to Create a Recovery Partition [Y\N]?
+set /p rp=Do You Want to Create a Recovery Partition [Y/N]?
 IF /I %rp:~0,1% NEQ Y GOTO ENDRECOVERY
 set recovery=T
 set sizerecovery=1024
