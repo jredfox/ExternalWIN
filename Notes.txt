@@ -21,7 +21,7 @@ __________________________
 - find the sources folder go inside
 - find install.esd or install.wim
 - SHIFT+RIGHT CLICK --> Copy As Path
-2. Q: I ran Your WinInstall.bat or a different Script and now when I Plugin a USB / External Harddrive It doesn't pop open the files it must be a virus?
+2. Q: I ran Your WinInstall.bat or a different Script and now when I Plugin a USB / External Harddrive It doesn't pop open or autorun. The program it must be a virus?
    A: This is not a virus I simply disable popups of file explorer during the installation process. If it's still disabled after installing
 or you closed the script before it's done you will have to run FileExplorerPopUp-Enable.bat which will restore the default file explorer popup settings.
 You can also run any main script that format or partitions the hard drive and before you put in any info it Re-Enables it during the cleanup. You can close out when you see a prompt asking for information
