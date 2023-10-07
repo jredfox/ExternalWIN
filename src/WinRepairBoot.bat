@@ -22,12 +22,12 @@ IF /I %ays:~0,1% NEQ Y GOTO SEL
 REM Open Boot and Assign Letter S
 mountvol S: /p >nul
 mountvol S: /d >nul
-call "%~dp0FileExplorerPopUp-Disable.bat"
-timeout /t 1 /NOBREAK >nul
 set syspar=%par%
 set letsys=S
 set letvdisk=V
 IF "%ISMBR%"=="T" ( call "%~dp0disableactivepar.bat" )
+call "%~dp0FileExplorerPopUp-Disable.bat"
+timeout /t 3 /NOBREAK >nul
 diskpart /s "%~dp0Openboot%ext%"
 
 :SELW
