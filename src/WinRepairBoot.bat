@@ -2,6 +2,7 @@
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
+timeout /t 0 /NOBREAK >nul
 :SEL
 diskpart /s "%~dp0ld.txt"
 set /p disk="Input Disk Number:"
@@ -22,6 +23,8 @@ IF /I %ays:~0,1% NEQ Y GOTO SEL
 REM Open Boot and Assign Letter S
 mountvol S: /p >nul
 mountvol S: /d >nul
+call "%~dp0FileExplorerPopUp-Disable.bat"
+timeout /t 2 /NOBREAK >nul
 set syspar=%par%
 set letsys=S
 set letvdisk=V
@@ -91,7 +94,10 @@ diskpart /s "%~dp0dvhdx.txt"
 IF "%ISCDRIVE%" EQU "T" GOTO END
 set par=%winpar%
 diskpart /s "%~dp0Assign-RND.txt"
+
 :END
+timeout /t 2 /NOBREAK >nul
+call "%~dp0FileExplorerPopUp-Enable.bat"
 echo Repairing Boot Completed
 title %cd%
 pause

@@ -4,6 +4,7 @@ call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order 
 title ExternalWin Version RC 1.0.0
 call :PP
 call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
+timeout /t 0 /NOBREAK >nul
 rem #######Disk Image Selection#########
 set /p wim="Mount Windows ISO & Input (Install.esd / Install.wim) located in sources:"
 set wim=%wim:"=%
@@ -41,7 +42,7 @@ mountvol S: /d >nul
 mountvol R: /d >nul
 set /p e=ERASE THE DRIVE (clean install) [Y/N]?
 call "%~dp0FileExplorerPopUp-Disable.bat"
-timeout /t 1 /NOBREAK >nul
+timeout /t 2 /NOBREAK >nul
 IF /I %e:~0,1% EQU Y GOTO ERASE
 IF /I %e:~0,1% NEQ Y GOTO PARSEC
 
@@ -179,7 +180,7 @@ diskpart /s "%~dp0Assign-RND.txt"
 IF %recovery% EQU T (set /p parrecovery="Input Recovery Partition(1GB Usually):")
 IF %recovery% EQU T (diskpart /s "%~dp0Closerecovery%dskext%")
 call :REVPP
-timeout /t 1 /NOBREAK >nul
+timeout /t 2 /NOBREAK >nul
 call "%~dp0FileExplorerPopUp-Enable.bat"
 echo External Installation of Windows Completed :)
 title %cd%
