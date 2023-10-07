@@ -98,7 +98,6 @@ diskpart /s "%~dp0Assign-RND.txt"
 timeout /t 1 /NOBREAK >nul
 call "%~dp0FileExplorerPopUp-Enable.bat"
 echo Repairing Boot Completed
-title %cd%
 pause
 exit /b 0
 

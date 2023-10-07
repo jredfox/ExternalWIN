@@ -1,7 +1,7 @@
 @ECHO OFF
 Setlocal EnableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
-title ExternalWin VHDX Version RC 1.0.0
+title ExternalWin VHDX Version PRE 1.0.0
 call :PP
 
 rem ############ CLEANUP ##################
