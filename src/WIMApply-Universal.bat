@@ -39,7 +39,7 @@ GOTO TYPE
 )
 REM ##### OPEN BOOT / RECOVERY & ASSIGN VARS ##############
 call "%~dp0FileExplorerPopUp-Disable.bat"
-timeout /t 2 /NOBREAK >nul
+timeout /t 1 /NOBREAK >nul
 IF /I !type! EQU S (
 set let=S
 set letsys=!let!
@@ -90,7 +90,7 @@ IF /I %type% EQU R (
 )
 diskpart /s "%~dp0Assign-RND.txt"
 :END
-timeout /t 2 /NOBREAK >nul
+timeout /t 1 /NOBREAK >nul
 call "%~dp0FileExplorerPopUp-Enable.bat"
 pause
 exit /b 0

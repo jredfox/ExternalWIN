@@ -10,7 +10,6 @@ set labelvhdx=VDISK
 IF "%vdisk%"=="" ( GOTO CLEANUP ) else ( GOTO CLEANUP2 )
 :CLEANUP
 call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
-timeout /t 0 /NOBREAK >nul
 md "%userprofile%\Documents\%ComputerName%\VDISKS\" >nul 2>&1
 set vdisk=%userprofile%\Documents\%ComputerName%\VDISKS\windows.vhdx
 diskpart /s "%~dp0dvhdx.txt" >nul
@@ -47,7 +46,7 @@ dism /get-imageinfo /imagefile:"%iso%"
 set /p index="Input Windows ISO Index:"
 set /p vhdsize="Input VHDX Size In GB:"
 call "%~dp0FileExplorerPopUp-Disable.bat"
-timeout /t 2 /NOBREAK >nul
+timeout /t 1 /NOBREAK >nul
 diskpart /s "%~dp0createvhdx.txt"
 echo vdisk saved to %vdisk%
 dism /Apply-Image /ImageFile:"%iso%" /index:"%index%" /ApplyDir:V:\
@@ -82,7 +81,7 @@ rem ######### INIT DISK SETUP ###########
 set /p e=ERASE THE DRIVE [Y/N]?
 IF "%Custom%" EQU "T" ( 
 call "%~dp0FileExplorerPopUp-Disable.bat" >nul 2>&1
-timeout /t 2 /NOBREAK >nul
+timeout /t 1 /NOBREAK >nul
 )
 IF /I %e:~0,1% EQU Y ( GOTO ERASE ) else ( GOTO PARSEC )
 
@@ -214,7 +213,7 @@ IF "%winpar%" EQU "" ( set /p winpar="Input Windows(VDISKS) Partition(64+GB Usua
 set par=%winpar%
 diskpart /s "%~dp0Assign-RND.txt"
 call :REVPP
-timeout /t 2 /NOBREAK >nul
+timeout /t 1 /NOBREAK >nul
 call "%~dp0FileExplorerPopUp-Enable.bat"
 echo ####################FINISHED############################
 title %cd%
