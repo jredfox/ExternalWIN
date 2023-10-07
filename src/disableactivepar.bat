@@ -20,6 +20,7 @@ for /l %%i in (1, 1, %PartitionCount%) do (
         echo select disk %disk%
         echo select partition %%i
         echo inactive
+        echo remove NOERR
         echo set ID=18
         ) > "%TMP%\set_active_partition.txt"
 
