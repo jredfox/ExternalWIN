@@ -1,7 +1,7 @@
 @Echo off
 setlocal ENABLEDELAYEDEXPANSION
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
-set comp=max
+set comp=maximum
 IF "%~1" EQU "" (
 set /p esd=Enter ESD File:
 set sp=true

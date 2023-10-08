@@ -13,7 +13,7 @@ set let=%let:~0,1%:
 REM create parent directory
 md "%wim%"
 rd /s /q "%wim%"
-dism /capture-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%ComputerName%" /Description:"%desc%" /compress:max
+dism /capture-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%ComputerName%" /Description:"%desc%" /compress:maximum
 echo "SAVED WIM TO: %wim%"
 pause
 exit /b 0

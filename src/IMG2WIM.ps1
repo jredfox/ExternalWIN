@@ -27,7 +27,7 @@ if ($extn -ne ".VHD" -and $extn -ne ".VHDX")
    $name = (Get-Item -Path $Image).BaseName
    $MountedVhd = Mount-DiskImage -ImagePath $Image -PassThru
    $drive = (Get-DiskImage -ImagePath $Image | Get-Volume).DriveLetter + ":"
-   dism /Capture-Image /ImageFile:"$wimfile" /CaptureDir:"$drive" /Name:"$name"
+   dism /Capture-Image /ImageFile:"$wimfile" /CaptureDir:"$drive" /Name:"$name" /Description:"$name" /compress:maximum
    DisMount-DiskImage -ImagePath $Image | Out-Null
    exit
 }
@@ -46,7 +46,7 @@ if (($Partitions | Get-Volume) -ne $Null) {
         $pname = ($Partition | Get-Volume).FileSystemLabel
         $size = [math]::round(($Partition | Get-Volume).Size / 1MB, 2)
         $fs = "Format: " + ($Partition | Get-Volume).FileSystem + " Size: " + $size + " MB"
-        dism $operation /ImageFile:"$wimfile" /CaptureDir:"$PartitionMountPath" /Name:"$pname" /Description:"$fs"
+        dism $operation /ImageFile:"$wimfile" /CaptureDir:"$PartitionMountPath" /Name:"$pname" /Description:"$fs" /compress:maximum
         $Partition | Remove-PartitionAccessPath -AccessPath $PartitionMountPath
         $operation = "/Append-Image" #combine future volumes into the same WIM file
     }

@@ -8,7 +8,7 @@ set wimFrom=%wimFrom:"=%
 set wimTarget=%wimTarget:"=%
 dism /get-imageinfo /imagefile:"%wimFrom%"
 set /p index="Enter WIM Index Or * For All Indexes:"
-set /p comp="Enter WIM Compression Level [max (DEFAULT), fast, none]:"
+set /p comp="Enter WIM Compression Level [maximum (DEFAULT), fast, none]:"
 set index=%index:"=%
 set comp=%comp:"=%
 IF "%index%" NEQ "*" (

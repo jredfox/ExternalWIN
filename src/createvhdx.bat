@@ -5,7 +5,7 @@ set vdisk=%~1
 set vhdsize=%~2
 set fs=%~3
 set label=%~4
-set let=%~5
+set letvdisk=%~5
 diskpart /s "%~dp0newvhdx.txt"
 exit /b 0
 
