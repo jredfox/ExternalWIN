@@ -36,6 +36,7 @@ New-Item -Path $MountPath -ItemType Directory -Force | Out-Null #Creates a Direc
 $MountedVhd = Mount-DiskImage -ImagePath $Image -NoDriveLetter -PassThru | Get-Disk
 $Partitions = $MountedVhd | Get-Partition
 $operation = "/Capture-Image"
+$comp = "/compress:maximum"
 if (($Partitions | Get-Volume) -ne $Null) {
     $DriveNumberPath = $MountPath + "D" + $MountedVhd.Number
     New-Item $DriveNumberPath -ItemType Directory -Force | Out-Null
@@ -46,9 +47,10 @@ if (($Partitions | Get-Volume) -ne $Null) {
         $pname = ($Partition | Get-Volume).FileSystemLabel
         $size = [math]::round(($Partition | Get-Volume).Size / 1MB, 2)
         $fs = "Format: " + ($Partition | Get-Volume).FileSystem + " Size: " + $size + " MB"
-        dism $operation /ImageFile:"$wimfile" /CaptureDir:"$PartitionMountPath" /Name:"$pname" /Description:"$fs" /compress:maximum
+        dism $operation /ImageFile:"$wimfile" /CaptureDir:"$PartitionMountPath" /Name:"$pname" /Description:"$fs" $comp
         $Partition | Remove-PartitionAccessPath -AccessPath $PartitionMountPath
         $operation = "/Append-Image" #combine future volumes into the same WIM file
+        $comp = ""
     }
 }
 DisMount-DiskImage -ImagePath $Image | Out-Null
