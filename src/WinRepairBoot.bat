@@ -92,7 +92,7 @@ diskpart /s "%~dp0dvhdx.txt"
 )
 IF "%ISCDRIVE%" EQU "T" GOTO END
 set par=%winpar%
-diskpart /s "%~dp0Assign-RND.txt"
+call "%~dp0Assign-RND.bat"
 
 :END
 timeout /t 1 /NOBREAK >nul

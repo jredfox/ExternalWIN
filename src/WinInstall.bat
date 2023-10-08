@@ -175,7 +175,7 @@ mountvol S: /d >nul
 mountvol R: /d >nul
 IF NOT "%ISMBR%"=="T" ( diskpart /s "%~dp0Closeboot%dskext%" )
 set /p par="Input Windows Partition(64+GB Usually):"
-diskpart /s "%~dp0Assign-RND.txt"
+call "%~dp0Assign-RND.bat"
 IF %recovery% EQU T (set /p parrecovery="Input Recovery Partition(1GB Usually):")
 IF %recovery% EQU T (diskpart /s "%~dp0Closerecovery%dskext%")
 call :REVPP

@@ -88,7 +88,7 @@ IF /I %type% EQU R (
  diskpart /s "%~dp0Closerecovery%ext%"
  GOTO END
 )
-diskpart /s "%~dp0Assign-RND.txt"
+call "%~dp0Assign-RND.bat"
 :END
 timeout /t 1 /NOBREAK >nul
 call "%~dp0FileExplorerPopUp-Enable.bat"

@@ -211,7 +211,7 @@ diskpart /s "%~dp0dvhdx.txt"
 rem ####Grab the next Drive Letter & Re-Assign W:\#####
 IF "%winpar%" EQU "" ( set /p winpar="Input Windows(VDISKS) Partition(64+GB Usually):" )
 set par=%winpar%
-diskpart /s "%~dp0Assign-RND.txt"
+call "%~dp0Assign-RND.bat"
 call :REVPP
 timeout /t 1 /NOBREAK >nul
 call "%~dp0FileExplorerPopUp-Enable.bat"

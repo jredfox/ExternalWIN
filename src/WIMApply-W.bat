@@ -24,7 +24,7 @@ set /p label1=Input Volume Name of %volume%^:
 diskpart /s "%~dp0formatvol.txt"
 dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:W:\
 REM ##### RE-ASSING W:\ #############
-diskpart /s "%~dp0AssignVol-RND.txt"
+call "%~dp0Assign-RND.bat"
 timeout /t 1 /NOBREAK >nul
 call "%~dp0FileExplorerPopUp-Enable.bat"
 pause
