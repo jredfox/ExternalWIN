@@ -18,9 +18,8 @@ set dskext=-MBR.txt
 set store=S:\EFI\Microsoft\Boot\BCD
 set dskext=.txt
 )
-call "%~dp0FileExplorerPopUp-Disable.bat"
-cscript "%~dp0Sleep.vbs" "1000" >nul
-diskpart /s "%~dp0Openboot%dskext%"
+call "%~dp0FileExplorerPopUp-Disable.bat" "1000"
+diskpart /s "%~dp0Openboot%dskext%" 
 :SELBOOT
 bcdedit.exe /store "%store%" /enum
 set /p guid="Enter GUID:"
@@ -32,8 +31,7 @@ bcdedit.exe /store "%store%" /set "{%guid%}" description "%description%"
 set /p q2=Name Another Entry [Y/N]?
 IF /I "%q2:~0,1%" EQU "Y" GOTO SELBOOT
 diskpart /s "%~dp0Closeboot%dskext%"
-cscript "%~dp0Sleep.vbs" "1000" >nul
-call "%~dp0FileExplorerPopUp-Enable.bat"
+call "%~dp0FileExplorerPopUp-Enable.bat" "1000" ""
 pause
 exit /b
 

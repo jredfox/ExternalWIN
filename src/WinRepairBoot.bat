@@ -25,8 +25,7 @@ mountvol S: /d >nul
 set syspar=%par%
 set letsys=S
 set letvdisk=V
-call "%~dp0FileExplorerPopUp-Disable.bat"
-cscript "%~dp0Sleep.vbs" "3000" >nul
+call "%~dp0FileExplorerPopUp-Disable.bat" "3000"
 IF "%ISMBR%"=="T" ( call "%~dp0disableactivepar.bat" )
 diskpart /s "%~dp0Openboot%ext%"
 
@@ -95,8 +94,7 @@ set par=%winpar%
 call "%~dp0Assign-RND.bat"
 
 :END
-cscript "%~dp0Sleep.vbs" "1000" >nul
-call "%~dp0FileExplorerPopUp-Enable.bat"
+call "%~dp0FileExplorerPopUp-Enable.bat" "1000" ""
 echo Repairing Boot Completed
 pause
 exit /b 0

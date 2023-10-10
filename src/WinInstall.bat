@@ -40,8 +40,7 @@ mountvol W: /d >nul
 mountvol S: /d >nul
 mountvol R: /d >nul
 set /p e=ERASE THE DRIVE (clean install) [Y/N]?
-call "%~dp0FileExplorerPopUp-Disable.bat"
-cscript "%~dp0Sleep.vbs" "1000" >nul
+call "%~dp0FileExplorerPopUp-Disable.bat" "1000"
 IF /I %e:~0,1% EQU Y GOTO ERASE
 IF /I %e:~0,1% NEQ Y GOTO PARSEC
 
@@ -178,8 +177,7 @@ set /p par="Input Windows Partition(64+GB Usually):"
 call "%~dp0Assign-RND.bat"
 IF %recovery% EQU T (set /p parrecovery="Input Recovery Partition(1GB Usually):")
 IF %recovery% EQU T (diskpart /s "%~dp0Closerecovery%dskext%")
-cscript "%~dp0Sleep.vbs" "2000" >nul
-call "%~dp0FileExplorerPopUp-Enable.bat"
+call "%~dp0FileExplorerPopUp-Enable.bat" "2000" ""
 echo External Installation of Windows Completed :)
 title %cd%
 pause
