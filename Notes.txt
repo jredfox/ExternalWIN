@@ -30,9 +30,9 @@ __________________________
 ##################################
 NOTE: This will replace the current boot loader with the targeted windows. 
 For example if you run WinRepairBoot.bat for windows 7 and you want the nicer windows 10-11 menu you would have to run 
-BootEntry-Delete.bat again and specify the partition with windows 10 or 11 on it to get the nicer Menu
+WinRepairBoot.bat again and specify the partition with windows 10 or 11 on it to get the nicer Menu
 ##################################
-  1. Decide whether or not you want to Re-Image the Boot (apply settings from backup date) or if you just want to edit a boot entry And SKIP the rest of the steps
+  1. Decide whether or not you want to Re-Image the Boot (deletes all data and replaces it with the boot.wim backup)
   2. If you want to Re-Image the boot go to "How to Re-Image the boot Drive"
   4. Run WinRepairBoot.bat . This will add a boot entry to the current menu. If you wanted to clean all boot entries before running it please format the partition as FAT32 first unless your repairing your current boot
      then please Delete any unwanted boot entries instead
