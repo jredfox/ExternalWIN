@@ -38,7 +38,7 @@ echo INVALID TYPE "%type%"
 GOTO TYPE
 )
 REM ##### OPEN BOOT / RECOVERY & ASSIGN VARS ##############
-call "%~dp0FileExplorerPopUp-Disable.bat" "1000"
+call "%~dp0FileExplorerPopUp-Disable.bat" "1500"
 IF /I !type! EQU S (
 set let=S
 set letsys=!let!
@@ -89,7 +89,7 @@ IF /I %type% EQU R (
 )
 call "%~dp0Assign-RND.bat"
 :END
-call "%~dp0FileExplorerPopUp-Enable.bat" "1000" ""
+call "%~dp0FileExplorerPopUp-Enable.bat" "2000" ""
 pause
 exit /b 0
 

@@ -45,7 +45,7 @@ set iso=%iso:"=%
 dism /get-imageinfo /imagefile:"%iso%"
 set /p index="Input Windows ISO Index:"
 set /p vhdsize="Input VHDX Size In GB:"
-call "%~dp0FileExplorerPopUp-Disable.bat" "1000"
+call "%~dp0FileExplorerPopUp-Disable.bat" "1500"
 diskpart /s "%~dp0createvhdx.txt"
 echo vdisk saved to %vdisk%
 dism /Apply-Image /ImageFile:"%iso%" /index:"%index%" /ApplyDir:V:\
@@ -79,7 +79,7 @@ IF /I %legacy:~0,1% EQU Y (
 rem ######### INIT DISK SETUP ###########
 set /p e=ERASE THE DRIVE [Y/N]?
 IF "%Custom%" EQU "T" ( 
-call "%~dp0FileExplorerPopUp-Disable.bat" "1000" >nul 2>&1
+call "%~dp0FileExplorerPopUp-Disable.bat" "1500" >nul 2>&1
 )
 IF /I %e:~0,1% EQU Y ( GOTO ERASE ) else ( GOTO PARSEC )
 
@@ -210,7 +210,7 @@ rem ####Grab the next Drive Letter & Re-Assign W:\#####
 IF "%winpar%" EQU "" ( set /p winpar="Input Windows(VDISKS) Partition(64+GB Usually):" )
 set par=%winpar%
 call "%~dp0Assign-RND.bat"
-call "%~dp0FileExplorerPopUp-Enable.bat" "1000" ""
+call "%~dp0FileExplorerPopUp-Enable.bat" "2000" ""
 echo ####################FINISHED############################
 title %cd%
 pause

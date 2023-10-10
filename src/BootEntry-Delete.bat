@@ -18,7 +18,7 @@ set dskext=-MBR.txt
 set store=S:\EFI\Microsoft\Boot\BCD
 set dskext=.txt
 )
-call "%~dp0FileExplorerPopUp-Disable.bat" "1000"
+call "%~dp0FileExplorerPopUp-Disable.bat" "1500"
 diskpart /s "%~dp0Openboot%dskext%"
 :SELBOOT
 bcdedit.exe /store "%store%" /enum
@@ -29,7 +29,7 @@ bcdedit.exe /store "%store%" /delete "{%guid%}"
 set /p q2=Delete Another Entry [Y/N]?
 IF /I "%q2:~0,1%" EQU "Y" GOTO SELBOOT
 diskpart /s "%~dp0Closeboot%dskext%"
-call "%~dp0FileExplorerPopUp-Enable.bat" "1000" ""
+call "%~dp0FileExplorerPopUp-Enable.bat" "2000" ""
 pause
 exit /b
 
