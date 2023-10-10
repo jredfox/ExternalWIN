@@ -17,7 +17,7 @@ set /p volume="Input Vol Number:"
 set /p ays=Are You sure this is the correct Volume %volume% [Y/N]?
 IF /I %ays:~0,1% NEQ Y GOTO SEL
 call "%~dp0FileExplorerPopUp-Disable.bat" >nul 2>&1
-timeout /t 1 /NOBREAK >nul
+cscript "%~dp0Sleep.vbs" "1000" >nul
 set form=NTFS
 set let=W
 set /p label1=Input Volume Name of %volume%^:
@@ -25,7 +25,7 @@ diskpart /s "%~dp0formatvol.txt"
 dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:W:\
 REM ##### RE-ASSING W:\ #############
 call "%~dp0Assign-RND.bat"
-timeout /t 1 /NOBREAK >nul
+cscript "%~dp0Sleep.vbs" "1000" >nul
 call "%~dp0FileExplorerPopUp-Enable.bat"
 pause
 exit /b 0

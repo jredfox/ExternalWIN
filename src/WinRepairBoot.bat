@@ -26,7 +26,7 @@ set syspar=%par%
 set letsys=S
 set letvdisk=V
 call "%~dp0FileExplorerPopUp-Disable.bat"
-timeout /t 3 /NOBREAK >nul
+cscript "%~dp0Sleep.vbs" "3000" >nul
 IF "%ISMBR%"=="T" ( call "%~dp0disableactivepar.bat" )
 diskpart /s "%~dp0Openboot%ext%"
 
@@ -95,7 +95,7 @@ set par=%winpar%
 call "%~dp0Assign-RND.bat"
 
 :END
-timeout /t 1 /NOBREAK >nul
+cscript "%~dp0Sleep.vbs" "1000" >nul
 call "%~dp0FileExplorerPopUp-Enable.bat"
 echo Repairing Boot Completed
 pause

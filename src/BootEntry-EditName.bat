@@ -19,7 +19,7 @@ set store=S:\EFI\Microsoft\Boot\BCD
 set dskext=.txt
 )
 call "%~dp0FileExplorerPopUp-Disable.bat"
-timeout /t 1 /NOBREAK >nul
+cscript "%~dp0Sleep.vbs" "1000" >nul
 diskpart /s "%~dp0Openboot%dskext%"
 :SELBOOT
 bcdedit.exe /store "%store%" /enum
@@ -32,7 +32,7 @@ bcdedit.exe /store "%store%" /set "{%guid%}" description "%description%"
 set /p q2=Name Another Entry [Y/N]?
 IF /I "%q2:~0,1%" EQU "Y" GOTO SELBOOT
 diskpart /s "%~dp0Closeboot%dskext%"
-timeout /t 1 /NOBREAK >nul
+cscript "%~dp0Sleep.vbs" "1000" >nul
 call "%~dp0FileExplorerPopUp-Enable.bat"
 pause
 exit /b

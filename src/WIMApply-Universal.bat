@@ -39,7 +39,7 @@ GOTO TYPE
 )
 REM ##### OPEN BOOT / RECOVERY & ASSIGN VARS ##############
 call "%~dp0FileExplorerPopUp-Disable.bat"
-timeout /t 1 /NOBREAK >nul
+cscript "%~dp0Sleep.vbs" "1000" >nul
 IF /I !type! EQU S (
 set let=S
 set letsys=!let!
@@ -90,7 +90,7 @@ IF /I %type% EQU R (
 )
 call "%~dp0Assign-RND.bat"
 :END
-timeout /t 1 /NOBREAK >nul
+cscript "%~dp0Sleep.vbs" "1000" >nul
 call "%~dp0FileExplorerPopUp-Enable.bat"
 pause
 exit /b 0
