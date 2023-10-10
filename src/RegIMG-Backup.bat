@@ -1,5 +1,7 @@
 @Echo Off
 setlocal enableDelayedExpansion
+call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
+
 set hivelist=%~dp0hivelist.txt
 IF NOT EXIST "%hivelist%" (
 echo Use Reg-GenHiveList.bat on an online windows installation first then run this script in WinPE Installation Media
@@ -39,7 +41,7 @@ REM #### Handle Spaced paths ####
 )
 
 REM ### Convert the VDISK to a WIM Image ##########
-set name=Registry Image Backup %ComputerName% %date% %time%
+set name=Registry Image Backup %date% %time%
 dism /capture-image /imagefile:"%regimg%" /capturedir:"%letreg%:" /name:"%name%" /Description:"%name%" /compress:maximum
 
 REM ## Post Install ##
@@ -57,4 +59,13 @@ exit /b
 
 :GETBASENAME
 for /F "delims=" %%i in ("%~1") do set basename=%%~ni
+exit /b
+
+:checkAdmin
+net session >nul 2>&1
+IF %ERRORLEVEL% NEQ 0 (
+echo %~1
+pause
+exit 1
+)
 exit /b

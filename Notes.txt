@@ -1,3 +1,88 @@
+README
+__________________________
+
+- How to Install Windows Clean (Erase Drive)
+  1. Run WinInstall.bat and when Prompted say yes to Erase the drive
+
+- How to Install Windows Multi Boot Menu
+  1. Start WinInstall.bat
+  2. Say no to Erase
+  3. Say yes to Merge
+
+- How to Install Windows Multi Boot Without Menu
+  1. Start WinInstall.bat
+  2. Say no to Erase
+  3. Say no to merge
+  4. To swap to a different windows click F+2 or F+12 during boot and you have to manually swap each time.
+     The purpose of Installing Dual Boot windows without the menu is so you don't have to select the windows every time saving boot time and your sanity
+
+- How to Install Windows more then 2x On MBR LEGACY Disk
+  1. Run WinInstallVHDX.bat or if you have a VHD Already WinInstallVHDX-Custom.bat
+  2. You can Erase the disk if you wanted to clean install it but if your simply installing another windows say no
+  3. Say No to create System Boot Partition if you have already installed windows at least once on the disk
+  4. If you already have a VDISKs partition or 4 partitions say NO to create VDISKS partition otherwise say YES
+  5. You can repeat these steps merging as many VDISK windows installations as you want merging the same VDISKs partition. The reason is because VDISKS are installed to a file on a partition and not a partition itself
+
+- How to Delete a boot entry
+  1. Run BootEntry-Delete.bat
+
+- How to Repair boot
+##################################
+NOTE: This will replace the current boot loader with the targeted windows. 
+For example if you run WinRepairBoot.bat for windows 7 and you want the nicer windows 10-11 menu you would have to run 
+BootEntry-Delete.bat again and specify the partition with windows 10 or 11 on it to get the nicer Menu
+##################################
+  1. Decide whether or not you want to Re-Image the Boot (apply settings from backup date) or if you just want to edit a boot entry And SKIP the rest of the steps
+  2. If you want to Re-Image the boot go to "How to Re-Image the boot Drive"
+  4. Run WinRepairBoot.bat . This will add a boot entry to the current menu. If you wanted to clean all boot entries before running it please format the partition as FAT32 first unless your repairing your current boot
+     then please Delete any unwanted boot entries instead
+
+- How to Re-Image the Boot Drive
+  1. Run WIMApply-Universal.bat with the boot.wim file found in C:\ExternalWin\backups\boot.wim or in your recovery partition R:\ExternalWin\backups\boot.wim (use openrecovery.bat to access)
+
+- How to backup current Registry
+  1. Run REG-Backup.bat
+
+- How to restore changes to a Registry (DOESN't Delete new Entries)
+  1. Run REG-ApplyBackup.bat
+
+- How To create a Registry Image:
+  1. Run Reg-GenHiveList.bat on your current windows
+  2. Boot into WinPE --> Shift+F10
+  3. Run RegIMG-Backup.bat
+
+- How to Apply a Registry Image:
+##################################
+WARNING: If the Registry Image isn't recent all wanted changes to the registry will be deleted. Please Use .REG Files and run REG-ApplyBackup.bat after Re-Imaging the Registry
+Re-Imaging the registry will delete any malware edits to the registry or unintended changes without needing to re-install windows all over again
+##################################
+  1. Create REG backups using REG-Backup.bat
+  2. Place your latest stable REG backup files into the scripts directory
+  3. Boot into WinPE --> SHIFT+F10
+  4. Run RegIMG-Apply.bat
+  5. Run Windows normally 
+  6. Run REG-ApplyBackup.bat
+  7. Boot windows normally
+
+##################################
+What is WIM Images and How do I Use them? WIM images are a windows image backup normally of an entire partition such as the c drive or boot drive. 
+You can backup both your partitions on windows and re-apply them later
+##################################
+ 
+- Capturing a WIM Image
+  1. Boot into WinPE unless the partition is not currently booted (Not the Current Boot or C Drive)
+  2. If the Partition is on an External Device and is special is special such as a boot or recovery partition please run openefi.bat(GPT),openmbr.bat(MBR) or openrecovery.bat for recovery
+  2. Run WIM-Capture-WINPE.bat or WIM-Capture.bat with the second option allowing allowing for a full path backup not just the entire drive
+  3. If the Partition is on an External Device and is special is special such as a boot or recovery partition run closeefi.bat(GPT),closembr.bat(MBR) or closerecovery.bat for recovery
+
+- Applying the WIM Image
+  1. Boot into WinPE unless the partition is not currently booted (Not the Current Boot or C Drive)
+  2. Run WIMApply-Universal.bat
+
+- Converting from VHD(X) ISO or ESD to WIM
+  1. Run IMG2WIM.bat
+__________________________
+
 NOTES
 __________________
 

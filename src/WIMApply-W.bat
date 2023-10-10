@@ -6,14 +6,14 @@ REM This Script is Made to Erase and RE-IMAGE Already Installed Paritition of Wi
 set /p wim=Input WIM/ESD:
 set wim=%wim:"=%
 dism /get-imageinfo /imagefile:"%wim%"
-set /p index=Input Index:
+set /p index="Input Index:"
 mountvol W: /p >nul
 mountvol W: /d >nul
 :SEL
 diskpart /s "%~dp0ld.txt"
-set /p disk=Input Disk Number:
+set /p disk="Input Disk Number:"
 diskpart /s "%~dp0dd.txt"
-set /p volume=Input Vol Number:
+set /p volume="Input Vol Number:"
 set /p ays=Are You sure this is the correct Volume %volume% [Y/N]?
 IF /I %ays:~0,1% NEQ Y GOTO SEL
 call "%~dp0FileExplorerPopUp-Disable.bat" >nul 2>&1
@@ -37,3 +37,4 @@ echo %~1
 pause
 exit 1
 )
+exit /b
