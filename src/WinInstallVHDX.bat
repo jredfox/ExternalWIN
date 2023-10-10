@@ -212,7 +212,6 @@ rem ####Grab the next Drive Letter & Re-Assign W:\#####
 IF "%winpar%" EQU "" ( set /p winpar="Input Windows(VDISKS) Partition(64+GB Usually):" )
 set par=%winpar%
 call "%~dp0Assign-RND.bat"
-call :REVPP
 timeout /t 1 /NOBREAK >nul
 call "%~dp0FileExplorerPopUp-Enable.bat"
 echo ####################FINISHED############################
@@ -235,11 +234,5 @@ IF EXIST "X:\" (
 FOR /f "delims=" %%a in ('POWERCFG -GETACTIVESCHEME') DO @SET powerplan="%%a"
 powercfg /s 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
 echo changed powerplan of !powerplan! to high performance 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
-)
-exit /b
-
-:REVPP
-IF EXIST "X:\" (
-powercfg /s !powerplan!
 )
 exit /b

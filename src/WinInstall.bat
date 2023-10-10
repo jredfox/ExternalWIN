@@ -178,7 +178,6 @@ set /p par="Input Windows Partition(64+GB Usually):"
 call "%~dp0Assign-RND.bat"
 IF %recovery% EQU T (set /p parrecovery="Input Recovery Partition(1GB Usually):")
 IF %recovery% EQU T (diskpart /s "%~dp0Closerecovery%dskext%")
-call :REVPP
 timeout /t 1 /NOBREAK >nul
 call "%~dp0FileExplorerPopUp-Enable.bat"
 echo External Installation of Windows Completed :)
@@ -201,11 +200,5 @@ IF EXIST "X:\" (
 FOR /f "delims=" %%a in ('POWERCFG -GETACTIVESCHEME') DO @SET powerplan="%%a"
 powercfg /s 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
 echo changed powerplan of !powerplan! to high performance 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
-)
-exit /b
-
-:REVPP
-IF EXIST "X:\" (
-powercfg /s !powerplan!
 )
 exit /b
