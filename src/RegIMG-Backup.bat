@@ -21,7 +21,7 @@ del /f /q /a "%vdisk%" >nul 2>&1
 call "%~dp0createvhdx-expand.bat" "%vdisk%" "1" "NTFS" "REGIMG" "%letreg%"
 
 REM #### split the registry and get the paths at index 3. Then Copy the Paths to a new vdisk #####
-for /f "tokens=3*" %%a in (%hivelist%) do (
+for /f "usebackq tokens=3*" %%a in ("%hivelist%") do (
     set device=%%a
 REM #### Handle Spaced paths ####
     IF "%%b" NEQ "" (
