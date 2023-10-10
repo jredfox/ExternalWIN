@@ -32,9 +32,8 @@ NOTE: This will replace the current boot loader with the targeted windows.
 For example if you run WinRepairBoot.bat for windows 7 and you want the nicer windows 10-11 menu you would have to run 
 WinRepairBoot.bat again and specify the partition with windows 10 or 11 on it to get the nicer Menu
 ##################################
-  1. Decide whether or not you want to Re-Image the Boot (deletes all data and replaces it with the boot.wim backup)
-  2. If you want to Re-Image the boot go to "How to Re-Image the boot Drive"
-  4. Run WinRepairBoot.bat . This will add a boot entry to the current menu. If you wanted to clean all boot entries before running it please format the partition as FAT32 first unless your repairing your current boot
+  1. Decide whether or not you want to Re-Image the Boot (deletes all data and replaces it with the boot.wim backup) If you want to Re-Image the boot go to "How to Re-Image the boot Drive"
+  2. Run WinRepairBoot.bat . This will add a boot entry to the current menu. If you wanted to clean all boot entries before running it please format the partition as FAT32 first unless your repairing your current boot
      then please Delete any unwanted boot entries instead
 
 - How to Re-Image the Boot Drive
@@ -56,8 +55,8 @@ WinRepairBoot.bat again and specify the partition with windows 10 or 11 on it to
 WARNING: If the Registry Image isn't recent all wanted changes to the registry will be deleted. Please Use .REG Files and run REG-ApplyBackup.bat after Re-Imaging the Registry
 Re-Imaging the registry will delete any malware edits to the registry or unintended changes without needing to re-install windows all over again
 ##################################
-  1. Create REG backups using REG-Backup.bat
-  2. Place your latest stable REG backup files into the scripts directory
+  1. Create .REG backups using REG-Backup.bat
+  2. Place your latest stable .REG backup files into the scripts directory
   3. Boot into WinPE --> SHIFT+F10
   4. Run RegIMG-Apply.bat
   5. Run Windows normally 
@@ -89,11 +88,11 @@ __________________
 - You MUST RUN these scripts on WINDOWS 10 and above Even if your installing something older then Windows 10. The commands for DISM and others didn't exist or didn't contain all the options required. 
 - If you don't have a windows 10 Installed run these scripts in Windows 10 Installation Media (WinPE) USB.
 - You Must have Unallocated space in order to install Windows on any disk If your not Erasing it. It will not shrink or overwrite a partition in order to make space for the installation
-- Factory Reset(Recovery Partition) Doesn't work for MBR LEGACY Disks on an External Hard Drive or USB but will work on an Internal Hard drive. It also doesn't work on USB Hard Drives
+- Factory Reset(Recovery Partition) Doesn't work for MBR LEGACY Disks on an External Hard Drive or USB but will work on an Internal Hard drive.
 - You cannot capture an internal hard drive as a WIM and install it to an External hard drive (May be able to by messing with the registry but I haven't been able to get it to work)
 - Windows 7 and below cannot be installed to an external harddrive without generic Intel or AMD USB 3.0 or above drivers. It will crash even in safemode
 - Windows 7 Even if installed on an externally will always have the Internal Disk Access because the San Policy value of 4 didn't exist in windows 7 and below
-- Windows 8-8.1 cannot be installed to a USB flash drive but can be installed to an external Harddrive(crashes)
+- Windows 8-8.1 cannot be installed to a USB flash drive(crashes) but can be installed to an external Harddrive
 - Windows 11 CAN be installed on an MBR LEGACY Disk without a TPM or Secure Boot being enabled (unsupported hardware). As my install doesn't check for these things
 - Windows XP & Vista are untested. XP doesn't have a WIM file so unless you can install it to a fresh drive and Capture it as a WIM before booting it you couldn't install it anyways
 - File Explorer (Windows Explorer Now) Popups when Partitioning the harddrive cannot fully be disabled. Please close any "You Need To Format" Popups
