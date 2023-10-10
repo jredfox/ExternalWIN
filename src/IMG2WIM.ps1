@@ -16,10 +16,10 @@ if($extn -eq ".ESD")
 }
 #start cleanup
 $wimfile = "$Directory\" + (Get-Item -Path $Image).BaseName + ".wim"
+DisMount-DiskImage -ImagePath $Image | Out-Null
 if (test-path $wimfile) {
 Remove-Item $wimfile
 }
-DisMount-DiskImage -ImagePath $Image | Out-Null
 #end cleanup
 #support ISO and other possible virtual disk images
 if ($extn -ne ".VHD" -and $extn -ne ".VHDX")
@@ -45,6 +45,10 @@ if (($Partitions | Get-Volume) -ne $Null) {
         New-Item $PartitionMountPath -ItemType Directory -Force | Out-Null
         $Partition | Add-PartitionAccessPath -AccessPath $PartitionMountPath
         $pname = ($Partition | Get-Volume).FileSystemLabel
+        if ([string]::IsNullOrEmpty($pname)) 
+        {
+           $pname = "Null Label"
+        }
         $size = [math]::round(($Partition | Get-Volume).Size / 1MB, 2)
         $fs = "Format: " + ($Partition | Get-Volume).FileSystem + " Size: " + $size + " MB"
         dism $operation /ImageFile:"$wimfile" /CaptureDir:"$PartitionMountPath" /Name:"$pname" /Description:"$fs" $comp
