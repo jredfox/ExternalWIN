@@ -79,7 +79,7 @@ IF /I %legacy:~0,1% EQU Y (
 rem ######### INIT DISK SETUP ###########
 set /p e=ERASE THE DRIVE [Y/N]?
 IF "%Custom%" EQU "T" ( 
-call "%~dp0FileExplorerPopUp-Disable.bat" "1500" >nul 2>&1
+call "%~dp0FileExplorerPopUp-Disable.bat" "1500" >nul
 )
 IF /I %e:~0,1% EQU Y ( GOTO ERASE ) else ( GOTO PARSEC )
 
