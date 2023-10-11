@@ -1,5 +1,5 @@
 @Echo OFF
-IF EXIST "X:\" (exit /b)
+IF "!winpe!" EQU "T" (exit /b)
 REM %1% IS Sleep Before and %2% is Sleep After
 IF "%~1%" NEQ "" (cscript "%~dp0Sleep.vbs" "%~1" >nul)
 reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v NoAutoplayfornonVolume /f
