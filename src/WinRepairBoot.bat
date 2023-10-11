@@ -98,7 +98,7 @@ call "%~dp0Assign-RND.bat"
 call "%~dp0FileExplorerPopUp-Enable.bat" "2000" ""
 echo Repairing Boot Completed
 pause
-exit /b 0
+exit /b
 
 :checkAdmin
 net session >nul 2>&1
@@ -107,11 +107,13 @@ echo %~1
 pause
 exit 1
 )
+exit /b
 
 :PRINTVDISKS
 for %%f in ("%searchDirectory%\*.vhd" "%searchDirectory%\*.vhdx") do (
     echo VDISK: %%f
 )
+exit /b
 
 :PP
 REM ######## WinPE support change the power plan to maximize perforamnce #########

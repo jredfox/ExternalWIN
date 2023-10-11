@@ -93,7 +93,7 @@ call "%~dp0Assign-RND.bat"
 :END
 call "%~dp0FileExplorerPopUp-Enable.bat" "2000" ""
 pause
-exit /b 0
+exit /b
 
 :checkAdmin
 net session >nul 2>&1
