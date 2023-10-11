@@ -1,7 +1,7 @@
 select disk "%disk%"
 clean
 sel disk "%disk%"
-convert gpt
+convert gpt NOERR
 sel disk "%disk%"
 sel par 1
 delete par override

@@ -31,6 +31,8 @@ set description=%description:"=%
 bcdedit.exe /store "%store%" /set "{%guid%}" description "%description%"
 set /p q2=Name Another Entry [Y/N]?
 IF /I "%q2:~0,1%" EQU "Y" GOTO SELBOOT
+mountvol S: /p >nul
+mountvol S: /d >nul
 diskpart /s "%~dp0Closeboot%dskext%"
 call "%~dp0FileExplorerPopUp-Enable.bat" "2000" ""
 pause
