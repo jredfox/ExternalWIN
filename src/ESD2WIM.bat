@@ -20,10 +20,11 @@ echo[
 echo Finished Extracting Index %%A
 echo[
 )
+
 :END
 echo Done Converting ESD to WIM File
 IF %sp% EQU true (pause)
-exit /b 0
+exit /b
 
 :checkAdmin
 net session >nul 2>&1
@@ -32,3 +33,4 @@ echo %~1
 pause
 exit 1
 )
+exit /b

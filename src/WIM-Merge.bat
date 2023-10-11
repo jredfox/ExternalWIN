@@ -23,7 +23,7 @@ echo Merged "%wimFrom%" at index "%%i" to "%wimTarget%"
 
 :END
 IF %sp% EQU true (pause)
-exit /b 0
+exit /b
 
 :checkAdmin
 net session >nul 2>&1
@@ -32,3 +32,4 @@ echo %~1
 pause
 exit 1
 )
+exit /b

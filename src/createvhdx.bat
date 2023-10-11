@@ -7,7 +7,7 @@ set fs=%~3
 set label=%~4
 set letvdisk=%~5
 diskpart /s "%~dp0newvhdx.txt"
-exit /b 0
+exit /b
 
 :checkAdmin
 net session >nul 2>&1
@@ -16,3 +16,4 @@ echo %~1
 pause
 exit 1
 )
+exit /b

@@ -24,7 +24,7 @@ IF EXIST "%vdisk%" (
   echo ERR^: Unable to Detach ^& Delete the vdisk during cleanup %vdisk%
   echo ERR^: PLEASE REBOOT YOUR PC Before trying again
   set /p a=Press ENTER To Continue^.^.^.
-  exit /b 0
+  exit /b
 )
 GOTO CREATE
 :CLEANUP2
@@ -54,7 +54,7 @@ diskpart /s "%~dp0dvhdx.txt" >nul
 set /p con=Would you like to Install It [Y/N]?
 IF /I %con:~0,1% NEQ Y (
 call "%~dp0FileExplorerPopUp-Enable.bat"
-exit /b 0
+exit /b
 )
 
 rem ####### SET VARS ####################

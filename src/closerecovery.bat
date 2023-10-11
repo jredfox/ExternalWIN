@@ -14,7 +14,7 @@ diskpart /s "%~dp0Closerecovery%ext%"
 
 :END
 pause
-exit /b 0
+exit /b
 
 :checkAdmin
 net session >nul 2>&1

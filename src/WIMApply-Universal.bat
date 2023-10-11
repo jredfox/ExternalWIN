@@ -90,6 +90,7 @@ IF /I %type% EQU R (
  GOTO END
 )
 call "%~dp0Assign-RND.bat"
+
 :END
 call "%~dp0FileExplorerPopUp-Enable.bat" "2000" ""
 pause

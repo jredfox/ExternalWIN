@@ -6,8 +6,10 @@ set /p disk=Enter Disk:
 diskpart /s %~dp0ListPar.txt
 set /p syspar=Enter Par:
 diskpart /s "%~dp0Openboot.txt"
+
+:END
 pause
-exit /b 0
+exit /b
 
 :checkAdmin
 net session >nul 2>&1

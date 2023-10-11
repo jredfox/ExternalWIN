@@ -7,6 +7,10 @@ diskpart /s %~dp0ListPar.txt
 set /p syspar=Enter Par:
 diskpart /s "%~dp0Openboot-MBR.txt"
 
+:END
+pause
+exit /b
+
 :checkAdmin
 net session >nul 2>&1
 IF %ERRORLEVEL% NEQ 0 (

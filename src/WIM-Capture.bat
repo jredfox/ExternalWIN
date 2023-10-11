@@ -17,7 +17,7 @@ dism /capture-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%ComputerName%
 IF ERRORLEVEL 1 echo ######################### & echo Try Changing "%let%" to "%let:~0,1%:" or "%let:~0,1%" to capture the entire drive. This is a DISM.exe bug not an issue with the script & echo#########################
 echo "SAVED WIM TO: %wim%"
 pause
-exit /b 0
+exit /b
 
 :checkAdmin
 net session >nul 2>&1
@@ -26,6 +26,7 @@ echo %~1
 pause
 exit 1
 )
+exit /b
 
 :PP
 REM ######## WinPE support change the power plan to maximize perforamnce #########

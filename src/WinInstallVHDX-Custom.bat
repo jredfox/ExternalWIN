@@ -4,7 +4,7 @@ call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
 set /p vdisk="Input VHDX File:"
 set vdisk=%vdisk:"=%
 call "%~dp0WinInstallVHDX.bat"
-exit /b 0
+exit /b
 
 :checkAdmin
 net session >nul 2>&1
@@ -13,3 +13,4 @@ echo %~1
 pause
 exit 1
 )
+exit /b

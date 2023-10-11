@@ -17,7 +17,7 @@ rd /s /q "%wim%"
 dism /capture-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%ComputerName%" /Description:"%desc%" /compress:maximum
 echo "SAVED WIM TO: %wim%"
 pause
-exit /b 0
+exit /b
 
 :checkAdmin
 net session >nul 2>&1
@@ -26,6 +26,7 @@ echo %~1
 pause
 exit 1
 )
+exit /b
 
 :PP
 REM ######## WinPE support change the power plan to maximize perforamnce #########

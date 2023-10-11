@@ -4,7 +4,7 @@ set /p img=Enter Image(VHD, VHDX, ISO, ESD):
 set img=%img:"=%
 powershell -ExecutionPolicy Bypass -File "%~dp0IMG2WIM.ps1" -Image "%img%"
 pause
-exit /b 0
+exit /b
 
 :checkAdmin
 net session >nul 2>&1
@@ -13,3 +13,4 @@ echo %~1
 pause
 exit 1
 )
+exit /b

@@ -9,7 +9,7 @@ echo Closing EFI Boot
 mountvol S: /p
 diskpart /s %~dp0Closeboot.txt
 pause
-exit /b 0
+exit /b
 
 :checkAdmin
 net session >nul 2>&1
@@ -18,3 +18,4 @@ echo %~1
 pause
 exit 1
 )
+exit /b

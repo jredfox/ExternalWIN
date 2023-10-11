@@ -25,9 +25,10 @@ GOTO END
 )
 echo Extracted Index %%i Successfully from "%wim%"
 )
+
 :END
 pause
-exit /b 0
+exit /b
 
 :checkAdmin
 net session >nul 2>&1

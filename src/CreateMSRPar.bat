@@ -34,3 +34,4 @@ IF "!found!" NEQ "T" (
 echo Creating MSR Partition as it wasn't found
 diskpart /s "%~dp0ParMSR.txt"
 )
+exit /b

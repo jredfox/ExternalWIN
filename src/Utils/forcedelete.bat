@@ -6,7 +6,7 @@ takeown /F "%dir%" /R /D Y
 icacls "%dir%" /T /C /grant administrators:F System:F everyone:F
 del /F "%dir%" /s /q /a
 rmdir /s /q "%dir%"
-exit /b 0
+exit /b
 
 :checkAdmin
 net session >nul 2>&1
