@@ -214,7 +214,7 @@ call "%~dp0FileExplorerPopUp-Enable.bat" "2000" ""
 echo ####################FINISHED############################
 title %cd%
 pause
-exit /b 0
+exit /b
 
 :checkAdmin
 net session >nul 2>&1
