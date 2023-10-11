@@ -1,6 +1,7 @@
 @ECHO OFF
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
+call :PP
 call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
 :SEL
 diskpart /s "%~dp0ld.txt"
@@ -111,3 +112,17 @@ exit 1
 for %%f in ("%searchDirectory%\*.vhd" "%searchDirectory%\*.vhdx") do (
     echo VDISK: %%f
 )
+
+:PP
+REM ######## WinPE support change the power plan to maximize perforamnce #########
+set winpe=F
+REM Check if we are in WINPE. If Either where or powershell is missing and X:\ Exists we are in WinPE
+IF NOT EXIST "X:\" (exit /b)
+where powershell >nul 2>&1
+IF !ERRORLEVEL! NEQ 0 (
+winpe=T
+FOR /f "delims=" %%a in ('POWERCFG -GETACTIVESCHEME') DO @SET powerplan="%%a"
+powercfg /s 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
+echo changed powerplan of !powerplan! to high performance 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
+)
+exit /b
