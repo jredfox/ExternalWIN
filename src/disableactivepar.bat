@@ -12,8 +12,12 @@ for /l %%i in (1, 1, %PartitionCount%) do (
 
     diskpart /s "%TMP%\diskpart_script.txt" > "%TMP%\partition_details.txt"
     REM Check if the partition is active ("Active: Yes" or "Active: True" ignoring case)
-    findstr /i /c:"Active: Yes" /i /c:"Active: True" "%TMP%\partition_details.txt" >nul
-    if !errorlevel! equ 0 (
+	set Found=F
+    cscript "%~dp0FindSTR.vbs" "Active: Yes" "%TMP%\partition_details.txt" "false" >nul
+	IF !ERRORLEVEL! EQU 0 (set Found=T)
+	cscript "%~dp0FindSTR.vbs" "Active: True" "%TMP%\partition_details.txt" "false" >nul
+	IF !ERRORLEVEL! EQU 0 (set Found=T)
+    IF !Found! EQU T (
         echo Active partition found: %%i
         REM set par ID to 18
         (
@@ -28,4 +32,5 @@ for /l %%i in (1, 1, %PartitionCount%) do (
 
     del "%TMP%\diskpart_script.txt"
     del "%TMP%\partition_details.txt"
+	IF !Found! EQU T (exit /b)
 )

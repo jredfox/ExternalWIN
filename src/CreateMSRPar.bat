@@ -18,7 +18,7 @@ for /l %%i in (1, 1, %PartitionCount%) do (
     IF !ERRORLEVEL! NEQ 0 (
 	GOTO END
     )
-    findstr /i /c:"e3c9e316-0b5c-4db8-817d-f92df00215ae" "%TMP%\partition_details.txt" >nul
+    cscript "%~dp0FindSTR.vbs" "e3c9e316-0b5c-4db8-817d-f92df00215ae" "%TMP%\partition_details.txt" "false" >nul
     IF !ERRORLEVEL! EQU 0 (
        echo Found MSR Partition %%i
        set found=T
