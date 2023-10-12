@@ -83,14 +83,14 @@ IF !ERRORLEVEL! NEQ 0 (!bootdrive!:\Windows\System32\bcdboot %let%:\Windows /s S
 )
 
 REM Close Boot
-echo Closing BOOT
-mountvol S: /p >nul
-mountvol S: /d >nul
-diskpart /s "%~dp0Closeboot%ext%"
 IF "%vdisk%" NEQ "" (
 echo Closing VHDX
 diskpart /s "%~dp0dvhdx.txt"
 )
+echo Closing BOOT
+mountvol S: /p >nul
+mountvol S: /d >nul
+diskpart /s "%~dp0Closeboot%ext%"
 IF "%ISCDRIVE%" EQU "T" GOTO END
 set par=%winpar%
 call "%~dp0Assign-RND.bat"
