@@ -36,6 +36,10 @@ WinRepairBoot.bat again and specify the partition with windows 10 or 11 on it to
   2. Run WinRepairBoot.bat . This will add a boot entry to the current menu. If you wanted to clean all boot entries before running it please format the partition as FAT32 first unless your repairing your current boot
      then please Delete any unwanted boot entries instead
 
+- How to Run WinRepairBoot.bat in WinPE (Installation Media)
+  1. Run WinRepairBoot.bat
+  2. If Prompted To input Your System Partition Input X drive as WinPE is X drive for X:\Windows*
+
 - How to Re-Image the Boot Drive
   1. Run WIMApply-Universal.bat with the boot.wim file found in C:\ExternalWin\backups\boot.wim or in your recovery partition R:\ExternalWin\backups\boot.wim (use openrecovery.bat to access)
 

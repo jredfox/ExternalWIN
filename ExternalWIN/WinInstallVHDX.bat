@@ -161,7 +161,7 @@ set bootdrive=%windrive%
 V:\Windows\System32\bcdboot V:\Windows /f ALL /s S:
 IF !ERRORLEVEL! NEQ 0 (
 echo Error Running BCDBOOT Attempting to inject Current Windows Boot Manager into Older Windows
-set /p bootdrive="enter BCDBOOT Drive(Normally C):"
+set /p bootdrive="Enter BCDBOOT Drive (Normally C for Windows or X on WinPE):"
 set bootdrive=!bootdrive:"=!
 set bootdrive=!bootdrive:~0,1!
 !bootdrive!:\Windows\System32\bcdboot %windrive%:\Windows /f ALL /s S:
