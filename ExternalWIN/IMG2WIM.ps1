@@ -43,6 +43,8 @@ if (($Partitions | Get-Volume) -ne $Null) {
     foreach ($Partition in ($Partitions | where {($_ | Get-Volume) -ne $Null})) {
         $PartitionMountPath = $DriveNumberPath + "\P" + $Partition.PartitionNumber
         New-Item $PartitionMountPath -ItemType Directory -Force | Out-Null
+        #We have to remove the partition path mount before we can mount it in case a previous conversion was stopped
+        $Partition | Remove-PartitionAccessPath -AccessPath $PartitionMountPath
         $Partition | Add-PartitionAccessPath -AccessPath $PartitionMountPath
         $pname = ($Partition | Get-Volume).FileSystemLabel
         if ([string]::IsNullOrEmpty($pname)) 
