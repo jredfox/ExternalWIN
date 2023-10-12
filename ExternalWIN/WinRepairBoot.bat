@@ -43,7 +43,7 @@ set winpar=%par%
 diskpart /s "%~dp0Assign.txt"
 IF %ERRORLEVEL% NEQ 0 (
 set ISCDRIVE=T
-set /p let="Enter Drive Letter Normally C:"
+set /p let="Enter Drive Letter Normally C for Windows or X on WinPE:"
 )
 set let=%let:"=%
 set let=%let:~0,1%

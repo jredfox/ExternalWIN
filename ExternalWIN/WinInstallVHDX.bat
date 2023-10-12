@@ -28,6 +28,7 @@ IF EXIST "%vdisk%" (
 )
 GOTO CREATE
 :CLEANUP2
+diskpart /s "%~dp0dvhdx.txt" >nul
 mountvol W: /p >nul
 mountvol S: /p >nul
 mountvol V: /p >nul
