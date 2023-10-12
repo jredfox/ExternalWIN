@@ -1,4 +1,0 @@
-sel disk "%disk%"
-sel par "%syspar%"
-active
-set id=0C override

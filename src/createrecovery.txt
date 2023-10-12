@@ -1,4 +1,0 @@
-select disk "%disk%"
-create partition primary size="%sizerecovery%"
-format quick fs=ntfs label="%labelrecovery%"
-assign letter="%letrecovery%"

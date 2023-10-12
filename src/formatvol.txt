@@ -1,3 +1,0 @@
-sel vol "%volume%"
-format quick fs="%form%" label="%label1%"
-assign letter="%let%"

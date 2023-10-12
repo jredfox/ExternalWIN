@@ -1,2 +1,0 @@
-select vdisk file="%vdisk%"
-DETACH vdisk

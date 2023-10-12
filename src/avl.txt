@@ -1,2 +1,0 @@
-sel volume "%volume%"
-assign letter="%let%"

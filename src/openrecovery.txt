@@ -1,6 +1,0 @@
-select disk "%disk%"
-select par "%parrecovery%"
-set id=ebd0a0a2-b9e5-4433-87c0-68b6b72699c7
-gpt attributes=0x0000000000000000
-select par "%parrecovery%"
-assign letter="%letrecovery%"

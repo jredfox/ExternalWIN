@@ -1,4 +1,0 @@
-sel disk "%disk%"
-create partition primary size="%sizeprime%"
-format quick fs="%fsprime%" label="%labelprime%"
-assign letter="%letprime%"

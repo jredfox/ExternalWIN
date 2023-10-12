@@ -1,5 +1,0 @@
-select disk "%disk%"
-select par "%parrecovery%"
-set id=07 override
-select par "%parrecovery%"
-assign letter="%letrecovery%"

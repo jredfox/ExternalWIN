@@ -1,3 +1,0 @@
-sel disk "%disk%"
-sel par "%par%"
-assign letter="%let%"
