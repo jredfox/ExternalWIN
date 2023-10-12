@@ -195,13 +195,15 @@ REM dism /Image:W:\ /Apply-Unattend:W:\san_policy.xml
 
 :POSTINSTALL
 diskpart /s "%~dp0ListPar.txt"
+IF NOT "%ISMBR%" EQU "T" ( 
 IF "%syspar%" EQU "" (
-set /p syspar="Input System Partition(280 MB Usually):"
+    set /p syspar="Input System(BOOT) Partition(280 MB Usually):"
+  )
 )
 echo Closing Boot
 mountvol S: /p >nul
 mountvol S: /d >nul
-diskpart /s "%~dp0Closeboot%ext%"
+IF NOT "%ISMBR%"=="T" ( diskpart /s "%~dp0Closeboot%dskext%" )
 echo Closing VHDX
 diskpart /s "%~dp0dvhdx.txt"
 rem ####Grab the next Drive Letter & Re-Assign W:\#####

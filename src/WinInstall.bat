@@ -163,18 +163,20 @@ echo It's Recommended to use REG-Backup.bat for your new Windows Installation as
 rem #######POST INSTALL############
 :POSTINSTALL
 diskpart /s "%~dp0ListPar.txt"
+IF NOT "%ISMBR%" EQU "T" ( 
 IF "%syspar%" EQU "" (
-set /p syspar="Input System(BOOT) Partition(280 MB Usually):"
+    set /p syspar="Input System(BOOT) Partition(280 MB Usually):"
+  )
 )
 echo Closing Boot
 mountvol S: /p >nul
 mountvol S: /d >nul
 mountvol R: /d >nul
-diskpart /s "%~dp0Closeboot%ext%"
+IF NOT "%ISMBR%"=="T" ( diskpart /s "%~dp0Closeboot%dskext%" )
 set /p par="Input Windows Partition(64+GB Usually):"
 call "%~dp0Assign-RND.bat"
-IF %recovery% EQU T (set /p parrecovery="Input Recovery Partition(1GB Usually):")
-IF %recovery% EQU T (diskpart /s "%~dp0Closerecovery%dskext%")
+IF "%recovery%" EQU "T" (set /p parrecovery="Input Recovery Partition(1GB Usually):")
+IF "%recovery%" EQU "T" (diskpart /s "%~dp0Closerecovery%dskext%")
 call "%~dp0FileExplorerPopUp-Enable.bat" "2000" ""
 echo External Installation of Windows Completed :)
 title %cd%
