@@ -28,7 +28,7 @@ IF EXIST "%vdisk%" (
 )
 GOTO CREATE
 :CLEANUP2
-diskpart /s "%~dp0dvhdx.txt" >nul
+IF "%winpe%" EQU "T" (diskpart /s "%~dp0dvhdx.txt") ELSE (powershell DisMount-DiskImage -ImagePath "%vdisk%" >nul 2>&1)
 mountvol W: /p >nul
 mountvol S: /p >nul
 mountvol V: /p >nul
@@ -133,8 +133,7 @@ echo Creating Windows Partition of %sizeprime% MB
 diskpart /s "%~dp0ParPrime.txt"
 
 :INSTALL
-echo detatching VHDX %vdisk%
-diskpart /s "%~dp0dvhdx.txt" >nul
+echo installing >nul
 :LOOP
 set /p vdiskhome="Enter Windows VHDX File Name:"
 set vdiskhome=%vdiskhome:"=%
@@ -148,6 +147,7 @@ GOTO LOOP
 )
 set vdiskhome=W:\%vdiskhome%.vhdx
 set vdiskhome=%vdiskhome:.vhdx.vhdx=.vhdx%
+set vdiskhome=%vdiskhome:.vhdx=VDISK.vhdx%
 IF EXIST "%vdiskhome%" (
   echo File Already Exists %vdiskhome%
   GOTO LOOP
