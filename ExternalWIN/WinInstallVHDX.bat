@@ -147,7 +147,7 @@ GOTO LOOP
 )
 set vdiskhome=W:\%vdiskhome%.vhdx
 set vdiskhome=%vdiskhome:.vhdx.vhdx=.vhdx%
-set vdiskhome=%vdiskhome:.vhdx=VDISK.vhdx%
+set vdiskhome=%vdiskhome:.vhdx=V.vhdx%
 IF EXIST "%vdiskhome%" (
   echo File Already Exists %vdiskhome%
   GOTO LOOP
