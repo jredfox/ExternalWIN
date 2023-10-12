@@ -28,7 +28,7 @@ IF EXIST "%vdisk%" (
 )
 GOTO CREATE
 :CLEANUP2
-IF "%winpe%" EQU "T" (diskpart /s "%~dp0dvhdx.txt") ELSE (powershell DisMount-DiskImage -ImagePath "%vdisk%" >nul 2>&1)
+IF "%winpe%" EQU "T" (diskpart /s "%~dp0dvhdx.txt" >nul) ELSE (powershell DisMount-DiskImage -ImagePath "%vdisk%" >nul 2>&1)
 mountvol W: /p >nul
 mountvol S: /p >nul
 mountvol V: /p >nul

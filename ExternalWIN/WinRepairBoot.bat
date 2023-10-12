@@ -62,9 +62,9 @@ set vdisk=!vdisk:"=!
 )
 IF /I "!vr:~0,1!" EQU "Y" (
 echo vdisk is !vdisk!
+IF "%winpe%" EQU "T" (diskpart /s "%~dp0dvhdx.txt" >nul) ELSE (powershell DisMount-DiskImage -ImagePath "!vdisk!" >nul 2>&1)
 mountvol V: /p >nul
 mountvol V: /d >nul
-IF "%winpe%" EQU "T" (diskpart /s "%~dp0dvhdx.txt") ELSE (powershell DisMount-DiskImage -ImagePath "!vdisk!" >nul 2>&1)
 diskpart /s "%~dp0avhdx.txt"
 set let=V
 )
@@ -85,7 +85,7 @@ IF !ERRORLEVEL! NEQ 0 (!bootdrive!:\Windows\System32\bcdboot %let%:\Windows /s S
 REM Close Boot
 IF "!vdisk!" NEQ "" (
 echo Closing VHDX
-IF "%winpe%" EQU "T" (diskpart /s "%~dp0dvhdx.txt") ELSE (powershell DisMount-DiskImage -ImagePath "!vdisk!" >nul 2>&1)
+IF "%winpe%" EQU "T" (diskpart /s "%~dp0dvhdx.txt" >nul) ELSE (powershell DisMount-DiskImage -ImagePath "!vdisk!" >nul 2>&1)
 )
 echo Closing BOOT
 mountvol S: /p >nul
