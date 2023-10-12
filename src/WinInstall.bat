@@ -163,16 +163,14 @@ echo It's Recommended to use REG-Backup.bat for your new Windows Installation as
 rem #######POST INSTALL############
 :POSTINSTALL
 diskpart /s "%~dp0ListPar.txt"
-IF NOT "%ISMBR%"=="T" ( 
-IF "%syspar%"=="" (
-    set /p syspar="Input System(BOOT) Partition(280 MB Usually):"
-  )
+IF "%syspar%" EQU "" (
+set /p syspar="Input System(BOOT) Partition(280 MB Usually):"
 )
 echo Closing Boot
 mountvol S: /p >nul
 mountvol S: /d >nul
 mountvol R: /d >nul
-IF NOT "%ISMBR%"=="T" ( diskpart /s "%~dp0Closeboot%dskext%" )
+diskpart /s "%~dp0Closeboot%ext%"
 set /p par="Input Windows Partition(64+GB Usually):"
 call "%~dp0Assign-RND.bat"
 IF %recovery% EQU T (set /p parrecovery="Input Recovery Partition(1GB Usually):")
