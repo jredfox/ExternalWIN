@@ -57,7 +57,7 @@ for %%f in ("%searchDirectory%\*.vhd" "%searchDirectory%\*.vhdx") do (
 IF "!hasVHD!" NEQ "" (set /p vr="Is this a VDISK Repair [Y/N]?")
 IF /I "!vr:~0,1!" EQU "Y" (
 call :PRINTVDISKS
-set /p vdisk=Enter VDISK File:
+set /p vdisk="Enter VDISK File:"
 set vdisk=!vdisk:"=!
 )
 IF /I "!vr:~0,1!" EQU "Y" (

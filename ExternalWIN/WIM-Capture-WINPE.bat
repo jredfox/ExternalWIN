@@ -2,12 +2,12 @@
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 call :PP
-set /p wim=File Save As:
-set /p desc=Enter Description:
+set /p wim="File Save As:"
+set /p desc="Enter Description:"
 diskpart /s "%~dp0ld.txt"
-set /p disk=Input Disk Number:
+set /p disk="Input Disk Number:"
 diskpart /s "%~dp0dd.txt"
-set /p let=Enter Drive:
+set /p let="Enter Drive:"
 set wim=%wim:"=%
 set let=%let:"=%
 set let=%let:~0,1%:

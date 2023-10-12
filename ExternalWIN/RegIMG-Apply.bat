@@ -10,7 +10,7 @@ set /p index="Input Index:"
 set index=%index:"=%
 :SEL
 diskpart /s "%~dp0ld.txt"
-set /p disk=Input Disk Number:
+set /p disk="Input Disk Number:"
 diskpart /s "%~dp0dd.txt"
 set /p drive="Input Drive:"
 set drive=%drive:"=%

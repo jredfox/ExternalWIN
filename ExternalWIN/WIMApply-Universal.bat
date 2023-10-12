@@ -9,12 +9,12 @@ mountvol S: /p >nul
 mountvol W: /d >nul
 mountvol S: /d >nul
 mountvol R: /d >nul
-set /p wim=Input WIM/ESD:
+set /p wim="Input WIM/ESD:"
 set wim=%wim:"=%
 dism /get-imageinfo /imagefile:"%wim%"
-set /p index=Input Index:
+set /p index="Input Index:"
 diskpart /s "%~dp0ld.txt"
-set /p disk=Input Disk Number:
+set /p disk="Input Disk Number:"
 set /p ISMBR=Is This Disk LEGACY MBR [Y/N]?
 IF /I %ISMBR:~0,1% EQU Y ( 
 set ISMBR=T
@@ -26,7 +26,7 @@ set ext=.txt
 
 :SEL
 diskpart /s "%~dp0ListPar.txt"
-set /p par=Input Partition:
+set /p par="Input Partition:"
 diskpart /s "%~dp0detpar.txt"
 set /p ays=Are You Sure This is the Correct Partition [Y/N]?
 IF /I %ays:~0,1% NEQ Y GOTO SEL
@@ -70,7 +70,7 @@ GOTO SELF
 )
 IF /I "%q2%" EQU "F" (set form=FAT32) ELSE IF /I "%q2%" EQU "N" (set form=NTFS) ELSE IF /I "%q2%" EQU "X" (set form=EXFAT)
 diskpart /s "%~dp0detpar.txt"
-set /p label=Input Partition Label:
+set /p label="Input Partition Label:"
 set label=%label:"=%
 diskpart /s "%~dp0formatpar.txt"
 
