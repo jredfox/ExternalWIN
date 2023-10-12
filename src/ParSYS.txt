@@ -1,0 +1,4 @@
+select disk "%disk%"
+create partition primary size="%sizesys%"
+format quick fs=FAT32 label="%labelsys%"
+assign letter="%letsys%"

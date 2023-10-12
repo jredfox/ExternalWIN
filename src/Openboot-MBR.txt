@@ -1,0 +1,6 @@
+select disk "%disk%"
+select par "%syspar%"
+active
+set id=0C override
+select par "%syspar%"
+assign letter="%letsys%"

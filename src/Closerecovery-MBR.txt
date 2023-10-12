@@ -1,0 +1,3 @@
+sel disk "%disk%"
+sel par "%parrecovery%"
+set id=27 override
