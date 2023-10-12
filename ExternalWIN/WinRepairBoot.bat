@@ -28,6 +28,7 @@ set letsys=S
 set letvdisk=V
 call "%~dp0FileExplorerPopUp-Disable.bat" "3000"
 IF "%ISMBR%"=="T" ( call "%~dp0disableactivepar.bat" )
+cscript "%~dp0Sleep.vbs" "1500" >nul
 diskpart /s "%~dp0Openboot%ext%"
 
 :SELW
