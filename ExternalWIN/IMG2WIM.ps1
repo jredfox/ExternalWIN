@@ -2,7 +2,7 @@ param(
 [Parameter(Mandatory=$true)]
 [string]$Image
 )
-$Directory = (Get-Item -Path $Image).Directory
+$Directory = $Image | split-path
 $extn = [IO.Path]::GetExtension($Image)
 if($extn -eq ".WIM")
 {
@@ -15,7 +15,7 @@ if($extn -eq ".ESD")
   exit
 }
 #start cleanup
-$wimfile = "$Directory\" + (Get-Item -Path $Image).BaseName + ".wim"
+$wimfile = "$Directory\" + ([io.fileinfo]"$Image").BaseName + ".wim"
 DisMount-DiskImage -ImagePath $Image | Out-Null
 if (test-path $wimfile) {
 Remove-Item $wimfile
@@ -24,7 +24,7 @@ Remove-Item $wimfile
 #support ISO and other possible virtual disk images
 if ($extn -ne ".VHD" -and $extn -ne ".VHDX")
 {
-   $name = (Get-Item -Path $Image).BaseName
+   $name = ([io.fileinfo]"$Image").BaseName
    $MountedVhd = Mount-DiskImage -ImagePath $Image -PassThru
    $drive = (Get-DiskImage -ImagePath $Image | Get-Volume).DriveLetter + ":"
    dism /Capture-Image /ImageFile:"$wimfile" /CaptureDir:"$drive" /Name:"$name" /Description:"$name" /compress:maximum
