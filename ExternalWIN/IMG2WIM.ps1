@@ -44,7 +44,12 @@ if (($Partitions | Get-Volume) -ne $Null) {
         $PartitionMountPath = $DriveNumberPath + "\P" + $Partition.PartitionNumber
         New-Item $PartitionMountPath -ItemType Directory -Force | Out-Null
         #We have to remove the partition path mount before we can mount it in case a previous conversion was stopped
-        $Partition | Remove-PartitionAccessPath -AccessPath $PartitionMountPath
+        try {
+            $Partition | Remove-PartitionAccessPath -AccessPath $PartitionMountPath -ErrorAction SilentlyContinue | Out-Null
+        }
+        catch {
+            
+        }
         $Partition | Add-PartitionAccessPath -AccessPath $PartitionMountPath
         $pname = ($Partition | Get-Volume).FileSystemLabel
         if ([string]::IsNullOrEmpty($pname)) 
@@ -60,3 +65,4 @@ if (($Partitions | Get-Volume) -ne $Null) {
     }
 }
 DisMount-DiskImage -ImagePath $Image | Out-Null
+Remove-Item $DriveNumberPath -Recurse
