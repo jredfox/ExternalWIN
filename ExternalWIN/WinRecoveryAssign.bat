@@ -26,7 +26,7 @@ echo %~dp0Openrecovery!ext!
 REM ########## Actual Code #############
 diskpart /s "%~dp0Openrecovery!ext!"
 !let!:\Windows\System32\Reagentc /Setreimage /Path R:\Recovery\WindowsRE /Target !let!:\Windows
-!let!:\Windows\System32\Reagentc /enable >nul 2>&1
+!let!:\Windows\System32\Reagentc /enable /Target !let!:\Windows
 mountvol R: /d >nul
 diskpart /s "%~dp0Closerecovery!ext!"
 call "%~dp0FileExplorerPopUp-Enable.bat" "2000" ""

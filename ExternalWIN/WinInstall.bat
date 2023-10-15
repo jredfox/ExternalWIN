@@ -144,6 +144,7 @@ diskpart /s "%~dp0Createrecovery.txt"
 md R:\Recovery\WindowsRE
 xcopy /h W:\Windows\System32\Recovery\Winre.wim R:\Recovery\WindowsRE\
 W:\Windows\System32\Reagentc /Setreimage /Path R:\Recovery\WindowsRE /Target W:\Windows
+W:\Windows\System32\Reagentc /enable /Target W:\Windows
 :ENDRECOVERY
 
 REM ########## BACKUP SYSTEM BOOT #####################
