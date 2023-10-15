@@ -57,8 +57,10 @@ rd /q "%wim%" >nul 2>&1
 
 IF NOT EXIST "%wim%" (
 dism /capture-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%desc%" /Description:"%COMPNAME% On %date% %time%" /compress:maximum
+IF !ERRORLEVEL! EQU 0 (echo Captured WIM Successfully to "!wim!") ELSE (Capture WIM FAILED Please Delete the Latest Index of "!wim!")
 ) ELSE (
 dism /append-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%desc%" /Description:"%COMPNAME% On %date% %time%"
+IF !ERRORLEVEL! EQU 0 (echo Captured WIM Successfully to "!wim!") ELSE (Capture WIM FAILED Please Delete the Latest Index of "!wim!")
 )
 pause
 exit /b
