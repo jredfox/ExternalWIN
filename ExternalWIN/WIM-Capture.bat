@@ -10,7 +10,7 @@ set /p wim=%msg%
 set wim=!wim:"=!
 IF "!winpe!" EQU "T" (
 IF "!wim:~1,1!" NEQ ":" (
-echo Enter Full Path of The File to Save As
+echo Enter Full Path of the File to Save As
 GOTO SELFILE
 )
 )
@@ -22,6 +22,22 @@ set /p let="Enter Capture Drive:"
 set let=!let:"=!
 REM IF We are only capturing the whole drive fix the drive letter to make DISM happy
 IF "!let:~3,3!" EQU "" (set let=!let:~0,1!^:)
+
+REM ######## SANITY CHECK ###################
+set tdrive=!let:~0,1!
+set workdir=%~dp0
+IF "!wim:~1,1!" EQU ":" (set wdrive=!wim:~0,1!) ELSE (set wdrive=!workdir:~0,1!)
+echo target !tdrive! wim drive !wdrive!
+
+IF /I "!tdrive!" EQU "!wdrive!" (
+IF "!let:~3,3!" EQU "" (
+echo ERR Cannot Capture The Entire Drive The WIM Image Is Being Saved to
+GOTO SELFILE
+)
+echo WARNING Capturing the Same Drive as your saving to Could Cause an "Infinite Read/Write Loop" till Disk space runs out
+set /p ays="Do You Wish To Continue [Y/N]?"
+IF /I "!ays:~0,1!" NEQ "Y" (GOTO SELFILE)
+)
 
 REM ######## Find the ComputerName ############
 set drive=!let:~0,1!
