@@ -18,13 +18,14 @@ set ISMBR=F
 set ext=.txt
 )
 diskpart /s "%~dp0ListPar.txt"
-set /p par="Input Partition:"
+set /p par="Input Recovery Partition:"
 call "%~dp0FileExplorerPopUp-Disable.bat" "1500"
 set parrecovery=!par!
 set letrecovery=R
 echo %~dp0Openrecovery!ext!
 REM ########## Actual Code #############
 diskpart /s "%~dp0Openrecovery!ext!"
+!let!:\Windows\System32\Reagentc /disable /Target !let!:\Windows
 !let!:\Windows\System32\Reagentc /Setreimage /Path R:\Recovery\WindowsRE /Target !let!:\Windows
 !let!:\Windows\System32\Reagentc /enable /Target !let!:\Windows
 mountvol R: /d >nul

@@ -67,6 +67,11 @@ Re-Imaging the registry will delete any malware edits to the registry or uninten
   6. Run REG-ApplyBackup.bat
   7. Boot windows normally
 
+- How to Re-Assign A Recovery Partition after a fresh re-install
+  1. Run WIM-Apply-Universal.bat with the R for recovery option to reflash the default recovery partition with your cached OEM recovery partition (saves drivers, software and default apps)
+  2. Boot onto the same machine you want to assign the recovery partition to. ReAgentc.exe ignores the /target flags for enabling or disabling an offline windows installation meaning it may fail
+  3. Run WinRecoveryAssign.bat
+
 ##################################
 What is WIM Images and How do I Use them? WIM images are a windows image backup normally of an entire partition such as the c drive or boot drive. 
 You can backup both your partitions on windows and re-apply them later
