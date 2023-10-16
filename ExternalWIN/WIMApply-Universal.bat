@@ -2,13 +2,8 @@
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 call :PP
-
 call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
-mountvol W: /p >nul
-mountvol S: /p >nul
-mountvol W: /d >nul
-mountvol S: /d >nul
-mountvol R: /d >nul
+
 set /p wim="Input WIM/ESD:"
 set wim=%wim:"=%
 dism /get-imageinfo /imagefile:"%wim%"
@@ -40,6 +35,11 @@ echo INVALID TYPE "%type%"
 GOTO TYPE
 )
 REM ##### OPEN BOOT / RECOVERY & ASSIGN VARS ##############
+mountvol W: /p >nul
+mountvol S: /p >nul
+mountvol W: /d >nul
+mountvol S: /d >nul
+mountvol R: /d >nul
 call "%~dp0FileExplorerPopUp-Disable.bat" "1500"
 IF /I !type! EQU S (
 set let=S
