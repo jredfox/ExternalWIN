@@ -84,6 +84,25 @@ You can backup both your partitions on windows and re-apply them later
 
 - Converting from VHD(X) ISO or ESD to WIM
   1. Run IMG2WIM.bat
+
+- How To Mount WIM Image
+  1. Download and install 7-ZIP
+  2. Right click on the WIM Image --> 7-ZIP --> Open Archive
+  3. Using DISM to mount the WIM image is so much worse and takes too much writing time please use 7-ZIP Instead
+
+- How to Get Data From an Incremental WIM Image Backup
+  1. Download and install 7-ZIP
+  2. Right click on the WIM Image --> 7-ZIP --> Open Archive
+  3. Go to the index you need and find the correct data
+
+- How to Change Name / Description of a WIM Index
+  1. No Easy Way to do this sadly they removed this feature when they moved from imagex to dism
+  2. Apply the entire Image index you want to change to a VHDX
+  3. Capture the entire index using dism /capture-image /imagefile:path/to/newfile.wim /capturedir:<VDISK Drive letter> /name:"NEW NAME" /description:"NEW DESCRIPTION"
+  4. Merge the WIM Image to the old WIM Image
+  5. delete the original index.
+  6. Index order doesn't get preserved and you have to rebuild the entire WIM image if your ocd wants the same index order
+  7. Yell at both Microsoft DISM for not having the simple rename function and 7-ZIP for not allowing you to edit the name / description of the WIM file's index even though they generate an xml of it
 __________________________
 
 NOTES
