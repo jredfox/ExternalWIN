@@ -143,12 +143,18 @@ set labelrecovery=Recovery
 set letrecovery=R
 diskpart /s "%~dp0Createrecovery.txt"
 md R:\Recovery\WindowsRE
-xcopy /h W:\Windows\System32\Recovery\Winre.wim R:\Recovery\WindowsRE\
-W:\Windows\System32\Reagentc /Setreimage /Path R:\Recovery\WindowsRE /Target W:\Windows
+set agent=W:\Windows\System32\Reagentc
+REM Check if the Target Reagentc can run on this computer if not use this computers reagentc
+set agent=W:\Windows\System32\Reagentc
+!agent! "/?" >nul 2>&1
 IF !ERRORLEVEL! NEQ 0 (
 echo "Can't Run !agent! on this computer is the ISA Incompatible?"
-Reagentc /Setreimage /Path R:\Recovery\WindowsRE /Target W:\Windows
+set agent=Reagentc
 )
+xcopy /h W:\Windows\System32\Recovery\Winre.wim R:\Recovery\WindowsRE\
+!agent! /disable /Target W:\Windows
+!agent! /Setreimage /Path R:\Recovery\WindowsRE /Target W:\Windows
+!agent! /enable /Target W:\Windows
 :ENDRECOVERY
 
 REM ########## BACKUP SYSTEM BOOT #####################

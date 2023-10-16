@@ -143,7 +143,9 @@ You can also run any main script that format or partitions the hard drive and be
   - WinAssignRecovery.bat may not work on an offline windows version and should only ever be called from the current boot this is due to REAGENTC ignoring the /target for /enable or /disable I also tried the OSGUID and that didn't work either
   - File Security Popup Sometimes Occuring when Opening a Boot Partitions this is a windows bug ignoring it's own autorun policies
   - File Explorer Popup Somtimes Occuring when Opening Recovery Partitions. The work around is to kill file explorer all together and that's just as anoying as the popup itself. This is a bug with Windows Explorer Ignoring autorun policies again
+  - File Explorer Format Popup on USB Flash Drives Occuring when Creating MSR partitions. This is again file explorer ignoring it's own autorun policies
   - IMG2WIM.bat will not work in WinPE due to the fact that powershell doesn't exist in WinPE
+  - Can't Rename WIM Images Name or Description Without Recapture and or WIM Rebuild
 
 Dictionary
 __________________
