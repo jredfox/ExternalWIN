@@ -1,7 +1,6 @@
 @Echo Off
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
-mountvol R: /d >nul
 call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
 diskpart /s "%~dp0ld.txt"
 set /p disk="Input Disk:"
@@ -19,10 +18,10 @@ set ext=.txt
 )
 diskpart /s "%~dp0ListPar.txt"
 set /p par="Input Recovery Partition:"
+mountvol R: /d >nul
 call "%~dp0FileExplorerPopUp-Disable.bat" "1500"
 set parrecovery=!par!
 set letrecovery=R
-echo %~dp0Openrecovery!ext!
 REM ########## Actual Code #############
 diskpart /s "%~dp0Openrecovery!ext!"
 set agent=!let!:\Windows\System32\Reagentc
