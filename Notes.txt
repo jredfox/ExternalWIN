@@ -139,6 +139,11 @@ __________________________
    A: This is not a virus I simply disable popups of file explorer during the installation process. If it's still disabled after installing
 or you closed the script before it's done you will have to run FileExplorerPopUp-Enable.bat which will restore the default file explorer popup settings.
 You can also run any main script that format or partitions the hard drive and before you put in any info it Re-Enables it during the cleanup. You can close out when you see a prompt asking for information
+3. Known Non Fixable Issues
+  - WinAssignRecovery.bat may not work on an offline windows version and should only ever be called from the current boot this is due to REAGENTC ignoring the /target for /enable or /disable I also tried the OSGUID and that didn't work either
+  - File Security Popup Sometimes Occuring when Opening a Boot Partitions this is a windows bug ignoring it's own autorun policies
+  - File Explorer Popup Somtimes Occuring when Opening Recovery Partitions. The work around is to kill file explorer all together and that's just as anoying as the popup itself. This is a bug with Windows Explorer Ignoring autorun policies again
+  - IMG2WIM.bat will not work in WinPE due to the fact that powershell doesn't exist in WinPE
 
 Dictionary
 __________________
