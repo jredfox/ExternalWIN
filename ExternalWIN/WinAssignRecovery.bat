@@ -2,6 +2,7 @@
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
+Reagentc /enable >nul 2>&1
 diskpart /s "%~dp0ld.txt"
 set /p disk="Input Disk:"
 set /p legacy="MBR LEGACY Installation [Y/N]?"
@@ -31,9 +32,9 @@ IF !ERRORLEVEL! NEQ 0 (
 echo "Can't Run !agent! on this computer is the ISA Incompatible?"
 set agent=Reagentc
 )
-!agent! /disable /Target !let!:\Windows
+!agent! /disable
 !agent! /Setreimage /Path R:\Recovery\WindowsRE /Target !let!:\Windows
-!agent! /enable /Target !let!:\Windows
+!agent! /enable
 mountvol R: /d >nul
 diskpart /s "%~dp0Closerecovery!ext!"
 call "%~dp0FileExplorerPopUp-Enable.bat" "2000" ""

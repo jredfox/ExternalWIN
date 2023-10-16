@@ -4,6 +4,7 @@ call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order 
 title ExternalWin Version 1.0.2
 call :PP
 call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
+Reagentc /enable >nul 2>&1
 rem #######Disk Image Selection#########
 set /p wim="Mount Windows ISO & Input (Install.esd / Install.wim) located in sources:"
 set wim=%wim:"=%
@@ -152,9 +153,9 @@ echo "Can't Run !agent! on this computer is the ISA Incompatible?"
 set agent=Reagentc
 )
 xcopy /h W:\Windows\System32\Recovery\Winre.wim R:\Recovery\WindowsRE\
-!agent! /disable /Target W:\Windows
+!agent! /disable
 !agent! /Setreimage /Path R:\Recovery\WindowsRE /Target W:\Windows
-!agent! /enable /Target W:\Windows
+!agent! /enable
 :ENDRECOVERY
 
 REM ########## BACKUP SYSTEM BOOT #####################
