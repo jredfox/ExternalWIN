@@ -25,9 +25,16 @@ set letrecovery=R
 echo %~dp0Openrecovery!ext!
 REM ########## Actual Code #############
 diskpart /s "%~dp0Openrecovery!ext!"
-!let!:\Windows\System32\Reagentc /disable /Target !let!:\Windows
-!let!:\Windows\System32\Reagentc /Setreimage /Path R:\Recovery\WindowsRE /Target !let!:\Windows
-!let!:\Windows\System32\Reagentc /enable /Target !let!:\Windows
+set agent=!let!:\Windows\System32\Reagentc
+REM Check if the Target Reagentc can run on this computer if not use this computers reagentc
+!agent! "/?" >nul 2>&1
+IF !ERRORLEVEL! NEQ 0 (
+echo "Can't Run !agent! on this computer is the ISA Incompatible?"
+set agent=Reagentc
+)
+!agent! /disable /Target !let!:\Windows
+!agent! /Setreimage /Path R:\Recovery\WindowsRE /Target !let!:\Windows
+!agent! /enable /Target !let!:\Windows
 mountvol R: /d >nul
 diskpart /s "%~dp0Closerecovery!ext!"
 call "%~dp0FileExplorerPopUp-Enable.bat" "2000" ""

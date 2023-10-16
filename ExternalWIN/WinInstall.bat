@@ -133,6 +133,7 @@ REM dism /Image:W:\ /Apply-Unattend:W:\san_policy.xml
 
 REM ###### Create & Register Recovery Files ####################
 :RECOVERY
+IF NOT EXIST "W:\Windows\System32\Recovery\Winre.wim" (GOTO ENDRECOVERY)
 set recovery=F
 set /p rp=Do You Want to Create a Recovery Partition [Y/N]?
 IF /I %rp:~0,1% NEQ Y GOTO ENDRECOVERY
@@ -144,6 +145,10 @@ diskpart /s "%~dp0Createrecovery.txt"
 md R:\Recovery\WindowsRE
 xcopy /h W:\Windows\System32\Recovery\Winre.wim R:\Recovery\WindowsRE\
 W:\Windows\System32\Reagentc /Setreimage /Path R:\Recovery\WindowsRE /Target W:\Windows
+IF !ERRORLEVEL! NEQ 0 (
+echo "Can't Run !agent! on this computer is the ISA Incompatible?"
+Reagentc /Setreimage /Path R:\Recovery\WindowsRE /Target W:\Windows
+)
 :ENDRECOVERY
 
 REM ########## BACKUP SYSTEM BOOT #####################
