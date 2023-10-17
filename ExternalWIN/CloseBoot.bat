@@ -7,6 +7,13 @@ set /p q1=MBR LEGACY DISK [Y/N]?
 IF /I "%q1:~0,1%" EQU "Y" (set ext=-MBR.txt) ELSE (set ext=.txt)
 diskpart /s "%~dp0ListPar.txt"
 set /p syspar="Enter Par:"
+set par=%syspar%
+diskpart /s "%~dp0detpar.txt"
+set /p drive="Enter Partition's Drive Letter:"
+set drive=%drive:"=%
+set drive=%drive:~0,1%
+mountvol %drive%: /p
+mountvol %drive%: /d
 diskpart /s "%~dp0CloseBoot%ext%"
 
 :END
