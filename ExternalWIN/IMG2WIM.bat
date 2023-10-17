@@ -1,4 +1,5 @@
 @Echo off
+setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 set /p img="Enter Image(VHD, VHDX, ISO, ESD):"
 set img=%img:"=%

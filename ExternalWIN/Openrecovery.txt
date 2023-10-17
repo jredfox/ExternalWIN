@@ -1,7 +1,7 @@
 select disk "%disk%"
 online disk NOERR
 select par "%parrecovery%"
-set id=ebd0a0a2-b9e5-4433-87c0-68b6b72699c7
+set id=ebd0a0a2-b9e5-4433-87c0-68b6b72699c7 override
 gpt attributes=0x0000000000000000
 offline disk NOERR
 online disk NOERR
