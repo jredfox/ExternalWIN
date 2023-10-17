@@ -19,6 +19,7 @@ set let=0
 set "drives=DEFGHIJKLMNOPQRSTUVWXYZABC"
 for /f "delims=:" %%A in ('wmic logicaldisk get caption') do set "drives=!drives:%%A=!"
 set let=%drives:~0,1%
+exit /b
 
 :checkAdmin
 net session >nul 2>&1

@@ -1,6 +1,6 @@
 @echo off
-rem #####CREDIT GOES TO: https://ss64.org/viewtopic.php?t=26######
 setlocal enableDelayedExpansion
+rem #####CREDIT GOES TO: https://ss64.org/viewtopic.php?t=26######
 set "drives=DEFGHIJKLMNOPQRSTUVWXYZABC"
 for /f "delims=:" %%A in ('wmic logicaldisk get caption') do set "drives=!drives:%%A=!"
 

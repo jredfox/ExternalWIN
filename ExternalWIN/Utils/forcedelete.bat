@@ -1,4 +1,5 @@
 @Echo off
+setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 REM this is to force delete the extracted WIM files when mounting goes wrong. Do not Delete SYSTEM32 with this
 set dir=%~1

@@ -1,4 +1,5 @@
 @Echo OFF
+setlocal enableDelayedExpansion
 IF "!winpe!" EQU "T" (exit /b)
 REM %1% IS Sleep Before and %2% is Sleep After
 IF "%~1" NEQ "" (cscript "%~dp0Sleep.vbs" "%~1" >nul)
