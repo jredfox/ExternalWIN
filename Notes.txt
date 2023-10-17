@@ -72,6 +72,11 @@ Re-Imaging the registry will delete any malware edits to the registry or uninten
   2. Boot onto the same machine you want to assign the recovery partition to. ReAgentc.exe ignores the /target flags for enabling or disabling an offline windows installation meaning it may fail
   3. Run WinRecoveryAssign.bat
 
+- How to Get A Recovery Partition working on a USB FlashDrive
+  1. Boot onto the USB Flash Drive after you have installed it with a recovery partition
+  2. Run WinAssignRecovery.bat
+
+
 ##################################
 What is WIM Images and How do I Use them? WIM images are a windows image backup normally of an entire partition such as the c drive or boot drive. 
 You can backup both your partitions on windows and re-apply them later
@@ -123,6 +128,7 @@ __________________
 - File Explorer (Windows Explorer Now) Popups when Partitioning the harddrive cannot fully be disabled. Please close any "You Need To Format" Popups
 - IMG2WIM.bat cannot run in WinPE and has to be run on regular windows because it uses Powershell which isn't enabled in WinPE unless you manually added it yourself
 - ESD2WIM.bat can run in WinPE unlike IMG2WIM but it can only convert .ESD --> .WIM
+- Windows USB Flash Drive Doesn't Fully install the Recovery Partition due to a bug with REAGENTC not looking at the /target flag. You have to Boot into the OS on the USB and Run WinAssignRecovery.bat
 __________________
 
 FAQ:
@@ -138,11 +144,12 @@ or you closed the script before it's done you will have to run FileExplorerPopUp
 You can also run any main script that format or partitions the hard drive and before you put in any info it Re-Enables it during the cleanup. You can close out when you see a prompt asking for information
 3. Known Non Fixable Issues
   - WinAssignRecovery.bat may not work on an offline windows version and should only ever be called from the current boot this is due to REAGENTC ignoring the /target for /enable or /disable I also tried the /OSGUID and that didn't work either
-  - File Security Popup Sometimes Occuring when Opening Boot Partitions this is a windows bug ignoring it's own autorun policies. While this can be fixed by taking the disk offline then back online that can cause more issues then it solves and only works for disks other then current boot
-  - File Explorer Popup Somtimes Occuring when Opening Recovery Partitions. The work around is to kill file explorer all together and that's just as anoying as the popup itself. This is a bug with Windows Explorer Ignoring autorun policies
+  - File Security Popup Sometimes on USB Flash Drives or Current Boot Occuring when Opening Boot Partitions this is a windows bug ignoring it's own autorun policies. While this can be fixed by taking the disk offline then back online that can cause more issues then it solves and only works for disks other then current boot
+  - File Explorer Popup Somtimes on USB Flash Drives Occuring when Opening Recovery Partitions. The work around is to kill file explorer all together and that's just as anoying as the popup itself. This is a bug with Windows Explorer Ignoring autorun policies
   - File Explorer Format Popup on USB Flash Drives Occuring when Creating MSR partitions. This is again file explorer ignoring it's own autorun policies
   - IMG2WIM.bat will not work in WinPE due to the fact that powershell doesn't exist in WinPE
   - Can't Rename WIM Images Name or Description Without Recapture and or WIM Rebuild
+  - Can't set Recovery Partition path on USB Flash Drive on when using WinInstall.bat. This is a bug of REAGENTC assuming the computer is your computer and ignores the target value. It doesn't know the target was windows go nor does it care it ignores everything
 
 Dictionary
 __________________
