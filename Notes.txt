@@ -101,13 +101,10 @@ You can backup both your partitions on windows and re-apply them later
   3. Go to the index you need and find the correct data
 
 - How to Change Name / Description of a WIM Index
-  1. No Easy Way to do this sadly they removed this feature when they moved from imagex to dism
-  2. Apply the entire Image index you want to change to a VHDX
-  3. Capture the entire index using dism /capture-image /imagefile:path/to/newfile.wim /capturedir:<VDISK Drive letter> /name:"NEW NAME" /description:"NEW DESCRIPTION"
-  4. Merge the WIM Image to the old WIM Image
-  5. delete the original index.
-  6. Index order doesn't get preserved and you have to rebuild the entire WIM image if your ocd wants the same index order
-  7. Yell at both Microsoft DISM for not having the simple rename function and 7-ZIP for not allowing you to edit the name / description of the WIM file's index even though they generate an xml of it
+  1. Simple Answer is you don't they removed this feature when moving from IMAGEX to DISM
+  2. Long Answer is third party software that may not support max (default) compression level and may risk WIM Image corruption.
+     While 7-ZIP does support WIM editing, Editing the [1].xml doesn't work and the xml only exists when there are multiple indexes
+  3. The Longest Answer: you can export the image using DISM /export-image using /description:"New Description" /name:"New Name" but merging the indexes will simply append it. You would have to export all the indexes to the new WIM image to rebuild it in order of the original indexes and replace the new name / description at the index that you modified
 __________________________
 
 NOTES
@@ -140,9 +137,9 @@ __________________________
 or you closed the script before it's done you will have to run FileExplorerPopUp-Enable.bat which will restore the default file explorer popup settings.
 You can also run any main script that format or partitions the hard drive and before you put in any info it Re-Enables it during the cleanup. You can close out when you see a prompt asking for information
 3. Known Non Fixable Issues
-  - WinAssignRecovery.bat may not work on an offline windows version and should only ever be called from the current boot this is due to REAGENTC ignoring the /target for /enable or /disable I also tried the OSGUID and that didn't work either
-  - File Security Popup Sometimes Occuring when Opening a Boot Partitions this is a windows bug ignoring it's own autorun policies
-  - File Explorer Popup Somtimes Occuring when Opening Recovery Partitions. The work around is to kill file explorer all together and that's just as anoying as the popup itself. This is a bug with Windows Explorer Ignoring autorun policies again
+  - WinAssignRecovery.bat may not work on an offline windows version and should only ever be called from the current boot this is due to REAGENTC ignoring the /target for /enable or /disable I also tried the /OSGUID and that didn't work either
+  - File Security Popup Sometimes Occuring when Opening Boot Partitions this is a windows bug ignoring it's own autorun policies. While this can be fixed by taking the disk offline then back online that can cause more issues then it solves and only works for disks other then current boot
+  - File Explorer Popup Somtimes Occuring when Opening Recovery Partitions. The work around is to kill file explorer all together and that's just as anoying as the popup itself. This is a bug with Windows Explorer Ignoring autorun policies
   - File Explorer Format Popup on USB Flash Drives Occuring when Creating MSR partitions. This is again file explorer ignoring it's own autorun policies
   - IMG2WIM.bat will not work in WinPE due to the fact that powershell doesn't exist in WinPE
   - Can't Rename WIM Images Name or Description Without Recapture and or WIM Rebuild

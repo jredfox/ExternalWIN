@@ -47,7 +47,7 @@ REM ### IF Computer Name is Still Blank It Means We are Capturing on the Same Co
 IF "!COMPNAME!" EQU "" (set COMPNAME=!ComputerName!)
 
 :INSTALL
-echo Capturing !let! on Computer !COMPNAME!
+echo Capturing "!let!" on Computer "!COMPNAME!"
 REM If USER Specified a Relitive Path Then Store it in Documents
 IF "!wim:~1,1!" NEQ ":" (set wim=!USERPROFILE!\Documents\!COMPNAME!\WIMS\!wim!)
 set wim=!wim!.wim
@@ -57,10 +57,10 @@ rd /q "%wim%" >nul 2>&1
 
 IF NOT EXIST "%wim%" (
 dism /capture-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%desc%" /Description:"%COMPNAME% On %date% %time%" /compress:maximum
-IF !ERRORLEVEL! EQU 0 (echo Captured WIM Successfully to "!wim!") ELSE (Capture WIM FAILED Please Delete the Latest Index of "!wim!")
+IF !ERRORLEVEL! EQU 0 (echo Captured WIM Successfully to "!wim!") ELSE (echo Capture WIM FAILED Please Delete the Latest Index of "!wim!")
 ) ELSE (
 dism /append-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%desc%" /Description:"%COMPNAME% On %date% %time%"
-IF !ERRORLEVEL! EQU 0 (echo Captured WIM Successfully to "!wim!") ELSE (Capture WIM FAILED Please Delete the Latest Index of "!wim!")
+IF !ERRORLEVEL! EQU 0 (echo Captured WIM Successfully to "!wim!") ELSE (echo Capture WIM FAILED Please Delete the Latest Index of "!wim!")
 )
 pause
 exit /b

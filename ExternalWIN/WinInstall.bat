@@ -144,7 +144,6 @@ set labelrecovery=Recovery
 set letrecovery=R
 diskpart /s "%~dp0Createrecovery.txt"
 md R:\Recovery\WindowsRE
-set agent=W:\Windows\System32\Reagentc
 REM Check if the Target Reagentc can run on this computer if not use this computers reagentc
 set agent=W:\Windows\System32\Reagentc
 !agent! "/?" >nul 2>&1
