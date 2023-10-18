@@ -6,5 +6,6 @@ gpt attributes=0x0000000000000000
 offline disk NOERR
 online disk NOERR
 select disk "%disk%"
+select disk "%disk%"
 select par "%syspar%"
 assign letter="%letsys%"
