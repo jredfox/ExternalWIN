@@ -7,5 +7,7 @@ reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v NoAutoplayforn
 reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoAutorun /f
 reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoDriveTypeAutoRun /f
 reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoAutoplayfornonVolume /f
+cscript "%~dp0Sleep.vbs" "250" >nul
+taskkill /F /FI "IMAGENAME eq FENDx86.exe*"
 IF "%~2" NEQ "" (cscript "%~dp0Sleep.vbs" "%~2" >nul)
 echo File Explorer Popups Enabled
