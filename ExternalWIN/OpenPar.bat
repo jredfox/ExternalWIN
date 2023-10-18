@@ -11,7 +11,7 @@ set /p par="Enter Par:"
 call :NXTLET
 call "%~dp0FileExplorerPopUp-Disable.bat" "1500"
 diskpart /s "%~dp0OpenPar%ext%"
-call "%~dp0FileExplorerPopUp-Enable.bat"
+call "%~dp0FileExplorerPopUp-Enable.bat" "2000" ""
 
 :END
 pause
