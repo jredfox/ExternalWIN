@@ -1,6 +1,7 @@
 @Echo off
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
+call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
 diskpart /s "%~dp0ld.txt"
 set /p disk="Enter Disk:"
 set /p q1=MBR LEGACY DISK [Y/N]?
@@ -8,7 +9,9 @@ IF /I "%q1:~0,1%" EQU "Y" (set ext=-MBR.txt) ELSE (set ext=.txt)
 diskpart /s "%~dp0ListPar.txt"
 set /p par="Enter Par:"
 call :NXTLET
+call "%~dp0FileExplorerPopUp-Disable.bat" "1500"
 diskpart /s "%~dp0OpenPar%ext%"
+call "%~dp0FileExplorerPopUp-Enable.bat"
 
 :END
 pause
