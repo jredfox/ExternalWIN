@@ -76,10 +76,14 @@ void GetAllWindowsFromProcessID(DWORD dwProcessID, vector <HWND> &vhWnds, bool b
 int main()
 {
 	ShowWindow (GetConsoleWindow(), SW_HIDE);
+	char* homePath = getenv("HOMEDRIVE");
+	std::string homePathString(homePath);
+	std::string drive = homePathString.substr(0,1);
+	std::string expl = drive + ":\\Windows\\explorer.exe";
     while (true)
     {
         vector<DWORD> pids;
-        getPIDS("C:\\Windows\\explorer.exe", pids);
+        getPIDS(expl, pids);
         for(DWORD pid : pids)
         {
         	vector<HWND> hwnds;
