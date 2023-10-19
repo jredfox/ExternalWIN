@@ -1,6 +1,6 @@
 ' Check the number of command-line arguments
 If WScript.Arguments.Count < 3 Then
-    WScript.Echo "Usage: SearchScript.vbs <searchString> <filePath> <caseSensitive>"
+    WScript.Echo "Usage: FindSTR.vbs <searchString> <filePath> <caseSensitive>"
     WScript.Quit(1) ' Exit with an error code
 End If
 

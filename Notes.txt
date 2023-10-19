@@ -110,6 +110,9 @@ You can backup both your partitions on windows and re-apply them later
   2. Long Answer is third party software that may not support max (default) compression level and may risk WIM Image corruption.
      While 7-ZIP does support WIM editing, Editing the [1].xml doesn't work and the xml only exists when there are multiple indexes
   3. The Longest Answer: you can export the image using DISM /export-image using /description:"New Description" /name:"New Name" but merging the indexes will simply append it. You would have to export all the indexes to the new WIM image to rebuild it in order of the original indexes and replace the new name / description at the index that you modified
+
+- How To Stop Format MSGs From File Explorer when plugging in a USB Drive
+  1. Run CleanupPar.bat . The script is safe and does not try to dismount DVD/CD Drives and Shouldn't Dismount BLUERAY (Untested)
 __________________________
 
 NOTES
