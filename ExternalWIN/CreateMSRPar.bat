@@ -33,6 +33,8 @@ for /l %%i in (1, 1, %PartitionCount%) do (
 IF "!found!" NEQ "T" (
 echo Creating MSR Partition as it wasn't found
 diskpart /s "%~dp0ParMSR.txt"
+REM We Have to Sleep Before Cleaning up the Par so FEND can close the popups first
+cscript "%~dp0Sleep.vbs" "1800" >nul 2>&1
 call "%~dp0CleanupPar.bat"
 )
 exit /b

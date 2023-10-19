@@ -1,5 +1,5 @@
 If WScript.Arguments.Count <> 1 Then
-    WScript.Echo "Usage: cscript SleepScript.vbs <milliseconds>"
+    WScript.Echo "Usage: cscript Sleep.vbs <milliseconds>"
     WScript.Quit 1
 End If
 
