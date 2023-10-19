@@ -91,9 +91,19 @@ std::string GetWindowTitle(HWND hwnd)
 void ClosePopup(HWND hwnd, DWORD pid)
 {
 	cout << "Closing File Explorer Popup:#32770" << " " << pid << endl;
-	PostMessage(hwnd, WM_CLOSE, 0, 0);
-	Sleep(5);
-	PostMessage(hwnd, WM_QUIT, 0, 0);
+	HWND parent = GetParent(hwnd);
+	if(IsWindowVisible(parent))
+	{
+		//Take no chances close file explorer window forcibly. File Explorer by default is only 1 process regardless of windows
+		PostMessage(parent, WM_CLOSE, 0, 0);
+		PostMessage(parent, WM_QUIT, 0, 0);
+		PostMessage(parent, WM_SYSCOMMAND, SC_CLOSE, 0);
+	}
+	else
+	{
+		//Once the parent window has been closed we are safe to close the dialog box without getting the extra accessible location popup
+		PostMessage(hwnd, WM_QUIT, 0, 0);
+	}
 }
 
 void lowercase(string &s)
@@ -157,7 +167,7 @@ int main()
         		}
         	}
         }
-        Sleep(50); // Sleep for 1/20th of a second so we tick 20 times a second optimally
+        Sleep(25); //40 ticks a second now that we have to close the parent window 2x times before the actual dialog box
     }
     return 0;
 }
