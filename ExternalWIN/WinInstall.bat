@@ -1,7 +1,7 @@
 @Echo Off
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
-title ExternalWin Version 1.0.5
+title ExternalWin Version 1.0.6
 call :PP
 call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
 Reagentc /enable >nul 2>&1
