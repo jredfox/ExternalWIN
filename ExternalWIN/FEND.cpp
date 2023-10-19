@@ -4,7 +4,14 @@
 #include <tlhelp32.h>
 #include <vector>
 #include <iostream>
+#include <string>
+#include <cctype>
 using namespace std;
+
+string toString(bool b)
+{
+	return b ? "true" : "false";
+}
 
 bool endsWith (string const &fullString, string const &ending)
 {
@@ -73,6 +80,57 @@ void GetAllWindowsFromProcessID(DWORD dwProcessID, vector <HWND> &vhWnds, bool b
 	while (hCurWnd != nullptr);
 }
 
+std::string GetWindowTitle(HWND hwnd)
+{
+    const int bufferSize = 256;
+    char buffer[bufferSize];
+    GetWindowText(hwnd, buffer, bufferSize);
+    return std::string(buffer);
+}
+
+void ClosePopup(HWND hwnd, DWORD pid)
+{
+	cout << "Closing File Explorer Popup:#32770" << " " << pid << endl;
+	PostMessage(hwnd, WM_CLOSE, 0, 0);
+	Sleep(5);
+	PostMessage(hwnd, WM_QUIT, 0, 0);
+}
+
+void lowercase(string &s)
+{
+	for (char& c : s) {
+		c = std::tolower(c);
+	}
+}
+
+bool IsSecurityPopup(string title)
+{
+	lowercase(title);
+	unsigned int size = title.size();
+	if (size < 2 || !std::islower(title[0]) || title[1] != ':' || (title[2] != '\\' && title[2] != '/' && size > 2 ) || (size > 3 && title[3] != ' ') )
+		return false;
+	return true;
+}
+
+/**
+ * checks if Title of the HWND is A-Z:\ or A-Z:/
+ */
+bool IsSecurityPopup(HWND hwnd, DWORD pid)
+{
+	string title = GetWindowTitle(hwnd);
+	return IsSecurityPopup(title);
+}
+
+/**
+ * Checks if the Title is EqualsIgnoresCase("Microsoft Windows")
+ */
+bool IsFormatPopup(HWND hwnd, DWORD pid)
+{
+	string title = GetWindowTitle(hwnd);
+	lowercase(title);
+	return (title == "microsoft windows");
+}
+
 int main()
 {
 	ShowWindow (GetConsoleWindow(), SW_HIDE);
@@ -91,13 +149,11 @@ int main()
         	for(HWND hwnd : hwnds)
         	{
         		string clazz = GetWindowClass(hwnd);
-        		//checks if the file explorer window is a dialog box and if so close it
+        		//checks if the file explorer window is a dialog box and if so check if it needs to be closed
         		if(clazz == "#32770")
         		{
-        			cout << "Closing File Explorer Popup:" << clazz << " " << pid << endl;
-        			PostMessage(hwnd, WM_CLOSE, 0, 0);
-        			Sleep(5);
-        			PostMessage(hwnd, WM_QUIT, 0, 0);
+        			if(IsSecurityPopup(hwnd, pid) || IsFormatPopup(hwnd, pid))
+        				ClosePopup(hwnd, pid);
         		}
         	}
         }
