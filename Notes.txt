@@ -152,6 +152,17 @@ You can also run any main script that format or partitions the hard drive and be
   - Can't Rename WIM Images Name or Description Without Recapture and or WIM Rebuild
   - Can't set Recovery Partition path on USB Flash Drive on when using WinInstall.bat. This is a bug of REAGENTC assuming the computer is your computer and ignores the target value. It doesn't know the target was windows go nor does it care it ignores everything
   - Can't empty the recycle bin, open properties of a file while some ExternalWIN are running. The program disables all dialog popups of that certain class which sadly includes unrelated popups due to windows not having a different class for them
+5. Q:DISM Error When Applying Custom Captured WIM Image
+  A:This occurs When a security descriptor on the captured drive is invalid. Please Capture all WIM images in WinPE(Installation Media) USB to avoid this
+    The Other Workaround for an Already Captured WIM image with an invalid security descriptor is to always run the install / apply scripts in WinPE
+6. Q:Help I Captured the WIM Image in WinPE(USB) and I am still getting the security error when Applying the WIM image to an External Hard drive / USB
+   A:You should add the errored directories into the removeatt.cfg file located in your current ExternalWIN installation. 
+   - Go to C:\Windows\Logs\DISM\dism.log
+   - Scroll to the end and then search up for a Security Error / Fail
+   - Add the Directory into ExternalWIN\removeatt.cfg
+   - Re-Capture the WIM in WinPE
+   - Re-Apply the WIM on the new index
+   - If the error goes away and looks like it came with the computer please create a new issue called "dir cfg" to github.com/jredfox/ExternalWIN/issues
 
 Dictionary
 __________________
