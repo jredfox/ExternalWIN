@@ -22,9 +22,11 @@ set /p let="Enter Capture Drive:"
 set let=!let:"=!
 REM IF We are only capturing the whole drive fix the drive letter to make DISM happy
 IF "!let:~3,3!" EQU "" (set let=!let:~0,1!^:)
+set drive=!let:~0,1!
+REM ## REMOVE ATTRIBUTES Of Configurable Directories ##
+IF "%winpe%" EQU "T" (call "%~dp0removeatt.bat" "!drive!")
 
 REM ######## Find the ComputerName ############
-set drive=!let:~0,1!
 set comp=!drive!:\Windows\System32\Config\SYSTEM
 IF NOT EXIST "!comp!" (
 set /p drive="Enter Windows Drive Letter:"
