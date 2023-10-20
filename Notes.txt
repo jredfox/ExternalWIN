@@ -83,10 +83,10 @@ You can backup both your partitions on windows and re-apply them later
 ##################################
  
 - Capturing a WIM Image
-  1. Boot into WinPE unless the partition is not currently booted (Not the Current Boot or C Drive)
-  2. If the Partition is on an External Device and is special is special such as a boot or recovery partition please run openefi.bat(GPT),openmbr.bat(MBR) or openrecovery.bat for recovery
+  1. Boot into WinPE! Capturing on Different Drive from current boot while windows is running causes security errors when re-applying the WIM image on AMD and other devices
+  2. If the Partition is special such as a boot or recovery partition Run OpenPar.bat
   2. Run WIM-Capture-WINPE.bat or WIM-Capture.bat with the second option allowing allowing for a full path backup not just the entire drive
-  3. If the Partition is on an External Device and is special is special such as a boot or recovery partition run closeefi.bat(GPT),closembr.bat(MBR) or closerecovery.bat for recovery
+  3. If the Partition is special such as a boot or recovery partition Run CloseBoot.bat for boot or CloseRecovery.bat for recovery
 
 - Applying the WIM Image
   1. Boot into WinPE unless the partition is not currently booted (Not the Current Boot or C Drive)
