@@ -13,7 +13,6 @@ REM re-assign the drive letter to the correct one
 set dir=!drive!!dir:~1!
 IF EXIST "!dir!" (call :REMOVEATT "!dir!") ELSE (echo skipping removing attr on path^:"!dir!")
 )
-pause
 exit /b
 
 :REMOVEATT
