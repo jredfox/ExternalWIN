@@ -15,11 +15,12 @@ exit /b
 
 :CHECK
 set arg=%~1
+set d=!arg:~0,1!
 IF "%arg:~3,3%" NEQ "" (exit /b)
 fsutil fsinfo drivetype !arg!:\ >"!type!"
 cscript "%~dp0FindSTR.vbs" "CD-@$DVD-@$BLUERAY-@$Floppy" "!type!" "false" >nul
 IF !ERRORLEVEL! EQU 0 (exit /b)
-FOR /F "tokens=2 delims==" %%I in ('wmic logicaldisk where "DeviceID='A:'" get description /value') do (set desc=%%I)
+FOR /F "tokens=2 delims==" %%I in ('wmic logicaldisk where "DeviceID='!d!:'" get description /value') do (set desc=%%I)
 (
   echo %desc%
 ) >"!type2!"
