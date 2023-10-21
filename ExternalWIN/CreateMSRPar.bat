@@ -24,8 +24,8 @@ for /l %%i in (1, 1, %PartitionCount%) do (
        set found=T
     )
 
-    del "%TMP%\diskpart_script.txt"
-    del "%TMP%\partition_details.txt"
+    del /F /Q /A "%TMP%\diskpart_script.txt"
+    del /F /Q /A "%TMP%\partition_details.txt"
     IF "!found!" EQU "T" GOTO END
 )
 

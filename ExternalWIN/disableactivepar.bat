@@ -17,7 +17,7 @@ FOR /F "tokens=3 delims=#" %%i in ("%%b") DO (
 )
 REM ### Disable the Active Partition Here if it is found ###
 :ENDLOOP
-del /F /Q "%TMP%\disablepar.txt" >nul 2>&1
+del /F /Q /A "%TMP%\disablepar.txt" >nul 2>&1
 IF "%par%" EQU "-1" (exit /b)
 echo Disabling Active Partition^: %par%
     (
@@ -26,4 +26,4 @@ echo Disabling Active Partition^: %par%
         echo set ID=18
     ) > "%TMP%\disablepar.txt"
 diskpart /s "%TMP%\disablepar.txt"
-del /F /Q "%TMP%\disablepar.txt" >nul 2>&1
+del /F /Q /A "%TMP%\disablepar.txt" >nul 2>&1
