@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
-set type=%TMP%\type1.txt
-set type2=%TMP%\type1.txt
+set type=%TMP%\type.txt
+set type2=%TMP%\type2.txt
 for /f "delims=:" %%a in ('wmic logicaldisk get caption') do (
 IF NOT EXIST "%%a:\" (
 call :CHECK "%%a"
