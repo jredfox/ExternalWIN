@@ -22,7 +22,7 @@ found = False
 ' Loop through each line in the file
 Do Until objFile.AtEndOfStream
     line = objFile.ReadLine
-	For Each strsearch In toFind
+    For Each strsearch In toFind
     If caseSensitive Then
         ' Perform a case-sensitive search for the string
         If InStr(1, line, strsearch) > 0 Then

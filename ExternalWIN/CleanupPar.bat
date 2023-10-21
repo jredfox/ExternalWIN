@@ -1,9 +1,12 @@
 @echo off
 setlocal enabledelayedexpansion
+set type=%TMP%\type1.txt
+set type2=%TMP%\type1.txt
 for /f "delims=:" %%a in ('wmic logicaldisk get caption') do (
 IF NOT EXIST "%%a:\" (
 call :CHECK "%%a"
-del "%~dp0type.txt" >nul 2>&1
+del "!type!" >nul 2>&1
+del "!type2!" >nul 2>&1
 )
 )
 
@@ -13,12 +16,14 @@ exit /b
 :CHECK
 set arg=%~1
 IF "%arg:~3,3%" NEQ "" (exit /b)
-fsutil fsinfo drivetype !arg!:\ >"%~dp0type.txt"
-cscript "%~dp0FindSTR.vbs" "CD-" "%~dp0type.txt" "false" >nul
+fsutil fsinfo drivetype !arg!:\ >"!type!"
+cscript "%~dp0FindSTR.vbs" "CD-@$DVD-@$BLUERAY-@$Floppy" "!type!" "false" >nul
 IF !ERRORLEVEL! EQU 0 (exit /b)
-cscript "%~dp0FindSTR.vbs" "DVD-" "%~dp0type.txt" "false" >nul
-IF !ERRORLEVEL! EQU 0 (exit /b)
-cscript "%~dp0FindSTR.vbs" "BLUERAY-" "%~dp0type.txt" "false" >nul
+FOR /F "tokens=2 delims==" %%I in ('wmic logicaldisk where "DeviceID='A:'" get description /value') do (set desc=%%I)
+(
+  echo %desc%
+) >"!type2!"
+cscript "%~dp0FindSTR.vbs" "CD-@$DVD-@$BLUERAY-@$Floppy" "!type2!" "false" >nul
 IF !ERRORLEVEL! EQU 0 (exit /b)
 echo Dismounting Invalid Drive "!arg!:"
 mountvol "!arg!:" /p
