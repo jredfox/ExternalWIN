@@ -1,11 +1,11 @@
 ' Check the number of command-line arguments
 If WScript.Arguments.Count < 3 Then
-    WScript.Echo "Usage: FindSTR.vbs <searchString> <filePath> <caseSensitive>"
+    WScript.Echo "Usage: FindSTR.vbs <searchString@$SearchString2> <filePath> <caseSensitive>"
     WScript.Quit(1) ' Exit with an error code
 End If
 
 ' Retrieve the search string, file path, and caseSensitive flag from the command-line arguments
-searchString = WScript.Arguments(0)
+toFind = Split(WScript.Arguments(0), "@$")
 filePath = WScript.Arguments(1)
 caseSensitive = CBool(WScript.Arguments(2)) ' Convert the argument to a boolean
 
@@ -22,21 +22,23 @@ found = False
 ' Loop through each line in the file
 Do Until objFile.AtEndOfStream
     line = objFile.ReadLine
+	For Each strsearch In toFind
     If caseSensitive Then
         ' Perform a case-sensitive search for the string
-        If InStr(1, line, searchString) > 0 Then
+        If InStr(1, line, strsearch) > 0 Then
             WScript.Echo "Found (Case-Sensitive): " & line
             found = True
             Exit Do
         End If
     Else
         ' Perform a case-insensitive search for the string
-        If InStr(1, LCase(line), LCase(searchString), vbTextCompare) > 0 Then
+        If InStr(1, LCase(line), LCase(strsearch), vbTextCompare) > 0 Then
             WScript.Echo "Found: " & line
             found = True
             Exit Do
         End If
     End If
+	Next
 Loop
 
 ' Close the file
