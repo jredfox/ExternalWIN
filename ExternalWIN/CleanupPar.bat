@@ -2,11 +2,13 @@
 setlocal enabledelayedexpansion
 set type=%TMP%\type.txt
 set type2=%TMP%\type2.txt
+del /F /Q "!type!" >nul 2>&1
+del /F /Q "!type2!" >nul 2>&1
 for /f "delims=:" %%a in ('wmic logicaldisk get caption') do (
 IF NOT EXIST "%%a:\" (
 call :CHECK "%%a"
-del "!type!" >nul 2>&1
-del "!type2!" >nul 2>&1
+del /F /Q "!type!" >nul 2>&1
+del /F /Q "!type2!" >nul 2>&1
 )
 )
 
