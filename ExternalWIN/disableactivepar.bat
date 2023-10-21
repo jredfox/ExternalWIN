@@ -4,6 +4,7 @@ IF "!disk!" EQU "" (
 set disk=%~1
 set disk=!disk:"=!
 )
+del /F /Q /A "%TMP%\disablepar.txt" >nul 2>&1
 REM ### Find the Active Partition Here ###
 set par=-1
 FOR /F "tokens=1* delims= " %%a in ('wmic partition where "DiskIndex=!disk!" get BootPartition^,DeviceID') DO (
@@ -17,7 +18,6 @@ FOR /F "tokens=3 delims=#" %%i in ("%%b") DO (
 )
 REM ### Disable the Active Partition Here if it is found ###
 :ENDLOOP
-del /F /Q /A "%TMP%\disablepar.txt" >nul 2>&1
 IF "%par%" EQU "-1" (exit /b)
 echo Disabling Active Partition^: %par%
     (
