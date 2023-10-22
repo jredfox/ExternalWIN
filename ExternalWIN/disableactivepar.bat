@@ -23,7 +23,7 @@ echo Disabling Active Partition^: %par%
     (
         echo select disk %disk%
         echo select partition %par%
-        echo set ID=18
+        echo set ID=18 override
     ) > "%TMP%\disablepar.txt"
 diskpart /s "%TMP%\disablepar.txt"
 del /F /Q /A "%TMP%\disablepar.txt" >nul 2>&1
