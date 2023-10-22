@@ -140,7 +140,7 @@ IF NOT EXIST "W:\Windows\System32\Recovery\Winre.wim" (
 echo Missing Winre^.wim You can Use your BackedUp OEM Recovery Partition WIM with WimApply-Universal^.bat and WinAssignRecovery^.bat after the Installation
 GOTO ENDRECOVERY
 )
-md R:\Recovery\WindowsRE
+md R:\Recovery\WindowsRE >nul 2>&1
 REM Check if the Target Reagentc can run on this computer if not use this computers reagentc
 set agent=W:\Windows\System32\Reagentc
 !agent! "/?" >nul 2>&1
@@ -157,13 +157,13 @@ xcopy /h W:\Windows\System32\Recovery\Winre.wim R:\Recovery\WindowsRE\
 REM ########## BACKUP SYSTEM BOOT #####################
 set backupdir=W:\ExternalWIN\Backups
 set rbackupdir=R:\ExternalWIN\Backups
-md "%backupdir%"
+md "%backupdir%" >nul 2>&1
 set bootfile=%backupdir%\boot.wim
 set name=Boot of Windows %wnum%
 echo Backuping Up Boot to %bootfile%
 dism /capture-image /imagefile:"%bootfile%" /capturedir:"S:" /name:"%name%" /Description:"%name%" /compress:maximum
 IF EXIST "R:\" (
-md "%rbackupdir%"
+md "%rbackupdir%" >nul 2>&1
 copy "%bootfile%" "%rbackupdir%\boot.wim"
 )
 echo It's Recommended to use REG-Backup.bat for your new Windows Installation as well as Wim-Capture.bat to backup your Windows Partition
