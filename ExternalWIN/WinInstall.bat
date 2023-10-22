@@ -62,10 +62,7 @@ GOTO PAR
 :MERGE
 diskpart /s "%~dp0ListPar.txt"
 set /p syspar="Input Previous Windows Boot Partition(280 MB Usually):"
-IF "%ISMBR%"=="T" (
-echo disabling active partition^.^.^.
-call "%~dp0disableactivepar.bat"
-)
+IF "%ISMBR%"=="T" (call "%~dp0disableactivepar.bat")
 echo Opening Up Boot Partition
 diskpart /s "%~dp0OpenBoot%dskext%"
 call "%~dp0CreateMSRPar.bat"
@@ -80,10 +77,7 @@ diskpart /s "%~dp0Clean%dskext%"
 :PAR
 echo Partitioning the hard drive^.^.^.
 IF "%secinstall%" NEQ "" (
-IF "%ISMBR%"=="T" (
-echo Disabling active partition^.^.^.
-call "%~dp0disableactivepar.bat"
-)
+IF "%ISMBR%"=="T" (call "%~dp0disableactivepar.bat")
 )
 echo Creating System Boot Partition
 diskpart /s "%~dp0ParSYS%dskext%"
