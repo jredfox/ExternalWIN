@@ -90,7 +90,7 @@ std::string GetWindowTitle(HWND hwnd)
 
 void ClosePopup(HWND hwnd, DWORD pid)
 {
-	cout << "Closing File Explorer Popup:#32770" << " " << pid << endl;
+	//cout << "Closing File Explorer Popup:#32770" << " " << pid << endl;
 	HWND parent = GetParent(hwnd);
 	if(IsWindowVisible(parent))
 	{
@@ -143,7 +143,7 @@ bool IsFormatPopup(HWND hwnd, DWORD pid)
 
 int main()
 {
-	ShowWindow (GetConsoleWindow(), SW_HIDE);
+	//ShowWindow (GetConsoleWindow(), SW_HIDE);
 	char* homePath = getenv("HOMEDRIVE");
 	std::string homePathString(homePath);
 	std::string drive = homePathString.substr(0,1);
