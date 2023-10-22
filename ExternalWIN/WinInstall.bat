@@ -128,7 +128,6 @@ REM dism /Image:W:\ /Apply-Unattend:W:\san_policy.xml
 
 REM ###### Create & Register Recovery Files ####################
 :RECOVERY
-IF NOT EXIST "W:\Windows\System32\Recovery\Winre.wim" (GOTO ENDRECOVERY)
 set recovery=F
 set /p rp=Do You Want to Create a Recovery Partition [Y/N]?
 IF /I %rp:~0,1% NEQ Y GOTO ENDRECOVERY
@@ -137,6 +136,10 @@ set sizerecovery=1024
 set labelrecovery=Recovery
 set letrecovery=R
 diskpart /s "%~dp0Createrecovery.txt"
+IF NOT EXIST "W:\Windows\System32\Recovery\Winre.wim" (
+echo Missing Winre^.wim You can Use your BackedUp OEM Recovery Partition WIM with WimApply-Universal^.bat and WinAssignRecovery^.bat after the Installation
+GOTO ENDRECOVERY
+)
 md R:\Recovery\WindowsRE
 REM Check if the Target Reagentc can run on this computer if not use this computers reagentc
 set agent=W:\Windows\System32\Reagentc
