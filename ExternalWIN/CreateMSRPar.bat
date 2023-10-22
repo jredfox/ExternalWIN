@@ -3,8 +3,8 @@ setlocal enabledelayedexpansion
 IF "%ISMBR%" EQU "T" (
 exit /b
 )
-del /F /Q /A "%TMP%\diskpart_script.txt"
-del /F /Q /A "%TMP%\partition_details.txt"
+del /F /Q /A "%TMP%\diskpart_script.txt" >nul 2>&1
+del /F /Q /A "%TMP%\partition_details.txt" >nul 2>&1
 
 REM GPT Disks supports 128 partitions and the for loop starts at 1 and goes to 128
 set PartitionCount=128
@@ -26,8 +26,8 @@ for /l %%i in (1, 1, %PartitionCount%) do (
        set found=T
     )
 
-    del /F /Q /A "%TMP%\diskpart_script.txt"
-    del /F /Q /A "%TMP%\partition_details.txt"
+    del /F /Q /A "%TMP%\diskpart_script.txt" >nul 2>&1
+    del /F /Q /A "%TMP%\partition_details.txt" >nul 2>&1
     IF "!found!" EQU "T" GOTO END
 )
 
