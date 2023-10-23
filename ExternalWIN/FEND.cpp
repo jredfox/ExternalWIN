@@ -113,6 +113,15 @@ void lowercase(string &s)
 	}
 }
 
+/**
+ * convert a string to boolean
+ */
+bool toBool(string s)
+{
+	lowercase(s);
+	return s == "true";
+}
+
 bool IsSecurityPopup(string title)
 {
 	lowercase(title);
@@ -141,9 +150,29 @@ bool IsFormatPopup(HWND hwnd, DWORD pid)
 	return (title == "microsoft windows");
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-	//ShowWindow (GetConsoleWindow(), SW_HIDE);
+	//declare ClosePaths vars
+	std::string toClose;
+	unsigned long secs = 0;
+	bool onlyOne = false;
+	std::string let;
+	DWORD endTime = 0;
+	bool hasClosed = false;
+	bool closePaths = false;
+
+	//init ClosePaths vars
+	if(argc > 1)
+	{
+		toClose = argv[1];
+		secs = stoul(argv[2]);
+		onlyOne = toBool(argv[3]);
+		let = toClose + string(":)"); //Looks for A-Z:) title ending
+		endTime = GetTickCount() + (secs * 1000);
+		hasClosed = false;
+		closePaths = true;
+	}
+
 	char* homePath = getenv("HOMEDRIVE");
 	std::string homePathString(homePath);
 	std::string drive = homePathString.substr(0,1);
@@ -155,7 +184,7 @@ int main()
         for(DWORD pid : pids)
         {
         	vector<HWND> hwnds;
-        	GetAllWindowsFromProcessID(pid, hwnds, false);
+        	GetAllWindowsFromProcessID(pid, hwnds, true);
         	for(HWND hwnd : hwnds)
         	{
         		string clazz = GetWindowClass(hwnd);
@@ -164,6 +193,21 @@ int main()
         		{
         			if(IsSecurityPopup(hwnd, pid) || IsFormatPopup(hwnd, pid))
         				ClosePopup(hwnd, pid);
+        		}
+
+        		//start ClosePaths here
+        		if(closePaths)
+        		{
+        			string title = GetWindowTitle(hwnd);
+        			if (title.find(let) != std::string::npos)
+        			{
+        				PostMessage(hwnd, WM_CLOSE, 0, 0);
+        				PostMessage(hwnd, WM_QUIT, 0, 0);
+        				PostMessage(hwnd, WM_SYSCOMMAND, SC_CLOSE, 0);
+        				hasClosed = true;
+        			}
+        			if((onlyOne && hasClosed) || GetTickCount() >= endTime)
+        				closePaths = false;
         		}
         	}
         }
