@@ -7,6 +7,6 @@ reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v No
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoDriveTypeAutoRun /t REG_DWORD /d 0xFFFFFFFF /f >nul
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoAutoplayfornonVolume /t REG_DWORD /d 1 /f >nul
 start /B "FENDx86" "%~dp0FENDx86.exe"
-REM start /B "ClosPaths.vbs" "cscript" "%~dp0ClosePath.vbs" "!letrecovery!:\" >nul
+start /B "ClosPaths.vbs" "cscript" "%~dp0ClosePath.vbs" "!letrecovery!:\" >nul
 IF "%~1" NEQ "" (cscript "%~dp0Sleep.vbs" "%~1" >nul)
 echo File Explorer Popups Disabled

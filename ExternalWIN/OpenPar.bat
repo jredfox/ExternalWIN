@@ -13,7 +13,7 @@ REM Set the recovery let to whatever the open par is in case of unwanted popups 
 set letrecovery=!let!
 call "%~dp0FileExplorerPopUp-Disable.bat" "1500"
 diskpart /s "%~dp0OpenPar%ext%"
-call "%~dp0FileExplorerPopUp-Enable.bat" "2000" ""
+call "%~dp0FileExplorerPopUp-Enable.bat" "5000" ""
 
 :END
 pause

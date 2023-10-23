@@ -38,7 +38,7 @@ set agent=Reagentc
 !agent! /enable
 mountvol R: /d >nul
 diskpart /s "%~dp0Closerecovery!ext!"
-call "%~dp0FileExplorerPopUp-Enable.bat" "2000" ""
+call "%~dp0FileExplorerPopUp-Enable.bat" "5000" ""
 pause
 exit /b
 
