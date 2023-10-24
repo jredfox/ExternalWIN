@@ -3,6 +3,7 @@ setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 title ExternalWin Version 1.0.8
 call :PP
+call :LOADCFG
 call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
 Reagentc /enable >nul 2>&1
 rem #######Disk Image Selection#########
@@ -41,7 +42,7 @@ mountvol W: /d >nul
 mountvol S: /d >nul
 mountvol R: /d >nul
 set /p e=ERASE THE DRIVE (clean install) [Y/N]?
-call "%~dp0FileExplorerPopUp-Disable.bat" "1500"
+call "%~dp0FileExplorerPopUp-Disable.bat" "!SleepDisable!" "!RestartExplorer!"
 IF /I %e:~0,1% EQU Y GOTO ERASE
 IF /I %e:~0,1% NEQ Y GOTO PARSEC
 
@@ -185,7 +186,7 @@ set /p par="Input Windows Partition(64+GB Usually):"
 call "%~dp0Assign-RND.bat"
 IF "%recovery%" EQU "T" (set /p parrecovery="Input Recovery Partition(1GB Usually):")
 IF "%recovery%" EQU "T" (diskpart /s "%~dp0Closerecovery%dskext%")
-call "%~dp0FileExplorerPopUp-Enable.bat" "2000" ""
+call "%~dp0FileExplorerPopUp-Enable.bat" "!SleepEnable!" ""
 echo External Installation of Windows Completed :)
 title %cd%
 pause
@@ -211,5 +212,14 @@ set winpe=T
 FOR /f "delims=" %%a in ('POWERCFG -GETACTIVESCHEME') DO @SET powerplan="%%a"
 powercfg /s 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
 echo changed powerplan of !powerplan! to high performance 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
+)
+exit /b
+
+:LOADCFG
+IF "!winpe!" EQU "T" (exit /b)
+FOR /F "tokens=1-3 delims= " %%A in ('call "%~dp0LoadConfig.bat"') DO (
+set SleepDisable=%%A
+set SleepEnable=%%B
+set RestartExplorer=%%C
 )
 exit /b

@@ -2,6 +2,7 @@
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 call :PP
+call :LOADCFG
 
 call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
 mountvol W: /p >nul
@@ -40,7 +41,7 @@ echo INVALID TYPE "%type%"
 GOTO TYPE
 )
 REM ##### OPEN BOOT / RECOVERY & ASSIGN VARS ##############
-call "%~dp0FileExplorerPopUp-Disable.bat" "1500"
+call "%~dp0FileExplorerPopUp-Disable.bat" "!SleepDisable!" "!RestartExplorer!"
 IF /I !type! EQU S (
 set let=S
 set letsys=!let!
@@ -78,7 +79,6 @@ rem #### INSTALL ####################
 dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:%let%:\
 
 rem ##### POST INSTALL ##############
-set time=2000
 IF /I %type% EQU S (
 mountvol S: /p >nul
 mountvol S: /d >nul
@@ -86,7 +86,6 @@ diskpart /s "%~dp0Closeboot%ext%"
 GOTO END
 )
 IF /I %type% EQU R (
- set time=5000
  mountvol R: /d >nul
  diskpart /s "%~dp0Closerecovery%ext%"
  GOTO END
@@ -94,7 +93,7 @@ IF /I %type% EQU R (
 call "%~dp0Assign-RND.bat"
 
 :END
-call "%~dp0FileExplorerPopUp-Enable.bat" "!time!" ""
+call "%~dp0FileExplorerPopUp-Enable.bat" "!SleepEnable!" ""
 pause
 exit /b
 
@@ -118,5 +117,14 @@ set winpe=T
 FOR /f "delims=" %%a in ('POWERCFG -GETACTIVESCHEME') DO @SET powerplan="%%a"
 powercfg /s 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
 echo changed powerplan of !powerplan! to high performance 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
+)
+exit /b
+
+:LOADCFG
+IF "!winpe!" EQU "T" (exit /b)
+FOR /F "tokens=1-3 delims= " %%A in ('call "%~dp0LoadConfig.bat"') DO (
+set SleepDisable=%%A
+set SleepEnable=%%B
+set RestartExplorer=%%C
 )
 exit /b
