@@ -78,7 +78,6 @@ rem #### INSTALL ####################
 dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:%let%:\
 
 rem ##### POST INSTALL ##############
-set time=2000
 IF /I %type% EQU S (
 mountvol S: /p >nul
 mountvol S: /d >nul
@@ -86,7 +85,6 @@ diskpart /s "%~dp0Closeboot%ext%"
 GOTO END
 )
 IF /I %type% EQU R (
- set time=5000
  mountvol R: /d >nul
  diskpart /s "%~dp0Closerecovery%ext%"
  GOTO END
@@ -94,7 +92,7 @@ IF /I %type% EQU R (
 call "%~dp0Assign-RND.bat"
 
 :END
-call "%~dp0FileExplorerPopUp-Enable.bat" "!time!" ""
+call "%~dp0FileExplorerPopUp-Enable.bat" "5000" ""
 pause
 exit /b
 

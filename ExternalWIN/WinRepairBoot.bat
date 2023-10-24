@@ -95,7 +95,7 @@ set par=%winpar%
 call "%~dp0Assign-RND.bat"
 
 :END
-call "%~dp0FileExplorerPopUp-Enable.bat" "2000" ""
+call "%~dp0FileExplorerPopUp-Enable.bat" "5000" ""
 echo Repairing Boot Completed
 pause
 exit /b

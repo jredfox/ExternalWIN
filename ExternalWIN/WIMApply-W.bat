@@ -25,7 +25,7 @@ diskpart /s "%~dp0formatvol.txt"
 dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:W:\
 REM ##### RE-ASSING W:\ #############
 call "%~dp0Assign-RND.bat"
-call "%~dp0FileExplorerPopUp-Enable.bat" "2000" ""
+call "%~dp0FileExplorerPopUp-Enable.bat" "5000" ""
 pause
 exit /b
 

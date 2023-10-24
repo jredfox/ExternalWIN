@@ -211,7 +211,7 @@ rem ####Grab the next Drive Letter & Re-Assign W:\#####
 IF "%winpar%" EQU "" ( set /p winpar="Input Windows(VDISKS) Partition(64+GB Usually):" )
 set par=%winpar%
 call "%~dp0Assign-RND.bat"
-call "%~dp0FileExplorerPopUp-Enable.bat" "2000" ""
+call "%~dp0FileExplorerPopUp-Enable.bat" "5000" ""
 echo ####################FINISHED############################
 title %cd%
 pause
