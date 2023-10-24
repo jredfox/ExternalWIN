@@ -21,7 +21,7 @@ set ext=.txt
 diskpart /s "%~dp0ListPar.txt"
 set /p par="Input Recovery Partition:"
 mountvol R: /d >nul
-call "%~dp0FileExplorerPopUp-Disable.bat" "1750"
+call "%~dp0FileExplorerPopUp-Disable.bat" "1500"
 set parrecovery=!par!
 set letrecovery=R
 REM ########## Actual Code #############

@@ -40,7 +40,7 @@ echo INVALID TYPE "%type%"
 GOTO TYPE
 )
 REM ##### OPEN BOOT / RECOVERY & ASSIGN VARS ##############
-call "%~dp0FileExplorerPopUp-Disable.bat" "1750"
+call "%~dp0FileExplorerPopUp-Disable.bat" "1500"
 IF /I !type! EQU S (
 set let=S
 set letsys=!let!
@@ -78,6 +78,7 @@ rem #### INSTALL ####################
 dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:%let%:\
 
 rem ##### POST INSTALL ##############
+set time=2000
 IF /I %type% EQU S (
 mountvol S: /p >nul
 mountvol S: /d >nul
@@ -85,6 +86,7 @@ diskpart /s "%~dp0Closeboot%ext%"
 GOTO END
 )
 IF /I %type% EQU R (
+ set time=5000
  mountvol R: /d >nul
  diskpart /s "%~dp0Closerecovery%ext%"
  GOTO END
@@ -92,7 +94,7 @@ IF /I %type% EQU R (
 call "%~dp0Assign-RND.bat"
 
 :END
-call "%~dp0FileExplorerPopUp-Enable.bat" "5000" ""
+call "%~dp0FileExplorerPopUp-Enable.bat" "!time!" ""
 pause
 exit /b
 
