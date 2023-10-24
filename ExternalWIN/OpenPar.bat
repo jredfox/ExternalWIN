@@ -11,7 +11,7 @@ set /p par="Enter Par:"
 call :NXTLET
 REM Set the recovery let to whatever the open par is in case of unwanted popups from recovery opening or closing
 set letrecovery=!let!
-call "%~dp0FileExplorerPopUp-Disable.bat" "1500"
+call "%~dp0FileExplorerPopUp-Disable.bat" "1750"
 diskpart /s "%~dp0OpenPar%ext%"
 call "%~dp0FileExplorerPopUp-Enable.bat" "5000" ""
 

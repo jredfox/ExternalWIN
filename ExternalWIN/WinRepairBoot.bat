@@ -26,7 +26,7 @@ mountvol S: /d >nul
 set syspar=%par%
 set letsys=S
 set letvdisk=V
-call "%~dp0FileExplorerPopUp-Disable.bat" "1500"
+call "%~dp0FileExplorerPopUp-Disable.bat" "1750"
 IF "%ISMBR%"=="T" ( call "%~dp0disableactivepar.bat" )
 diskpart /s "%~dp0Openboot%ext%"
 

@@ -19,7 +19,7 @@ set dskext=-MBR.txt
 set store=S:\EFI\Microsoft\Boot\BCD
 set dskext=.txt
 )
-call "%~dp0FileExplorerPopUp-Disable.bat" "1500"
+call "%~dp0FileExplorerPopUp-Disable.bat" "1750"
 diskpart /s "%~dp0Openboot%dskext%"
 :SELBOOT
 bcdedit.exe /store "%store%" /enum

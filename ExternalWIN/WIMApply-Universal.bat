@@ -40,7 +40,7 @@ echo INVALID TYPE "%type%"
 GOTO TYPE
 )
 REM ##### OPEN BOOT / RECOVERY & ASSIGN VARS ##############
-call "%~dp0FileExplorerPopUp-Disable.bat" "1500"
+call "%~dp0FileExplorerPopUp-Disable.bat" "1750"
 IF /I !type! EQU S (
 set let=S
 set letsys=!let!
