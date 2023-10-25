@@ -144,17 +144,15 @@ __________________________
 2. Q: I ran Your WinInstall.bat or a different Script and now when I Plugin a USB / External Harddrive It doesn't pop open or autorun. The program it must be a virus?
    A: This is not a virus I simply disable popups of file explorer during the installation process. Run FileExplorerPopUp-Enable.bat as admin If popups are still disabled after installation or if you closed before the script was complete
 You can also run any main script that format or partitions the hard drive and before you put in any info it Re-Enables it during the cleanup. You can close out when you see a prompt asking for information
-3. Q: I ran WinInstall.bat or another ExternalWIN scripts and Now I can't Empty My Recycle Bin or Open File Properties ETC. How to FIX????
-   A: Run FileExplorerPopUp-Enable.bat as admin. This will re-enable File Explorer Dialog popups even though the properties shouldn't be a diolog box it is considered one
+3. Q: I ran WinInstall.bat or another ExternalWIN scripts and Now Format Popups / Security Popups Don't happen and File Explorer Closes????
+   A: Run FileExplorerPopUp-Enable.bat it will re-enable all autoruns and kill any FENDx86.exe instances running
 4. Known Non Fixable Issues
   - WinAssignRecovery.bat may not work on an offline windows version and should only ever be called from the current boot this is due to REAGENTC ignoring the /target for /enable or /disable I also tried the /OSGUID and that didn't work either
   - IMG2WIM.bat will not work in WinPE due to the fact that powershell doesn't exist in WinPE
   - Can't Rename WIM Images Name or Description Without Recapture and or WIM Rebuild
   - Can't set Recovery Partition path on USB Flash Drive on when using WinInstall.bat. This is a bug of REAGENTC assuming the computer is your computer and ignores the target value. It doesn't know the target was windows go nor does it care it ignores everything
-  - Can't empty the recycle bin, open properties of a file while some ExternalWIN are running. The program disables all dialog popups of that certain class which sadly includes unrelated popups due to windows not having a different class for them
 5. Q:DISM Error When Applying Custom Captured WIM Image
-  A:This occurs When a security descriptor on the captured drive is invalid. Please Capture all WIM images in WinPE(Installation Media) USB to avoid this
-    The Other Workaround for an Already Captured WIM image with an invalid security descriptor is to always run the install / apply scripts in WinPE
+   A:This occurs When a security descriptor on the captured drive is invalid. Please Capture all WIM images in WinPE(Installation Media) USB to avoid this
 6. Q:Help I Captured the WIM Image in WinPE(USB) and I am still getting the security error when Applying the WIM image to an External Hard drive / USB
    A:You should add the errored directories into the removeatt.cfg file located in your current ExternalWIN installation. 
    - Go to C:\Windows\Logs\DISM\dism.log
@@ -163,9 +161,11 @@ You can also run any main script that format or partitions the hard drive and be
    - Re-Capture the WIM in WinPE
    - Re-Apply the WIM on the new index
    - If the error goes away and looks like it came with the computer please create a new issue called "dir cfg" to github.com/jredfox/ExternalWIN/issues
+7. Q:Help File Explorer Popups are still happening during the Installation Process
+   A:Older Computers need a higher sleep time change SleepDisable to 2500 and SleepEnable to 5500 and if it still doesn't work set them both to 0 and set RestartExplorer to true
 
 Dictionary
 __________________
-Harddrive: HDD / SDD or any drive that's not a soft drive or usb flash drive
+Harddrive / Hardrive: HDD / SDD or any drive that's not a soft drive or usb flash drive
 SoftDrive: Floppy or anything older then floppy
 Flash Drive: USB Flash Drive Stick
