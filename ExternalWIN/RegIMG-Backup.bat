@@ -2,6 +2,11 @@
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 call :PP
+IF "!winpe!" NEQ "T" (
+echo ERR^: REGIMG-Capture^.bat Must be Run in WinPE ^(Windows Installation Media USB^)
+pause
+exit /b 1
+)
 
 set /p letprime="Enter Windows Drive:"
 set letprime=%letprime:"=%
@@ -13,7 +18,7 @@ md "%BaseDir%\Backups" >nul 2>&1
 md "%tmpdir%" >nul 2>&1
 set hivelist=!BaseDir!\hivelist.hivelist
 IF NOT EXIST "%hivelist%" (
-echo Use Reg-GenHiveList.bat on an online windows installation first then run this script in WinPE Installation Media
+echo Run Reg-GenHiveList^.bat on the Online Target Windows Installation First
 pause
 exit /b 1
 )
