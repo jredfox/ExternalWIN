@@ -9,7 +9,7 @@ set letprime=%letprime:~0,1%
 set BaseDir=!letprime!:\ExternalWIN
 set tmpdir=!BaseDir!\TMP
 set regimg=%BaseDir%\Backups\REGIMG.wim
-md "%BaseDir%" >nul 2>&1
+md "%BaseDir%\Backups" >nul 2>&1
 md "%tmpdir%" >nul 2>&1
 set hivelist=!BaseDir!\hivelist.hivelist
 IF NOT EXIST "%hivelist%" (
