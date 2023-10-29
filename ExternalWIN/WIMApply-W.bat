@@ -16,13 +16,13 @@ mountvol W: /d >nul
 diskpart /s "%~dp0ld.txt"
 set /p disk="Input Disk Number:"
 diskpart /s "%~dp0dd.txt"
-set /p volume="Input Vol Number:"
+set /p volume="Input Volume Number:"
 set /p ays=Are You sure this is the correct Volume %volume% [Y/N]?
 IF /I %ays:~0,1% NEQ Y GOTO SEL
 call "%~dp0FileExplorerPopUp-Disable.bat" "!SleepDisable!" "!RestartExplorer!" >nul
 set form=NTFS
 set let=W
-set /p label1=Input Volume Name of %volume%^:
+set /p label1=Input Volume Name^:
 diskpart /s "%~dp0formatvol.txt"
 dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:W:
 REM ##### RE-ASSING W:\ #############
