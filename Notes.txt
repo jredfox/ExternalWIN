@@ -46,26 +46,8 @@ WinRepairBoot.bat again and specify the partition with windows 10 or 11 on it to
 - How to backup current Registry
   1. Run REG-Backup.bat
 
-- How to restore changes to a Registry (DOESN't Delete new Entries)
+- How to restore changes to a Registry
   1. Run REG-ApplyBackup.bat
-
-- How To create a Registry Image:
-  1. Run Reg-GenHiveList.bat on your current windows
-  2. Boot into WinPE --> Shift+F10
-  3. Run RegIMG-Backup.bat
-
-- How to Apply a Registry Image:
-##################################
-WARNING: If the Registry Image isn't recent all wanted changes to the registry will be deleted. Please Use .REG Files and run REG-ApplyBackup.bat after Re-Imaging the Registry
-Re-Imaging the registry will delete any malware edits to the registry or unintended changes without needing to re-install windows all over again
-##################################
-  1. Create .REG backups using REG-Backup.bat
-  2. Place your latest stable .REG backup files into the scripts directory
-  3. Boot into WinPE --> SHIFT+F10
-  4. Run RegIMG-Apply.bat
-  5. Run Windows normally 
-  6. Run REG-ApplyBackup.bat
-  7. Boot windows normally
 
 - How to Re-Assign A Recovery Partition after a fresh re-install
   1. Run WIM-Apply-Universal.bat with the R for recovery option to reflash the default recovery partition with your cached OEM recovery partition (saves drivers, software and default apps)
