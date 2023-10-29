@@ -9,6 +9,9 @@ pause
 exit /b 1
 )
 
+diskpart /s "%~dp0ld.txt"
+set /p disk="Input Disk Number:"
+diskpart /s "%~dp0dd.txt"
 set /p letprime="Enter Windows Drive:"
 set letprime=%letprime:"=%
 set letprime=%letprime:~0,1%
