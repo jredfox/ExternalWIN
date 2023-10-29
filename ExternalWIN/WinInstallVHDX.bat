@@ -1,6 +1,7 @@
 @ECHO OFF
 Setlocal EnableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
+IF !ERRORLEVEL! NEQ 0 (exit /b !ERRORLEVEL!)
 title ExternalWin Version 1.0.9 VHDX
 call :PP
 call :LOADCFG
@@ -223,7 +224,7 @@ net session >nul 2>&1
 IF %ERRORLEVEL% NEQ 0 (
 echo %~1
 pause
-exit 1
+exit /b 1
 )
 exit /b
 
