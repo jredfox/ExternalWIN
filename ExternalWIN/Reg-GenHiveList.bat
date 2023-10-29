@@ -2,8 +2,12 @@
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 
-set hivelist=%~dp0hivelist.txt
-del /f /q /a "%hivelist%" >nul 2>&1
+set p=%~dp0
+set drive=%p:~0,1%
+set BaseDir=!drive!:\ExternalWIN
+md "!BaseDir!" >nul 2>&1
+set hivelist=!BaseDir!\hivelist.hivelist
+del /F /Q /A "%hivelist%" >nul 2>&1
 reg query HKLM\SYSTEM\CurrentControlSet\Control\hivelist >"%hivelist%"
 exit /b
 

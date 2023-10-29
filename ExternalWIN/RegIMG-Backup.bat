@@ -3,24 +3,27 @@ setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 call :PP
 
-set hivelist=%~dp0hivelist.txt
+set /p letprime="Enter Windows Drive:"
+set letprime=%letprime:"=%
+set letprime=%letprime:~0,1%
+set BaseDir=!letprime!:\ExternalWIN
+set tmpdir=!BaseDir!\TMP
+set regimg=%BaseDir%\Backups\REGIMG.wim
+md "%BaseDir%" >nul 2>&1
+md "%tmpdir%" >nul 2>&1
+set hivelist=!BaseDir!\hivelist.hivelist
 IF NOT EXIST "%hivelist%" (
 echo Use Reg-GenHiveList.bat on an online windows installation first then run this script in WinPE Installation Media
 pause
 exit /b 1
 )
-set /p letprime="Enter Windows Drive:"
-set /p regimg="Enter File to Save REGIMG:"
-set letprime=%letprime:"=%
-set letprime=%letprime:~0,1%
-set regimg=%regimg:"=%
 
 REM ### Create a VDISK for the REG Image ######
 call :GETFREEDRIVE
 set letreg=%letrnd%
-set vdisk=%~dp0regvdisk.vhdx
+set vdisk=%tmpdir%\regvdisk.vhdx
 diskpart /s "%~dp0dvhdx.txt" >nul
-del /f /q /a "%vdisk%" >nul 2>&1
+del /F /Q /A "%vdisk%" >nul 2>&1
 call "%~dp0createvhdx-expand.bat" "%vdisk%" "1" "NTFS" "REGIMG" "%letreg%"
 
 REM #### split the registry and get the paths at index 3. Then Copy the Paths to a new vdisk #####
@@ -42,12 +45,19 @@ REM #### Handle Spaced paths ####
 )
 
 REM ### Convert the VDISK to a WIM Image ##########
-set name=Registry Image Backup %date% %time%
-dism /capture-image /imagefile:"%regimg%" /capturedir:"%letreg%:" /name:"%name%" /Description:"%name%" /compress:maximum
+set name=Registry Image Backup
+IF NOT EXIST "%regimg%" (
+dism /capture-image /imagefile:"%regimg%" /capturedir:"%letreg%:" /name:"%name%" /Description:"%date% %time%" /compress:maximum
+IF !ERRORLEVEL! EQU 0 (echo Captured REG Image Successfully to "!regimg!") ELSE (echo Failed To Capture Reg Image Please Delete the File "!regimg!")
+) ELSE (
+dism /append-image /imagefile:"%regimg%" /capturedir:"%letreg%:" /name:"%name%" /Description:"%date% %time%"
+IF !ERRORLEVEL! EQU 0 (echo Captured REG Image Successfully to "!regimg!") ELSE (echo Failed To Capture Reg Image Delete the Latest Index If a New Index was Created In "!regimg!")
+)
 
 REM ## Post Install ##
 diskpart /s "%~dp0dvhdx.txt" >nul
-del /f /q /a "%vdisk%" >nul 2>&1
+del /F /S /Q /A "%tmpdir%" >nul 2>&1
+rd /S /Q "%tmpdir%" >nul 2>&1
 pause
 exit /b
 
