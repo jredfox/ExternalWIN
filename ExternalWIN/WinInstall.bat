@@ -168,7 +168,7 @@ IF EXIST "R:\" (
 md "%rbackupdir%" >nul 2>&1
 copy "%bootfile%" "%rbackupdir%\boot.wim"
 )
-echo It's Recommended to use REG-Backup.bat for your new Windows Installation as well as Wim-Capture.bat to backup your Windows Partition
+echo It's Recommended to use REG-Capture.bat for your new Windows Installation as well as WIM-Capture.bat to backup your Windows Partition
 
 rem #######POST INSTALL############
 :POSTINSTALL
