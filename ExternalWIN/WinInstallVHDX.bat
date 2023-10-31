@@ -2,7 +2,7 @@
 Setlocal EnableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 IF !ERRORLEVEL! NEQ 0 (exit /b !ERRORLEVEL!)
-title ExternalWin Version 1.0.10 VHDX
+title ExternalWin Version 1.0.11 VHDX
 call :PP
 call :LOADCFG
 
