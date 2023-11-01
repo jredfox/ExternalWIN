@@ -43,6 +43,15 @@ WinRepairBoot.bat again and specify the partition with windows 10 or 11 on it to
 - How to Re-Image the Boot Drive
   1. Run WIMApply-Universal.bat with the boot.wim file found in C:\ExternalWin\backups\boot.wim or in your recovery partition R:\ExternalWin\backups\boot.wim (use openrecovery.bat to access)
 
+- How backup REG-Image
+  1. Enable System Restore
+  2. Create A Restore Point and select your restore point. Fallow the prompts
+
+- How to Apply REG-Image
+  1. If your in WinPE go to Repair this PC and locate System Restore under troubleshoot or advanced
+  2. If your in WinRE simply go to troubleshoot / advanced and locate System Restore
+  3. If your logged into Windows Simply go to System Restore select the restore point and fallow the prompts
+
 - How to backup current Registry
   1. Run REG-Backup.bat
 
