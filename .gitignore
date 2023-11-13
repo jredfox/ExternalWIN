@@ -4,3 +4,4 @@ src/hivelist.txt
 ExternalWIN/ExternalWIN.cfg
 ExternalWIN/hivelist.txt
 *.hivelist
+ExternalWIN/DISMExclusions.cfg
