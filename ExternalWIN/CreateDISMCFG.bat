@@ -15,6 +15,7 @@ echo ^\System Volume Information
 echo ^\RECYCLER
 echo ^\Windows^\CSC
 echo !wimimg!
+echo ^\found^.^*
 echo ^\Users^\^*^\OneDrive
 call "%~dp0PrintOneDrive.bat" "%~1"
 call :CUSTOMEXCLUSIONS
