@@ -59,20 +59,26 @@ md "%wim%" >nul 2>&1
 rd /q "%wim%" >nul 2>&1
 set ttime=%time: =%
 
+REM ## CREATE Exclusion ONEDRIVE List to prevent accidental erasing of onedrive and work around for Windows 11 DISM bugs ##
+echo Creating DISM Exclusion List
+set EXTDISMCFG=%TMP%\EXTWINDISMCapture.ini
+call "%~dp0CreateDISMCFG.bat" "!drive!" "!wim!"
+
 IF NOT EXIST "%wim%" (
-dism /capture-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%desc%" /Description:"%COMPNAME% On %date% %ttime%" /compress:maximum
+dism /capture-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%desc%" /Description:"%COMPNAME% On %date% %ttime%" /compress:maximum /ConfigFile:!EXTDISMCFG!
 IF !ERRORLEVEL! EQU 0 (echo Captured WIM Successfully to "!wim!") ELSE (echo Capture WIM FAILED Please Delete "!wim!")
 ) ELSE (
-dism /append-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%desc%" /Description:"%COMPNAME% On %date% %ttime%"
+dism /append-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%desc%" /Description:"%COMPNAME% On %date% %ttime%" /ConfigFile:!EXTDISMCFG!
 IF !ERRORLEVEL! EQU 0 (echo Captured WIM Successfully to "!wim!") ELSE (echo Capture WIM FAILED Delete the Latest Index If a New Index was Created In "!wim!")
 )
+del /F "!EXTDISMCFG!" /s /q /a >nul 2>&1
 pause
 exit /b
 
 :checkAdmin
 net session >nul 2>&1
 IF !ERRORLEVEL! NEQ 0 (
-echo !~1
+echo %~1
 pause
 exit /b 1
 )
