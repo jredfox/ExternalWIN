@@ -64,7 +64,6 @@ REM ## CREATE Exclusion ONEDRIVE List to prevent accidental erasing of onedrive 
 echo Creating DISM Exclusion List
 set EXTDISMCFG=%TMP%\EXTWINDISMCapture.ini
 call "%~dp0CreateDISMCFG.bat" "!drive!" "!wim!"
-pause
 
 IF NOT EXIST "%wim%" (
 dism /capture-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%desc%" /Description:"%COMPNAME% On %date% %ttime%" /compress:maximum /ConfigFile:!EXTDISMCFG!

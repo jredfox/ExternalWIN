@@ -79,6 +79,10 @@ You can backup both your partitions on windows and re-apply them later
   2. Run WIM-Capture-WINPE.bat or WIM-Capture.bat with the second option allowing allowing for a full path backup not just the entire drive
   3. If the Partition is special such as a boot or recovery partition Run CloseBoot.bat for boot or CloseRecovery.bat for recovery
 
+- Capturing a WIM Image With Custom Exclusions
+  1. GOTO DISMExclusions.cfg and add your exclusions paths with the \ being the root directory. You are allowed to use wildcards for example \Users\*\Onedrive to exclude all users onedrive
+  2. Fallow the steps for capturing a WIM Image
+
 - Applying the WIM Image
   1. Boot into WinPE unless the partition is not currently booted (Not the Current Boot or C Drive)
   2. Run WIMApply-Universal.bat
