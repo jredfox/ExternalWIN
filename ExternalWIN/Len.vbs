@@ -1,0 +1,1 @@
+WScript.Echo Len( WScript.Arguments(0) )
