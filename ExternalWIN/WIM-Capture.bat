@@ -71,7 +71,7 @@ IF !ERRORLEVEL! EQU 0 (echo Captured WIM Successfully to "!wim!") ELSE (echo Cap
 dism /append-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%desc%" /Description:"%COMPNAME% On %date% %ttime%" /ConfigFile:!EXTDISMCFG!
 IF !ERRORLEVEL! EQU 0 (echo Captured WIM Successfully to "!wim!") ELSE (echo Capture WIM FAILED Delete the Latest Index If a New Index was Created In "!wim!")
 )
-del /F "!EXTDISMCFG!" /s /q /a >nul 2>&1
+REM del /F "!EXTDISMCFG!" /s /q /a >nul 2>&1
 pause
 exit /b
 
