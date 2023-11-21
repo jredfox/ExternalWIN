@@ -7,7 +7,6 @@ set EXTIndex=%TMP%\OneDriveLinks.txt
 del /F "!dirs!" /s /q /a >nul 2>&1
 del /F "!EXTIndex!" /s /q /a >nul 2>&1
 call "%~dp0PrintOneDrive.bat" "!drive!" >!dirs!
-echo Indexing The !drive! Drive
 dir /S /B /A^:LO !drive!^:\ >!EXTIndex!
 FOR /F "usebackq delims=" %%I IN ("!EXTIndex!") DO (
 set path=%%I
