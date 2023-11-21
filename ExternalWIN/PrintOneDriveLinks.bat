@@ -21,7 +21,10 @@ exit /b
 set ISONE=F
 FOR /F "usebackq delims=" %%D IN ("!dirs!") DO (
 call :ISFILECHILD "%%D" "!path!"
-IF "!ISCHILD!" EQU "T" (set ISONE=T)
+IF "!ISCHILD!" EQU "T" (
+set ISONE=T
+exit /b
+)
 )
 exit /b
 
