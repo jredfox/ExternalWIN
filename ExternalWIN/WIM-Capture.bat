@@ -3,7 +3,6 @@ setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 IF !ERRORLEVEL! NEQ 0 (exit /b !ERRORLEVEL!)
 call :PP
-call :CREATEEXCLUSIONS
 
 :SELFILE
 set msg="Enter File Name:"
@@ -96,14 +95,5 @@ set winpe=T
 FOR /f "delims=" %%a in ('POWERCFG -GETACTIVESCHEME') DO @SET powerplan="%%a"
 powercfg /s 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
 echo changed powerplan of !powerplan! to high performance 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
-)
-exit /b
-
-:CREATEEXCLUSIONS
-set cfg=%~dp0DISMExclusions.cfg
-IF NOT EXIST "!cfg!" (
-(
-echo.
-) >"!cfg!"
 )
 exit /b
