@@ -6,13 +6,15 @@ set dirs=%TMP%\OneDriveDirs.txt
 set EXTIndex=%TMP%\OneDriveLinks.txt
 call "%~dp0PrintOneDrive.bat" "%~1" >!dirs!
 echo Indexing The !drive! Drive
-dir /S /B /A:LO !drive!^:\ >!EXTIndex!
+REM dir /S /B /A:LO !drive!^:\ >!EXTIndex!
 FOR /F "usebackq delims=" %%I IN ("!EXTIndex!") DO (
 set path=%%I
 set path=!path:~2!
+echo !path!
 FOR /F "usebackq delims=" %%D IN ("!dirs!") DO (
 call :ISFILECHILD "%%D" "!path!"
-IF "!ISCHILD!" EQU "F" (echo !path!)
+IF "!ISCHILD!" EQU "F" (echo !path!) ELSE (echo skipping child^:!path!)
+)
 )
 exit /b
 
