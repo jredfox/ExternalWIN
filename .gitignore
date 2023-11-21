@@ -5,3 +5,4 @@ ExternalWIN/ExternalWIN.cfg
 ExternalWIN/hivelist.txt
 *.hivelist
 ExternalWIN/DISMExclusions.cfg
+ExternalWIN/Test.bat
