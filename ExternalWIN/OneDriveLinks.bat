@@ -6,15 +6,20 @@ set dirs=%TMP%\OneDriveDirs.txt
 set EXTIndex=%TMP%\OneDriveLinks.txt
 call "%~dp0PrintOneDrive.bat" "%~1" >!dirs!
 echo Indexing The !drive! Drive
-REM dir /S /B /A:LO !drive!^:\ >!EXTIndex!
+dir /S /B /A:LO !drive!^:\ >!EXTIndex!
 FOR /F "usebackq delims=" %%I IN ("!EXTIndex!") DO (
 set path=%%I
 set path=!path:~2!
-echo !path!
+call :INONEDRIVE "!path!"
+IF "!ISONE!" EQU "F" (echo !path!)
+)
+exit /b
+
+:INONEDRIVE
+set ISONE=F
 FOR /F "usebackq delims=" %%D IN ("!dirs!") DO (
 call :ISFILECHILD "%%D" "!path!"
-IF "!ISCHILD!" EQU "F" (echo !path!) ELSE (echo skipping child^:!path!)
-)
+IF "!ISCHILD!" EQU "T" (set ISONE=T)
 )
 exit /b
 
@@ -24,7 +29,6 @@ set Child=%~2
 set ISCHILD=F
 cscript "%~dp0Len.vbs%" "!Parent!" >nul
 call :STRLEN "!Parent!"
-echo "!Child:~0,%strlen%!"
 IF /I "!Child:~0,%strlen%!" EQU "%Parent%" (set ISCHILD=T)
 exit /b
 
