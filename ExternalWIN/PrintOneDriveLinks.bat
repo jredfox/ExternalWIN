@@ -8,35 +8,4 @@ del /F "!dirs!" /s /q /a >nul 2>&1
 del /F "!EXTIndex!" /s /q /a >nul 2>&1
 call "%~dp0PrintOneDrive.bat" "!drive!" >!dirs!
 dir /S /B /A^:LO !drive!^:\ >!EXTIndex!
-FOR /F "usebackq delims=" %%I IN ("!EXTIndex!") DO (
-set path=%%I
-set path=!path:~2!
-call :INONEDRIVE "!path!"
-IF "!ISONE!" EQU "F" (echo !path!)
-)
-exit /b
-
-:INONEDRIVE
-set ISONE=F
-FOR /F "usebackq delims=" %%D IN ("!dirs!") DO (
-call :ISFILECHILD "%%D" "!path!"
-IF "!ISCHILD!" EQU "T" (
-set ISONE=T
-exit /b
-)
-)
-exit /b
-
-:ISFILECHILD
-set Parent=%~1
-set Child=%~2
-set ISCHILD=F
-cscript "%~dp0Len.vbs%" "!Parent!" >nul
-call :STRLEN "!Parent!"
-IF /I "!Child:~0,%strlen%!" EQU "%Parent%" (set ISCHILD=T)
-exit /b
-
-:STRLEN
-set cmd=cscript "%~dp0Len.vbs" "%~1"
-FOR /F %%a IN ('!cmd!') DO (set strlen=%%a)
-exit /b
+cscript "%~dp0PrintOneLinks.vbs" "!EXTIndex!" "!dirs!"
