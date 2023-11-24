@@ -8,7 +8,7 @@ FOR /D %%D in ("!EXTWINUSER!\*") DO (
 set dirpath=%%D\NTUSER.DAT
 set dirname=%%~nxD
 IF /I "!dirname!" NEQ ".DEFAULT" IF /I "!dirname!" NEQ "Public" (
-reg load "HKU\!dirname!" "!dirpath!" >nul 2>&1
+reg load "HKU\EXTWIN!dirname!" "!dirpath!" >nul 2>&1
 )
 )
 
@@ -25,6 +25,6 @@ REM ##### UNLOAD the USERDATA from REGEDIT #####
 FOR /D %%D in ("!EXTWINUSER!\*") DO (
 set dirname=%%~nxD
 IF /I "!dirname!" NEQ ".DEFAULT" IF /I "!dirname!" NEQ "Public" (
-reg unload "HKU\!dirname!" >nul 2>&1
+reg unload "HKU\EXTWIN!dirname!" >nul 2>&1
 )
 )
