@@ -8,4 +8,5 @@ del /F "!dirs!" /s /q /a >nul 2>&1
 del /F "!EXTIndex!" /s /q /a >nul 2>&1
 call "%~dp0PrintOneDrive.bat" "!drive!" >!dirs!
 dir /S /B /A^:LO !drive!^:\ >!EXTIndex!
+dir /S /B /A^:L "!drive!^:\Windows\System32\WDI" 2>nul>>!EXTIndex!
 cscript /nologo "%~dp0PrintOneLinks.vbs" "!EXTIndex!" "!dirs!"
