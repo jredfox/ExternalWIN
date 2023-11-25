@@ -19,6 +19,16 @@ echo ^\RECYCLER
 echo ^\Windows^\CSC
 echo !wimimg!
 echo ^\found^.^*
+echo ^\Users^\defaultuser1^*
+echo ^\Users^\defaultuser2^*
+echo ^\Users^\defaultuser3^*
+echo ^\Users^\defaultuser4^*
+echo ^\Users^\defaultuser5^*
+echo ^\Users^\defaultuser6^*
+echo ^\Users^\defaultuser7^*
+echo ^\Users^\defaultuser8^*
+echo ^\Users^\defaultuser9^*
+echo ^\Users^\defaultuser0^*
 echo ^\Users^\^*^\OneDrive
 call "%~dp0PrintOneDrive.bat" "!drive!"
 call "%~dp0PrintOneDriveLinks.bat" "!drive!"
