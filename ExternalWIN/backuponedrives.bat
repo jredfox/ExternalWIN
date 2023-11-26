@@ -9,7 +9,7 @@ REM create the offline onedrive exclusion list before backup
 (
 echo ^[ExclusionList^]
 echo !wimimg!
-cscript /nologo "%~dp0PrintOneLinks.vbs" "!EXTIndex!" "!blank!"
+cscript /nologo "%~dp0PrintOneLinks.vbs" "!EXTIndex!" "!blank!" "!capdrive!"
 echo.
 echo ^[CompressionExclusionList^]
 echo ^*^.mp3

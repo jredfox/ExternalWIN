@@ -1,5 +1,13 @@
 links = WScript.Arguments(0)
 dirs = WScript.Arguments(1)
+target = WScript.Arguments(2)
+' Fix the Target's Directory to be in the proper root "\" format instead of Drive format
+IF Mid(target, 2, 1) = ":" Then
+	target = Mid(target, 3)
+END IF
+IF Len(target) > 1 And Right(target, 1) = "\" THEN
+    target = Left(target, Len(target) - 1)
+END IF
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 
 Function IsChildOfFile(parentDirectory, filePath)
@@ -37,7 +45,7 @@ Do Until objFile.AtEndOfStream
 		END IF
 	NEXT
 	IF ShouldPrint Then
-		WScript.Echo line
+		WScript.Echo Replace(line, target, "") ' Convert The Path to the Perspective of the Target's Root folder
 	END IF
 Loop
 objFile.Close
