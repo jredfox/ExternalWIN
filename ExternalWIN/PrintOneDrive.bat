@@ -1,6 +1,7 @@
 @Echo Off
 setlocal ENABLEDELAYEDEXPANSION
 set drive=%~1
+set drive=!drive:~0,1!
 set EXTWINUSER=!drive!:\Users
 
 REM #### Load the USERDATA into REGEDIT #####

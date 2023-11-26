@@ -62,7 +62,7 @@ set ttime=%time: =%
 REM ## CREATE Exclusion ONEDRIVE List to prevent accidental erasing of onedrive and work around for Windows 11 DISM bugs ##
 echo Creating DISM Exclusion List
 set EXTDISMCFG=%TMP%\EXTWINDISMCapture.ini
-call "%~dp0CreateDISMCFG.bat" "!drive!" "!wim!"
+call "%~dp0CreateDISMCFG.bat" "!let!" "!wim!"
 
 IF NOT EXIST "%wim%" (
 dism /capture-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%desc%" /Description:"%COMPNAME% On %date% %ttime%" /compress:maximum /ConfigFile:!EXTDISMCFG!

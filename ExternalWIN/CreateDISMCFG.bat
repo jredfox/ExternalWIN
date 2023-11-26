@@ -1,13 +1,11 @@
 @Echo Off
 setlocal enableDelayedExpansion
 set drive=%~1
-set drive=!drive:~0,1!
 set cfgini=%TMP%\EXTWINDISMCapture.ini
 set wimimg=%~2
 set wimimg=!wimimg:~2!
 call :CREATEEXCLUSIONS
 del /F "!cfgini!" /s /q /a >nul 2>&1
-setlocal ENABLEDELAYEDEXPANSION
 (
 echo ^[ExclusionList^]
 echo ^\^$ntfs^.log
