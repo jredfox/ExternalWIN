@@ -49,10 +49,8 @@ Do Until objFile.AtEndOfStream
 		END IF
 	NEXT
 	IF ShouldPrint Then
-		IF InStr(1, line, target) = 1 Then
+		IF InStr(1, LCase(line), LCase(target)) = 1 Then
 			WScript.Echo Mid(line, Len(target)) ' Convert The Path to the Perspective of the Target's Root folder Case Sensitive
-		ELSE
-			WScript.Echo line
 		END IF
 	END IF
 Loop
