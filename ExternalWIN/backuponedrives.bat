@@ -15,7 +15,6 @@ echo ^[CompressionExclusionList^]
 echo ^*^.mp3
 echo ^*^.zip
 echo ^*^.cab
-echo ^\WINDOWS^\inf^\^*^.pnf
 ) >"!cfgone!"
 REM create backups of all OneDrives on all accounts
 FOR /F "usebackq delims=" %%I IN ("!dirs!") DO (

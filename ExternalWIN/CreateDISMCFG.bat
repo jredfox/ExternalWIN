@@ -43,8 +43,7 @@ exit /b
 :CUSTOMEXCLUSIONS
 FOR /F "usebackq delims=" %%i IN ("!DISMCAPCFG!") DO (
 set dir=%%i
-IF "!dir:~1,1!" EQU ":" (set dir=!dir:~2!)
-echo !dir!
+cscript /nologo "%~dp0EchoRealtivePath.vbs" "!dir!" "!drive!"
 )
 exit /b
 
