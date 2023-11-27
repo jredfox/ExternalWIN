@@ -4,6 +4,9 @@ target = WScript.Arguments(2)
 ' Fix the Target's Directory to be in the proper root "\" format instead of Drive format
 IF Mid(target, 2, 1) = ":" Then
 	target = Mid(target, 3)
+	IF target = "" THEN
+	   target = "\"
+	End If
 END IF
 ' Ensure the target ends with a backslash
 IF Len(target) > 1 And Not Right(target, 1) = "\" THEN
@@ -47,8 +50,8 @@ Do Until objFile.AtEndOfStream
 	NEXT
 	IF ShouldPrint Then
 		IF InStr(1, line, target) = 1 Then
-			WScript.Echo Replace(line, target, "\", 1, 1) ' Convert The Path to the Perspective of the Target's Root folder
-		ELSE 
+			WScript.Echo Mid(line, Len(target)) ' Convert The Path to the Perspective of the Target's Root folder Case Sensitive
+		ELSE
 			WScript.Echo line
 		END IF
 	END IF

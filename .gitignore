@@ -6,3 +6,4 @@ ExternalWIN/hivelist.txt
 *.hivelist
 ExternalWIN/DISMExclusions.cfg
 ExternalWIN/Test.bat
+ExternalWIN/Test.vbs

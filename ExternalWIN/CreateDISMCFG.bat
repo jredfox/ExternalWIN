@@ -8,26 +8,26 @@ call :CREATEEXCLUSIONS
 del /F "!cfgini!" /s /q /a >nul 2>&1
 (
 echo ^[ExclusionList^]
-echo ^\^$ntfs^.log
-echo ^\hiberfil^.sys
-echo ^\pagefile^.sys
-echo ^\swapfile^.sys
-echo ^\System Volume Information
-echo ^\RECYCLER
-echo ^\Windows^\CSC
-echo !wimimg!
-echo ^\found^.^*
-echo ^\Users^\defaultuser1^*
-echo ^\Users^\defaultuser2^*
-echo ^\Users^\defaultuser3^*
-echo ^\Users^\defaultuser4^*
-echo ^\Users^\defaultuser5^*
-echo ^\Users^\defaultuser6^*
-echo ^\Users^\defaultuser7^*
-echo ^\Users^\defaultuser8^*
-echo ^\Users^\defaultuser9^*
-echo ^\Users^\defaultuser0^*
-echo ^\Users^\^*^\OneDrive
+cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\^$ntfs^.log" "!drive!"
+cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\hiberfil^.sys" "!drive!"
+cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\pagefile^.sys" "!drive!"
+cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\swapfile^.sys" "!drive!"
+cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\System Volume Information" "!drive!"
+cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\RECYCLER" "!drive!"
+cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\Windows^\CSC" "!drive!"
+cscript /nologo "%~dp0EchoRealtivePath.vbs" "!wimimg!" "!drive!"
+cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\found^.^*" "!drive!"
+cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\Users^\defaultuser1^*" "!drive!"
+cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\Users^\defaultuser2^*" "!drive!"
+cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\Users^\defaultuser3^*" "!drive!"
+cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\Users^\defaultuser4^*" "!drive!"
+cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\Users^\defaultuser5^*" "!drive!"
+cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\Users^\defaultuser6^*" "!drive!"
+cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\Users^\defaultuser7^*" "!drive!"
+cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\Users^\defaultuser8^*" "!drive!"
+cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\Users^\defaultuser9^*" "!drive!"
+cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\Users^\defaultuser0^*" "!drive!"
+cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\Users^\^*^\OneDrive" "!drive!"
 call "%~dp0PrintOneDrive.bat" "!drive!"
 call "%~dp0PrintOneDriveLinks.bat" "!drive!"
 call :CUSTOMEXCLUSIONS
@@ -36,7 +36,7 @@ echo ^[CompressionExclusionList^]
 echo ^*^.mp3
 echo ^*^.zip
 echo ^*^.cab
-echo ^\WINDOWS^\inf^\^*^.pnf
+cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\WINDOWS^\inf^\^*^.pnf" "!drive!"
 ) >"!cfgini!"
 exit /b
 
