@@ -5,8 +5,9 @@ target = WScript.Arguments(2)
 IF Mid(target, 2, 1) = ":" Then
 	target = Mid(target, 3)
 END IF
-IF Len(target) > 1 And Right(target, 1) = "\" THEN
-    target = Left(target, Len(target) - 1)
+' Ensure the target ends with a backslash
+IF Len(target) > 1 And Not Right(target, 1) = "\" THEN
+    target = target & "\"
 END IF
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 
@@ -45,7 +46,11 @@ Do Until objFile.AtEndOfStream
 		END IF
 	NEXT
 	IF ShouldPrint Then
-		WScript.Echo Replace(line, target, "") ' Convert The Path to the Perspective of the Target's Root folder
+		IF InStr(1, line, target) = 1 Then
+			WScript.Echo Replace(line, target, "\", 1, 1) ' Convert The Path to the Perspective of the Target's Root folder
+		ELSE 
+			WScript.Echo line
+		END IF
 	END IF
 Loop
 objFile.Close
