@@ -21,6 +21,8 @@ set /p disk="Input Disk Number:"
 diskpart /s "%~dp0dd.txt"
 set /p let="Enter Capture Drive:"
 set let=!let:"=!
+REM ## Remove Extra Backslash In case of User Error ##
+IF "!let:~-1!" EQU "\" (SET let=!let:~0,-1!)
 REM IF We are only capturing the whole drive fix the drive letter to make DISM happy
 IF "!let:~3,3!" EQU "" (set let=!let:~0,1!^:)
 set drive=!let:~0,1!
