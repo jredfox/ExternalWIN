@@ -12,8 +12,8 @@ set labelvhdx=VDISK
 IF "%vdisk%"=="" ( GOTO CLEANUP ) else ( GOTO CLEANUP2 )
 :CLEANUP
 call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
-md "%userprofile%\Documents\%ComputerName%\VDISKS\" >nul 2>&1
-set vdisk=%userprofile%\Documents\%ComputerName%\VDISKS\windows.vhdx
+md "%USERPROFILE%\Documents\ExternalWIN\%ComputerName%\VDISKS\" >nul 2>&1
+set vdisk=%USERPROFILE%\Documents\ExternalWIN\%ComputerName%\VDISKS\windows.vhdx
 diskpart /s "%~dp0dvhdx.txt" >nul
 mountvol W: /p >nul
 mountvol S: /p >nul
