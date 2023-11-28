@@ -29,7 +29,7 @@ set form=NTFS
 set let=W
 set /p label1=Input Volume Name^:
 diskpart /s "%~dp0formatvol.txt"
-dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:W:
+dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:W^:
 REM ##### RE-ASSING W:\ #############
 call "%~dp0Assign-RND.bat" "true"
 call "%~dp0FileExplorerPopUp-Enable.bat" "!SleepEnable!" ""
