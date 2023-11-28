@@ -17,8 +17,8 @@ diskpart /s "%~dp0ld.txt"
 set /p disk="Input Disk Number:"
 diskpart /s "%~dp0dd.txt"
 set /p volume="Input Volume Number:"
-call :ISALPHA "!volume!"
-IF "!isAlpha!" EQU "T" (
+call :ISNUM "!volume!"
+IF "!isNum!" EQU "F" (
 echo The Volume Number Must be a Number
 GOTO SEL
 )
@@ -36,19 +36,19 @@ call "%~dp0FileExplorerPopUp-Enable.bat" "!SleepEnable!" ""
 pause
 exit /b
 
-:ISALPHA
-set isAlpha=F
+:ISNUM
+set isNum=F
 set var=%~1
 IF "!var!" EQU "" (exit /b)
-set varalpha=A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+set varnum=1 2 3 4 5 6 7 8 9 0
 FOR /L %%I IN (0,1,257) DO (
 set varC=!var:~%%I,1!
 IF "!varC!" EQU "" (exit /b)
-set isAlpha=F
-FOR %%A IN (%varalpha%) DO (
-IF /I !varC! EQU %%A (set isAlpha=T)
+set isNum=F
+FOR %%A IN (%varnum%) DO (
+IF /I !varC! EQU %%A (set isNum=T)
 )
-IF "!isAlpha!" EQU "F" (exit /b)
+IF "!isNum!" EQU "F" (exit /b)
 )
 exit /b
 
