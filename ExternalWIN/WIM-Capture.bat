@@ -24,7 +24,10 @@ set let=!let:"=!
 REM ## Remove Extra Backslash In case of User Error ##
 IF "!let:~-1!" EQU "\" (SET let=!let:~0,-1!)
 REM IF We are only capturing the whole drive fix the drive letter to make DISM happy
-IF "!let:~3,3!" EQU "" (set let=!let:~0,1!^:)
+IF "!let:~3,1!" EQU "" (
+set let=!let:~0,1!^:
+set ISROOT=T
+)
 set drive=!let:~0,1!
 REM ## REMOVE ATTRIBUTES Of Configurable Directories ##
 IF "%winpe%" EQU "T" (call "%~dp0removeatt.bat" "!drive!")
@@ -67,8 +70,10 @@ set EXTDISMCFG=%TMP%\EXTWINDISMCapture.ini
 call "%~dp0CreateDISMCFG.bat" "!let!" "!wim!"
 
 REM ## CREATE ONEDRIVE WIM Backups if Specified ##
+IF "!ISROOT!" EQU "T" (
 set /p onebackup="Backup All Users Downloaded Offline OneDrive Files [Y\N]?"
 IF /I "%onebackup:~0,1%" EQU "Y" (call "%~dp0backuponedrives.bat" "!drive!" "!COMPNAME!")
+)
 
 IF NOT EXIST "%wim%" (
 dism /capture-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%desc%" /Description:"%COMPNAME% On %date% %ttime%" /compress:maximum /ConfigFile:"!EXTDISMCFG!"

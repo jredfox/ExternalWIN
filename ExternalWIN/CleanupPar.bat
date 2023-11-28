@@ -18,7 +18,7 @@ exit /b
 :CHECK
 set arg=%~1
 set d=!arg:~0,1!
-IF "%arg:~3,3%" NEQ "" (exit /b)
+IF "%arg:~3,1%" NEQ "" (exit /b)
 fsutil fsinfo drivetype !arg!:\ >"!type!"
 cscript "%~dp0FindSTR.vbs" "CD-@$DVD-@$BLUERAY-@$Floppy" "!type!" "false" >nul
 IF !ERRORLEVEL! EQU 0 (exit /b)
