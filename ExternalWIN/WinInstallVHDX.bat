@@ -12,7 +12,7 @@ set labelvhdx=VDISK
 IF "%vdisk%"=="" ( GOTO CLEANUP ) else ( GOTO CLEANUP2 )
 :CLEANUP
 call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
-set EXTHOME=!HOMEDRIVE:~0,1!^:\ExternalWIN
+set EXTHOME=!HOMEDRIVE:~0,1!^:\ExternalWIN\ImageBackups
 md "!EXTHOME!\%ComputerName%\VDISKS\" >nul 2>&1
 set vdisk=!EXTHOME!\%ComputerName%\VDISKS\windows.vhdx
 diskpart /s "%~dp0dvhdx.txt" >nul
