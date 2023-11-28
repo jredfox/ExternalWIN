@@ -144,7 +144,7 @@ ECHO.%vdiskhome% | FIND /I "\">Nul && (
 echo VDISK Name Cannot Contain Path Characters
 GOTO LOOP
 )
-ECHO.%vdiskhome% | FIND /I "/">Nul && ( 
+ECHO.%vdiskhome% | FIND /I "/">Nul && (
 echo VDISK Name Cannot Contain Path Characters
 GOTO LOOP
 )

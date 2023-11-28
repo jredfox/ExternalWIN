@@ -17,6 +17,11 @@ diskpart /s "%~dp0ld.txt"
 set /p disk="Input Disk Number:"
 diskpart /s "%~dp0dd.txt"
 set /p volume="Input Volume Number:"
+call :ISALPHA "!volume!"
+IF "!isAlpha!" EQU "T" (
+echo The Volume Number Must be a Number
+GOTO SEL
+)
 set /p ays=Are You sure this is the correct Volume %volume% [Y/N]?
 IF /I %ays:~0,1% NEQ Y GOTO SEL
 call "%~dp0FileExplorerPopUp-Disable.bat" "!SleepDisable!" "!RestartExplorer!" >nul
@@ -29,6 +34,22 @@ REM ##### RE-ASSING W:\ #############
 call "%~dp0Assign-RND.bat" "true"
 call "%~dp0FileExplorerPopUp-Enable.bat" "!SleepEnable!" ""
 pause
+exit /b
+
+:ISALPHA
+set isAlpha=F
+set var=%~1
+IF "!var!" EQU "" (exit /b)
+set varalpha=A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+FOR /L %%I IN (0,1,257) DO (
+set varC=!var:~%%I,1!
+IF "!varC!" EQU "" (exit /b)
+set isAlpha=F
+FOR %%A IN (%varalpha%) DO (
+IF /I !varC! EQU %%A (set isAlpha=T)
+)
+IF "!isAlpha!" EQU "F" (exit /b)
+)
 exit /b
 
 :checkAdmin
