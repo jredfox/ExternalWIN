@@ -14,6 +14,8 @@ FOR /F "usebackq delims=" %%I IN ("!dirs!") DO (
 set capdrive=!drive!^:%%I
 set capwim=%%~dpIOneDriveOld.WIM
 set capwim=!drive!^:!capwim:~2!
+del /F "!capwim!" /s /q /a >nul 2>&1
+del /F "!cfgone!" /s /q /a >nul 2>&1
 REM create the offline onedrive exclusion list before backup
 (
 echo ^[ExclusionList^]
@@ -27,7 +29,5 @@ echo ^*^.cab
 ) >"!cfgone!"
 REM Delete previous WIM FILE
 echo Backing Up "OneDrive !capdrive! TO !capwim!"
-del /F "!capwim!" /s /q /a >nul 2>&1
 dism /capture-image /imagefile:"!capwim!" /capturedir:"!capdrive!" /name:"OneDrive Offline Backup" /Description:"!COMPNAME! On !date! !ttime!" /compress:maximum /ConfigFile:"!cfgone!"
-REM del /F "!cfgone!" /s /q /a >nul 2>&1
 )

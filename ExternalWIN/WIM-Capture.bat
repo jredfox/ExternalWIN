@@ -72,7 +72,7 @@ call "%~dp0CreateDISMCFG.bat" "!let!" "!wim!"
 REM ## CREATE ONEDRIVE WIM Backups if Specified ##
 IF "!ISROOT!" EQU "T" (
 set /p onebackup="Backup All Users Downloaded Offline OneDrive Files [Y\N]?"
-IF /I "%onebackup:~0,1%" EQU "Y" (call "%~dp0backuponedrives.bat" "!drive!" "!COMPNAME!")
+IF /I "!onebackup:~0,1!" EQU "Y" (call "%~dp0backuponedrives.bat" "!drive!" "!COMPNAME!")
 )
 
 IF NOT EXIST "%wim%" (
@@ -82,7 +82,6 @@ IF !ERRORLEVEL! EQU 0 (echo Captured WIM Successfully to "!wim!") ELSE (echo Cap
 dism /append-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%desc%" /Description:"%COMPNAME% On %date% %ttime%" /ConfigFile:"!EXTDISMCFG!"
 IF !ERRORLEVEL! EQU 0 (echo Captured WIM Successfully to "!wim!") ELSE (echo Capture WIM FAILED Delete the Latest Index If a New Index was Created In "!wim!")
 )
-REM del /F "!EXTDISMCFG!" /s /q /a >nul 2>&1
 pause
 exit /b
 
