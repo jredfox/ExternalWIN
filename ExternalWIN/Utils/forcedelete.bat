@@ -4,6 +4,7 @@ call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order 
 IF !ERRORLEVEL! NEQ 0 (exit /b !ERRORLEVEL!)
 REM this is to force delete the extracted WIM files when mounting goes wrong. Do not Delete SYSTEM32 with this
 set dir=%~1
+IF "%~1" EQU "" (exit /b)
 takeown /F "%dir%" /R /D Y
 icacls "%dir%" /T /C /grant administrators:F System:F everyone:F
 del /F "%dir%" /s /q /a
