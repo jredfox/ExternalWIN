@@ -4,20 +4,50 @@ set cfg=%~dp0ExternalWIN.cfg
 IF NOT EXIST "!cfg!" (call :CREATECFG)
 FOR /F "usebackq delims=" %%i IN ("!cfg!") DO (
 set line=%%i
-IF /I "!line:~0,13!" EQU "SleepDisable:" (set SleepDisable=!line:~13!)
-IF /I "!line:~0,12!" EQU "SleepEnable:" (set SleepEnable=!line:~12!)
+IF /I "!line:~0,13!" EQU "SleepDisable:" (
+set SleepDisable=!line:~13!
+)
+IF /I "!line:~0,12!" EQU "SleepEnable:" (
+set SleepEnable=!line:~12!
+)
 IF /I "!line:~0,16!" EQU "RestartExplorer:" (
-set RestartExplorer=!line:~16!
-call :GETBOOL "!RestartExplorer!"
+call :GETBOOL "!line:~16!"
 set RestartExplorer=!getbool!
 )
 IF /I "!line:~0,20!" EQU "OptimizedWIMCapture:" (
-set OptimizedWIMCapture=!line:~20!
-call :GETBOOL "!OptimizedWIMCapture!"
+call :GETBOOL "!line:~20!"
 set OptimizedWIMCapture=!getbool!
 )
+IF /I "!line:~0,17!" EQU "OneDriveLinkScan:" (
+call :GETBOOL "!line:~17!"
+set OneDriveLinkScan=!getbool!
 )
-echo !SleepDisable! !SleepEnable! !RestartExplorer! !OptimizedWIMCapture!
+)
+REM VERIFY
+(
+IF "!SleepDisable!" EQU "" (
+set SleepDisable=1750
+echo SleepDisable^:1750
+)
+IF "!SleepEnable!" EQU "" (
+set SleepEnable=2000
+echo SleepEnable^:2000
+)
+IF "!RestartExplorer!" EQU "" (
+set RestartExplorer=false
+echo RestartExplorer^:false
+)
+IF "!OptimizedWIMCapture!" EQU "" (
+set OptimizedWIMCapture=true
+echo OptimizedWIMCapture^:true
+)
+IF "!OneDriveLinkScan!" EQU "" (
+set OneDriveLinkScan=true
+echo OneDriveLinkScan^:true
+)
+)>>"!cfg!"
+REM PRINT OUTPUT
+echo !SleepDisable! !SleepEnable! !RestartExplorer! !OptimizedWIMCapture! !OneDriveLinkScan!
 exit /b
 
 :GETBOOL
@@ -31,5 +61,6 @@ exit /b
   echo SleepEnable^:2000
   echo RestartExplorer^:false
   echo OptimizedWIMCapture^:true
+  echo OneDriveLinkScan^:true
 ) >"!cfg!"
 exit /b
