@@ -12,6 +12,10 @@ echo. >!blank!
 REM create backups of all OneDrives on all accounts
 FOR /F "usebackq delims=" %%I IN ("!dirs!") DO (
 set capdrive=!drive!^:%%I
+IF /I "!OneDriveLinkScan!" EQU "FALSE" (
+del /F "!EXTIndex!" /s /q /a >nul 2>&1
+dir /S /B /A^:LO "!capdrive!" >!EXTIndex!
+)
 set capwim=%%~dpIOneDriveOld.WIM
 set capwim=!drive!^:!capwim:~2!
 del /F "!capwim!" /s /q /a >nul 2>&1
