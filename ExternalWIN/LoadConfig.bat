@@ -11,8 +11,13 @@ set RestartExplorer=!line:~16!
 call :GETBOOL "!RestartExplorer!"
 set RestartExplorer=!getbool!
 )
+IF /I "!line:~0,20!" EQU "OptimizedWIMCapture:" (
+set OptimizedWIMCapture=!line:~20!
+call :GETBOOL "!OptimizedWIMCapture!"
+set OptimizedWIMCapture=!getbool!
 )
-echo !SleepDisable! !SleepEnable! !RestartExplorer!
+)
+echo !SleepDisable! !SleepEnable! !RestartExplorer! !OptimizedWIMCapture!
 exit /b
 
 :GETBOOL
@@ -25,5 +30,6 @@ exit /b
   echo SleepDisable^:1750
   echo SleepEnable^:2000
   echo RestartExplorer^:false
+  echo OptimizedWIMCapture^:true
 ) >"!cfg!"
 exit /b
