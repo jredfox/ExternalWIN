@@ -4,18 +4,20 @@ set drive=%~1
 set drive=!drive:~0,1!
 set COMPNAME=%~2
 set ttime=%time: =%
-set EXTIndex=%TMP%\OneDriveLinks.txt
+set EXTIndex=%TMP%\DLOneDriveLinks.txt
 set dirs=%TMP%\OneDriveDirs.txt
-set cfgone=%TMP%\OfflineOneExclusions.ini
+set cfgone=%TMP%\DLOneExclusions.ini
 set blank=%TMP%\Blank.txt
 echo. >!blank!
+call :ISBLANK "!dirs!"
+IF "!isBlank!" EQU "T" (exit /b)
+set /p onebackup="Backup All Users Downloaded Offline OneDrive Files [Y\N]?"
+IF /I "!onebackup:~0,1!" NEQ "Y" (exit /b)
 REM create backups of all OneDrives on all accounts
 FOR /F "usebackq delims=" %%I IN ("!dirs!") DO (
 set capdrive=!drive!^:%%I
-IF /I "!OneDriveLinkScan!" EQU "FALSE" (
 del /F "!EXTIndex!" /s /q /a >nul 2>&1
 dir /S /B /A^:LO "!capdrive!" >!EXTIndex!
-)
 set capwim=%%~dpIOneDriveOld.WIM
 set capwim=!drive!^:!capwim:~2!
 del /F "!capwim!" /s /q /a >nul 2>&1
@@ -35,3 +37,16 @@ REM Delete previous WIM FILE
 echo Backing Up "OneDrive !capdrive! TO !capwim!"
 dism /capture-image /imagefile:"!capwim!" /capturedir:"!capdrive!" /name:"OneDrive Offline Backup" /Description:"!COMPNAME! On !date! !ttime!" /compress:maximum /ConfigFile:"!cfgone!"
 )
+
+:ISBLANK
+set isBlank=T
+set file=%~1
+FOR /F "usebackq delims=" %%A IN ("%file%") DO (
+set line=%%A
+set line=!line: =!
+IF "!line!" NEQ "" (
+set isBlank=F
+exit /b
+)
+)
+exit /b

@@ -72,8 +72,7 @@ call "%~dp0CreateDISMCFG.bat" "!let!" "!wim!"
 
 REM ## CREATE ONEDRIVE WIM Backups if Specified ##
 IF "!ISROOT!" EQU "T" (
-set /p onebackup="Backup All Users Downloaded Offline OneDrive Files [Y\N]?"
-IF /I "!onebackup:~0,1!" EQU "Y" (call "%~dp0backuponedrives.bat" "!drive!" "!COMPNAME!")
+call "%~dp0backuponedrives.bat" "!drive!" "!COMPNAME!"
 )
 
 IF NOT EXIST "%wim%" (
@@ -113,5 +112,18 @@ exit /b
 FOR /F "tokens=4-5 delims= " %%A in ('call "%~dp0LoadConfig.bat"') DO (
 set OptimizedWIMCapture=%%A
 set OneDriveLinkScan=%%B
+)
+exit /b
+
+:ISBLANK
+set isBlank=T
+set file=%~1
+FOR /F "usebackq delims=" %%A IN ("%file%") DO (
+set line=%%A
+set line=!line: =!
+IF "!line!" NEQ "" (
+set isBlank=F
+exit /b
+)
 )
 exit /b
