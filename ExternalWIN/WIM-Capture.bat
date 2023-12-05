@@ -74,7 +74,6 @@ REM ## CREATE ONEDRIVE WIM Backups if Specified ##
 IF "!ISROOT!" EQU "T" (
 call "%~dp0backuponedrives.bat" "!drive!" "!COMPNAME!"
 )
-pause
 
 IF NOT EXIST "%wim%" (
 dism /capture-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%desc%" /Description:"%COMPNAME% On %date% %ttime%" /compress:maximum /ConfigFile:"!EXTDISMCFG!"
