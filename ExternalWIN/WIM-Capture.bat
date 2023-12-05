@@ -114,16 +114,3 @@ set OptimizedWIMCapture=%%A
 set OneDriveLinkScan=%%B
 )
 exit /b
-
-:ISBLANK
-set isBlank=T
-set file=%~1
-FOR /F "usebackq delims=" %%A IN ("%file%") DO (
-set line=%%A
-set line=!line: =!
-IF "!line!" NEQ "" (
-set isBlank=F
-exit /b
-)
-)
-exit /b

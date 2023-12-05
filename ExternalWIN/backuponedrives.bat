@@ -8,7 +8,7 @@ set EXTIndex=%TMP%\DLOneDriveLinks.txt
 set dirs=%TMP%\OneDriveDirs.txt
 set cfgone=%TMP%\DLOneExclusions.ini
 set blank=%TMP%\Blank.txt
-echo. >!blank!
+echo. >"!blank!"
 call :ISBLANK "!dirs!"
 IF "!isBlank!" EQU "T" (exit /b)
 set /p onebackup="Backup All Users Downloaded Offline OneDrive Files [Y\N]?"
@@ -17,7 +17,7 @@ REM create backups of all OneDrives on all accounts
 FOR /F "usebackq delims=" %%I IN ("!dirs!") DO (
 set capdrive=!drive!^:%%I
 del /F "!EXTIndex!" /s /q /a >nul 2>&1
-dir /S /B /A^:LO "!capdrive!" >!EXTIndex!
+dir /S /B /A^:LO "!capdrive!" >"!EXTIndex!"
 set capwim=%%~dpIOneDriveOld.WIM
 set capwim=!drive!^:!capwim:~2!
 del /F "!capwim!" /s /q /a >nul 2>&1
