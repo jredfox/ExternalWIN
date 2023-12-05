@@ -5,9 +5,11 @@ set drive=!drive:~0,1!
 set COMPNAME=%~2
 set ttime=%time: =%
 set EXTIndex=%TMP%\DLOneDriveLinks.txt
-set dirs=%TMP%\OneDriveDirs.txt
+set dirs=%TMP%\DLOneDriveDirs.txt
 set cfgone=%TMP%\DLOneExclusions.ini
 set blank=%TMP%\Blank.txt
+del /F "!dirs!" /s /q /a >nul 2>&1
+call "%~dp0PrintOneDrive.bat" "!drive!" >"!dirs!"
 echo. >"!blank!"
 call :ISBLANK "!dirs!"
 IF "!isBlank!" EQU "T" (exit /b)
