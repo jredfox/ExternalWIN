@@ -18,12 +18,12 @@ IF /I "!onebackup:~0,1!" NEQ "Y" (exit /b)
 REM create backups of all OneDrives on all accounts
 FOR /F "usebackq delims=" %%I IN ("!dirs!") DO (
 set capdrive=!drive!^:%%I
-del /F "!EXTIndex!" /s /q /a >nul 2>&1
-dir /S /B /A^:LO "!capdrive!" 2>nul>"!EXTIndex!"
 set capwim=%%~dpIOneDriveOld.WIM
 set capwim=!drive!^:!capwim:~2!
+del /F "!EXTIndex!" /s /q /a >nul 2>&1
 del /F "!capwim!" /s /q /a >nul 2>&1
 del /F "!cfgone!" /s /q /a >nul 2>&1
+dir /S /B /A^:LO "!capdrive!" 2>nul>"!EXTIndex!"
 REM create the offline onedrive exclusion list before backup
 (
 echo ^[ExclusionList^]
