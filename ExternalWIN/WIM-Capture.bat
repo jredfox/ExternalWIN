@@ -84,9 +84,8 @@ IF "!file!" EQU "ERR" (
 echo Invalid Target Directory it cannot contains PATH SEPERATOR SEQUENCE "^#^@"
 exit /b
 )
-set targ=!drive!^:\EXTWNCAP!file!
-REM Delete all Generated EXTWNCAP files generated from previous captures
-del /F /Q /A "!drive!^:\EXTWNCAP^$^*^." >nul 2>&1
+set targ=!let!\EXTWNCAP!file!
+del /F /Q /A "!targ!" >nul 2>&1
 echo. >"!targ!"
 pause
 
@@ -97,6 +96,7 @@ IF !ERRORLEVEL! EQU 0 (echo Captured WIM Successfully to "!wim!") ELSE (echo Cap
 dism /append-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%desc%" /Description:"%COMPNAME% On %date% %ttime%" /ConfigFile:"!EXTDISMCFG!"
 IF !ERRORLEVEL! EQU 0 (echo Captured WIM Successfully to "!wim!") ELSE (echo Capture WIM FAILED Delete the Latest Index If a New Index was Created In "!wim!")
 )
+del /F /Q /A "!targ!" >nul 2>&1
 pause
 exit /b
 
