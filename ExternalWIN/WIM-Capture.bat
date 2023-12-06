@@ -87,7 +87,6 @@ exit /b
 set targ=!let!\EXTWNCAP!file!
 del /F /Q /A "!targ!" >nul 2>&1
 type NUL >"!targ!"
-pause
 
 IF NOT EXIST "%wim%" (
 dism /capture-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%desc%" /Description:"%COMPNAME% On %date% %ttime%" /compress:maximum /ConfigFile:"!EXTDISMCFG!"

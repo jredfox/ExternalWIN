@@ -30,7 +30,8 @@ set form=NTFS
 set let=W
 set /p label1=Input Volume Name^:
 diskpart /s "%~dp0formatvol.txt"
-dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:W^:
+call :APPLYCFG
+dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:"W:"!cmdcfg!
 REM ##### RE-ASSING W:\ #############
 call "%~dp0Assign-RND.bat" "true"
 call "%~dp0FileExplorerPopUp-Enable.bat" "!SleepEnable!" ""
@@ -78,9 +79,18 @@ exit /b
 
 :LOADCFG
 IF "!winpe!" EQU "T" (exit /b)
-FOR /F "tokens=1-3 delims= " %%A in ('call "%~dp0LoadConfig.bat"') DO (
+FOR /F "tokens=1-3,6 delims= " %%A in ('call "%~dp0LoadConfig.bat"') DO (
 set SleepDisable=%%A
 set SleepEnable=%%B
 set RestartExplorer=%%C
+set ApplyExclusions=%%D
 )
+exit /b
+
+:APPLYCFG
+set applyini=%TMP%\EXTWINDISMApply.ini
+IF /I "!ApplyExclusions:~0,1!" NEQ "T" (exit /b)
+echo Generating Apply Exclusion List
+call "%~dp0CreateApplyExclusions.bat" "!wim!" "!index!" "!winpe!"
+set cmdcfg= ^/ConfigFile^:"!applyini!"
 exit /b
