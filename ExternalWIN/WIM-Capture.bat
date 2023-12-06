@@ -86,7 +86,7 @@ exit /b
 )
 set targ=!let!\EXTWNCAP!file!
 del /F /Q /A "!targ!" >nul 2>&1
-echo. >"!targ!"
+type NUL >"!targ!"
 pause
 
 IF NOT EXIST "%wim%" (

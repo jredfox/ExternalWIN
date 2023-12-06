@@ -7,3 +7,7 @@ ExternalWIN/hivelist.txt
 ExternalWIN/DISMExclusions.cfg
 ExternalWIN/Test.bat
 ExternalWIN/Test.vbs
+ExternalWIN/DISMApplyExclusions.cfg
+ExternalWIN/DISMCapExclusions.cfg
+ExternalWIN/ApplyExclusions.cfg
+ExternalWIN/CaptureExclusions.cfg

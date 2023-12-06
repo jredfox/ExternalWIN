@@ -10,7 +10,7 @@ set cfgone=%TMP%\DLOneExclusions.ini
 set blank=%TMP%\Blank.txt
 del /F "!dirs!" /s /q /a >nul 2>&1
 call "%~dp0PrintOneDrive.bat" "!drive!" >"!dirs!"
-echo. >"!blank!"
+type NUL >"!blank!"
 call :ISBLANK "!dirs!"
 IF "!isBlank!" EQU "T" (exit /b)
 set /p onebackup="Backup All Users Downloaded Offline OneDrive Files [Y\N]?"

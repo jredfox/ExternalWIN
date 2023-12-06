@@ -46,13 +46,14 @@ rem ############# CREATE VHDX #############
 :CREATE
 set /p iso="Input Windows Install.esd / Install.wim:"
 set iso=%iso:"=%
+set iso=!iso:^/=^\!
 dism /get-imageinfo /imagefile:"%iso%"
 set /p index="Input Windows ISO Index:"
 set /p vhdsize="Input VHDX Size In GB:"
 call "%~dp0FileExplorerPopUp-Disable.bat" "!SleepDisable!" "!RestartExplorer!"
 diskpart /s "%~dp0createvhdx.txt"
 echo vdisk saved to %vdisk%
-dism /Apply-Image /ImageFile:"%iso%" /index:"%index%" /ApplyDir:V:\
+dism /Apply-Image /ImageFile:"%iso%" /index:"%index%" /ApplyDir:"V:"
 echo VHDX Created in^: %vdisk%
 diskpart /s "%~dp0dvhdx.txt" >nul
 set /p con=Would you like to Install It [Y/N]?

@@ -8,7 +8,7 @@ Do While Not objExec.StdOut.AtEndOfStream
     strLine = objExec.StdOut.ReadLine()
 	' IF the WIM Image Doesn't Contain The Target then Assume it's the entire C Drive
 	If Right(strLine, 1) = "\" And Len(strLine) > 2 Then
-		WScript.Echo "\"
+		WScript.Echo "$"
 		IF winpe = "TRUE" Then
 			objExec.Terminate
 		Else
@@ -17,7 +17,7 @@ Do While Not objExec.StdOut.AtEndOfStream
 		WScript.Quit
 	End If
     If InStr(1, strLine, "\EXTWNCAP$") = 1 Then
-		WScript.Echo strLine
+		WScript.Echo Mid(strLine, 10)
 		IF winpe = "TRUE" Then
 			objExec.Terminate
 		Else

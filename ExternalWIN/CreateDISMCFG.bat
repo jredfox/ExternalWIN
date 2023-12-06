@@ -49,10 +49,6 @@ cscript /nologo "%~dp0EchoRealtivePath.vbs" "!dir!" "!drive!"
 exit /b
 
 :CREATEEXCLUSIONS
-set DISMCAPCFG=%~dp0DISMExclusions.cfg
-IF NOT EXIST "!DISMCAPCFG!" (
-(
-echo.
-) >"!DISMCAPCFG!"
-)
+set DISMCAPCFG=%~dp0CaptureExclusions.cfg
+IF NOT EXIST "!DISMCAPCFG!" (type NUL >"!DISMCAPCFG!")
 exit /b
