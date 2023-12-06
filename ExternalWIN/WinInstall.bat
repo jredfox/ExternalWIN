@@ -43,7 +43,7 @@ mountvol S: /p >nul
 mountvol W: /d >nul
 mountvol S: /d >nul
 mountvol R: /d >nul
-set /p e=ERASE THE DRIVE (clean install) [Y/N]?
+set /p e="ERASE THE DRIVE (clean install) [Y/N]?"
 call "%~dp0FileExplorerPopUp-Disable.bat" "!SleepDisable!" "!RestartExplorer!"
 IF /I %e:~0,1% EQU Y GOTO ERASE
 IF /I %e:~0,1% NEQ Y GOTO PARSEC
@@ -90,7 +90,8 @@ diskpart /s "%~dp0ParPrime.txt"
 
 rem ########Install################
 :INSTALL
-dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:W:\
+call :APPLYCFG
+echo dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:"W:"!cmdcfg!
 echo Creating Boot Files
 set bootdrive=W
 !bootdrive!:\Windows\System32\bcdboot W:\Windows /f ALL /s S:
@@ -219,9 +220,18 @@ exit /b
 
 :LOADCFG
 IF "!winpe!" EQU "T" (exit /b)
-FOR /F "tokens=1-3 delims= " %%A in ('call "%~dp0LoadConfig.bat"') DO (
+FOR /F "tokens=1-3,6 delims= " %%A in ('call "%~dp0LoadConfig.bat"') DO (
 set SleepDisable=%%A
 set SleepEnable=%%B
 set RestartExplorer=%%C
+set ApplyExclusions=%%D
 )
+exit /b
+
+:APPLYCFG
+set applyini=%TMP%\EXTWINDISMApply.ini
+IF /I "!ApplyExclusions:~0,1!" NEQ "T" (exit /b)
+echo Generating Apply Exclusion List
+call "%~dp0CreateApplyExclusions.bat" "!wim!" "!index!" "!winpe!"
+set cmdcfg= /ConfigFile:"!applyini!"
 exit /b

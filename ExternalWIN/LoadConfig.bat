@@ -22,6 +22,10 @@ IF /I "!line:~0,17!" EQU "OneDriveLinkScan:" (
 call :GETBOOL "!line:~17!"
 set OneDriveLinkScan=!getbool!
 )
+IF /I "!line:~0,16!" EQU "ApplyExclusions:" (
+call :GETBOOL "!line:~16!"
+set ApplyExclusions=!getbool!
+)
 )
 REM VERIFY
 (
@@ -45,9 +49,13 @@ IF "!OneDriveLinkScan!" EQU "" (
 set OneDriveLinkScan=true
 echo OneDriveLinkScan^:true
 )
+IF "!ApplyExclusions!" EQU "" (
+set ApplyExclusions=true
+echo ApplyExclusions^:true
+)
 )>>"!cfg!"
 REM PRINT OUTPUT
-echo !SleepDisable! !SleepEnable! !RestartExplorer! !OptimizedWIMCapture! !OneDriveLinkScan!
+echo !SleepDisable! !SleepEnable! !RestartExplorer! !OptimizedWIMCapture! !OneDriveLinkScan! !ApplyExclusions!
 exit /b
 
 :GETBOOL
@@ -62,5 +70,6 @@ exit /b
   echo RestartExplorer^:false
   echo OptimizedWIMCapture^:true
   echo OneDriveLinkScan^:true
+  echo ApplyExclusions^:true
 ) >"!cfg!"
 exit /b

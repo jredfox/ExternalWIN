@@ -4,6 +4,7 @@ set wim=%1
 set wim=!wim:"=!
 set index=%~2
 set winpe=%~3
+IF /I "!winpe:~0,1!" EQU "T" (set winpe=TRUE) ELSE (set winpe=FALSE)
 set targ=%TMP%\EXTWNTARG.txt
 set cfgini=%TMP%\EXTWINDISMApply.ini
 call :CREATECFG
@@ -13,6 +14,7 @@ FOR /F "usebackq delims=" %%I IN ("!targ!") DO (set target=%%I)
 call :FTP "!target!"
 set targpath=!file!
 echo TARGET FOUND^:!target! PATH^:!targpath!
+del /F "!cfgini!" /s /q /a >nul 2>&1
 (
 echo ^[ExclusionList^]
 echo ^\EXTWNCAP^$^*
