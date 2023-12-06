@@ -45,6 +45,6 @@ exit /b
 :CUSTOMEXCLUSIONS
 FOR /F "usebackq delims=" %%i IN ("!DISMAPPLYCFG!") DO (
 set dir=%%i
-cscript /nologo "%~dp0EchoRealtivePath.vbs" "!dir!" "!targpath!"
+IF "!dir:~0,2!" EQU "S:" (echo !dir:~2!) ELSE (cscript /nologo "%~dp0EchoRealtivePath.vbs" "!dir!" "!targpath!")
 )
 exit /b

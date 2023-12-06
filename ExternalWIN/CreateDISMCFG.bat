@@ -44,7 +44,7 @@ exit /b
 :CUSTOMEXCLUSIONS
 FOR /F "usebackq delims=" %%i IN ("!DISMCAPCFG!") DO (
 set dir=%%i
-cscript /nologo "%~dp0EchoRealtivePath.vbs" "!dir!" "!drive!"
+IF "!dir:~0,2!" EQU "S:" (echo !dir:~2!) ELSE (cscript /nologo "%~dp0EchoRealtivePath.vbs" "!dir!" "!drive!")
 )
 exit /b
 
