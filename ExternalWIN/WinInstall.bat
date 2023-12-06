@@ -91,7 +91,7 @@ diskpart /s "%~dp0ParPrime.txt"
 rem ########Install################
 :INSTALL
 call :APPLYCFG
-echo dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:"W:"!cmdcfg!
+dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:"W:"!cmdcfg!
 echo Creating Boot Files
 set bootdrive=W
 !bootdrive!:\Windows\System32\bcdboot W:\Windows /f ALL /s S:
@@ -233,5 +233,5 @@ set applyini=%TMP%\EXTWINDISMApply.ini
 IF /I "!ApplyExclusions:~0,1!" NEQ "T" (exit /b)
 echo Generating Apply Exclusion List
 call "%~dp0CreateApplyExclusions.bat" "!wim!" "!index!" "!winpe!"
-set cmdcfg= /ConfigFile:"!applyini!"
+set cmdcfg= ^/ConfigFile^:"!applyini!"
 exit /b
