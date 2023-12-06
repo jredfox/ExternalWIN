@@ -39,6 +39,7 @@ REM Delete previous WIM FILE
 echo Backing Up "OneDrive !capdrive! TO !capwim!"
 dism /capture-image /imagefile:"!capwim!" /capturedir:"!capdrive!" /name:"OneDrive Offline Backup" /Description:"!COMPNAME! On !date! !ttime!" /compress:maximum /ConfigFile:"!cfgone!"
 )
+exit /b
 
 :ISBLANK
 set isBlank=T
