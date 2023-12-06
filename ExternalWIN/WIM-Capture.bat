@@ -85,7 +85,7 @@ echo Invalid Target Directory it cannot contains PATH SEPERATOR SEQUENCE "^#^@"
 exit /b
 )
 set targ=!let!\EXTWNCAP!file!
-del /F /Q /A "!targ!" >nul 2>&1
+del /F /Q /A "!let!\EXTWNCAP^$^*^." >nul 2>&1
 type NUL >"!targ!"
 
 IF NOT EXIST "%wim%" (
