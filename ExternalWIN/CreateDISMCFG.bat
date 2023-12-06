@@ -41,6 +41,11 @@ cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\WINDOWS^\inf^\^*^.pnf" "!drive!"
 ) >"!cfgini!"
 exit /b
 
+:CREATEEXCLUSIONS
+set DISMCAPCFG=%~dp0CaptureExclusions.cfg
+IF NOT EXIST "!DISMCAPCFG!" (type NUL >"!DISMCAPCFG!")
+exit /b
+
 :CUSTOMEXCLUSIONS
 FOR /F "usebackq delims=" %%i IN ("!DISMCAPCFG!") DO (
 set dir=%%i
@@ -48,9 +53,4 @@ set dir=!dir:^/=^\!
 IF "!dir:~-1!" EQU "\" (SET dir=!dir:~0,-1!)
 IF "!dir:~0,2!" EQU "S:" (echo !dir:~2!) ELSE (cscript /nologo "%~dp0EchoRealtivePath.vbs" "!dir!" "!drive!")
 )
-exit /b
-
-:CREATEEXCLUSIONS
-set DISMCAPCFG=%~dp0CaptureExclusions.cfg
-IF NOT EXIST "!DISMCAPCFG!" (type NUL >"!DISMCAPCFG!")
 exit /b
