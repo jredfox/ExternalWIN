@@ -13,10 +13,10 @@ diskpart /s "%~dp0dd.txt"
 set /p let="Input Windows Drive Letter:"
 set let=%let:"=%
 set let=%let:~0,1%
-IF /I %legacy:~0,1% EQU Y ( 
+IF /I %legacy:~0,1% EQU Y (
 set ext=-MBR.txt
 set ISMBR=T
-) ELSE ( 
+) ELSE (
 set ISMBR=F
 set ext=.txt
 )
