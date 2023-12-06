@@ -6,6 +6,7 @@ title ExternalWin Version 1.0.11 VHDX
 call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
 set /p vdisk="Input VHDX File:"
 set vdisk=%vdisk:"=%
+set vdisk=!vdisk:^/=^\!
 call "%~dp0WinInstallVHDX.bat"
 exit /b
 
