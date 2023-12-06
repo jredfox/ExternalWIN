@@ -81,11 +81,10 @@ IF "!file!" EQU "ERR" (
 echo Invalid Target Directory it cannot contains PATH SEPERATOR SEQUENCE "^#^@"
 exit /b
 )
-set targdir=!drive!^:\EXTWNCAP
-del /F "!targdir!" /s /q /a >nul 2>&1
-rd /S /Q "!targdir!" >nul 2>&1
-md "!targdir!" >nul 2>&1
-echo. >"!targdir!^\!file!"
+set targ=!drive!^:\EXTWNCAP!file!
+REM Delete all Generated EXTWNCAP files generated from previous captures
+del /F /Q /A "!drive!^:\EXTWNCAP^$^*^." >nul 2>&1
+echo. >"!targ!"
 pause
 
 IF NOT EXIST "%wim%" (
