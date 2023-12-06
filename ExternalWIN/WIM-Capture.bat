@@ -75,6 +75,19 @@ IF "!ISROOT!" EQU "T" (
 call "%~dp0backuponedrives.bat" "!drive!" "!COMPNAME!"
 )
 
+REM ## Create TARGET PATH FILE FOR TARGET DETECTION ##
+call :PTF "!let!"
+IF "!file!" EQU "ERR" (
+echo Invalid Target Directory it cannot contains PATH SEPERATOR SEQUENCE "^#^@"
+exit /b
+)
+set targdir=!drive!^:\EXTWNCAP
+del /F "!targdir!" /s /q /a >nul 2>&1
+rd /S /Q "!targdir!" >nul 2>&1
+md "!targdir!" >nul 2>&1
+echo. >"!targdir!^\!file!"
+pause
+
 IF NOT EXIST "%wim%" (
 dism /capture-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%desc%" /Description:"%COMPNAME% On %date% %ttime%" /compress:maximum /ConfigFile:"!EXTDISMCFG!"
 IF !ERRORLEVEL! EQU 0 (echo Captured WIM Successfully to "!wim!") ELSE (echo Capture WIM FAILED Please Delete "!wim!")
@@ -113,4 +126,39 @@ FOR /F "tokens=4-5 delims= " %%A in ('call "%~dp0LoadConfig.bat"') DO (
 set OptimizedWIMCapture=%%A
 set OneDriveLinkScan=%%B
 )
+exit /b
+
+:FTP
+set file=%1
+set file=!file:"=!
+set PHOLDER=^#^@
+set PSEP=^$
+set file=!file:%PSEP%=^\!
+set file=!file:%PHOLDER%=%PSEP%!
+exit /b
+
+:PTF
+set file=%1
+set file=!file:"=!
+set PHOLDER=^#^@
+set PSEP=^$
+call :CONTAINS "!file!" "!PHOLDER!"
+IF /I "!STRCONTAINS!" EQU "T" (
+set file=ERR
+exit /b
+)
+IF "!file:~1,1!" EQU ":" (set file=!file:~2!)
+IF "!file!" EQU "" (set file=^\)
+set file=!file:%PSEP%=%PHOLDER%!
+set file=!file:^\=%PSEP%!
+exit /b
+
+:CONTAINS
+REM contains function that doesn't support quotes in strings
+set str=%1
+set strs=%2
+set str=!str:"=!
+set strs=!strs:"=!
+set strnew=!str:%strs%=!
+IF "!str!" EQU "!strnew!" (set STRCONTAINS=F) ELSE (set STRCONTAINS=T)
 exit /b
