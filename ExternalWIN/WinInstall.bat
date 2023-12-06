@@ -10,6 +10,7 @@ Reagentc /enable >nul 2>&1
 rem #######Disk Image Selection#########
 set /p wim="Mount Windows ISO & Input (Install.esd / Install.wim) located in sources:"
 set wim=%wim:"=%
+set wim=!wim:^/=^\!
 dism /get-imageinfo /imagefile:"%wim%"
 set /p index="Input Windows Image Index Number:"
 set /p wnum="Input Windows Version Number:"

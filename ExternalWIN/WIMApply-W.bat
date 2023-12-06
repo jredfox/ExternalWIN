@@ -8,6 +8,7 @@ call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
 REM This Script is Made to Erase and RE-IMAGE Already Installed Paritition of Windows To Repair Boot/Recovery or Full Install Please Use Another Script
 set /p wim="Input WIM/ESD:"
 set wim=%wim:"=%
+set wim=!wim:^/=^\!
 dism /get-imageinfo /imagefile:"%wim%"
 set /p index="Input Index:"
 mountvol W: /p >nul

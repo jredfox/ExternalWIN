@@ -10,6 +10,7 @@ set msg="Enter File Name:"
 IF "%winpe%" EQU "T" (set msg=Enter File Save As^:)
 set /p wim=%msg%
 set wim=!wim:"=!
+set wim=!wim:^/=^\!
 IF "!winpe!" EQU "T" (
 IF "!wim:~1,1!" NEQ ":" (
 echo Enter Full Path of the File to Save As
@@ -22,6 +23,7 @@ set /p disk="Input Disk Number:"
 diskpart /s "%~dp0dd.txt"
 set /p let="Enter Capture Drive:"
 set let=!let:"=!
+set let=!let:^/=^\!
 REM ## Remove Extra Backslash In case of User Error ##
 IF "!let:~-1!" EQU "\" (SET let=!let:~0,-1!)
 REM IF We are only capturing the whole drive fix the drive letter to make DISM happy
@@ -71,9 +73,10 @@ set EXTDISMCFG=%TMP%\EXTWINDISMCapture.ini
 call "%~dp0CreateDISMCFG.bat" "!let!" "!wim!"
 
 REM ## CREATE ONEDRIVE WIM Backups if Specified ##
-IF "!ISROOT!" EQU "T" (
-call "%~dp0backuponedrives.bat" "!drive!" "!COMPNAME!"
-)
+set BackupOneDrive=F
+IF "!ISROOT!" EQU "T" (set BackupOneDrive=T)
+IF /I "!let:~2!" EQU "\Users" (set BackupOneDrive=T)
+IF "!BackupOneDrive!" EQU "T" (call "%~dp0backuponedrives.bat" "!drive!" "!COMPNAME!")
 
 REM ## Create TARGET PATH FILE FOR TARGET DETECTION ##
 call :PTF "!let!"

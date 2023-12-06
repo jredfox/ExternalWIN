@@ -49,7 +49,7 @@ set /p let="Enter Windows Drive Letter (Normally C for Windows or X on WinPE):"
 set let=%let:"=%
 set let=%let:~0,1%
 REM ########## Start VDISK STUFFS #################
-set searchDirectory=%let%:
+set searchDirectory=%let%^:
 for %%f in ("%searchDirectory%\*.vhd" "%searchDirectory%\*.vhdx") do (
     set hasVHD=T
 	GOTO ENDLOOP1

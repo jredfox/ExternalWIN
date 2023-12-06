@@ -13,6 +13,7 @@ mountvol S: /d >nul
 mountvol R: /d >nul
 set /p wim="Input WIM/ESD:"
 set wim=%wim:"=%
+set wim=!wim:^/=^\!
 dism /get-imageinfo /imagefile:"%wim%"
 set /p index="Input Index:"
 diskpart /s "%~dp0ld.txt"
