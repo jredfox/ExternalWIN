@@ -79,7 +79,7 @@ diskpart /s "%~dp0formatpar.txt"
 
 rem #### INSTALL ####################
 call :APPLYCFG
-dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:"%let%:"!cmdcfg!
+dism /apply-image /imagefile:"%wim%" /index:"%index%" /NoRpFix /applydir:"%let%:"!cmdcfg!
 
 rem ##### POST INSTALL ##############
 IF /I %type% EQU S (

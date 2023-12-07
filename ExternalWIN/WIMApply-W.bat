@@ -31,7 +31,7 @@ set let=W
 set /p label1=Input Volume Name^:
 diskpart /s "%~dp0formatvol.txt"
 call :APPLYCFG
-dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:"W:"!cmdcfg!
+dism /apply-image /imagefile:"%wim%" /index:"%index%" /NoRpFix /applydir:"W:"!cmdcfg!
 REM ##### RE-ASSING W:\ #############
 call "%~dp0Assign-RND.bat" "true"
 call "%~dp0FileExplorerPopUp-Enable.bat" "!SleepEnable!" ""

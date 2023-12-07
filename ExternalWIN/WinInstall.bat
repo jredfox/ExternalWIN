@@ -91,7 +91,7 @@ diskpart /s "%~dp0ParPrime.txt"
 rem ########Install################
 :INSTALL
 call :APPLYCFG
-dism /apply-image /imagefile:"%wim%" /index:"%index%" /applydir:"W:"!cmdcfg!
+dism /apply-image /imagefile:"%wim%" /index:"%index%" /NoRpFix /applydir:"W:"!cmdcfg!
 echo Creating Boot Files
 set bootdrive=W
 !bootdrive!:\Windows\System32\bcdboot W:\Windows /f ALL /s S:

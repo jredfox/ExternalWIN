@@ -55,7 +55,7 @@ diskpart /s "%~dp0createvhdx.txt"
 echo vdisk saved to %vdisk%
 set wim=!iso!
 call :APPLYCFG
-dism /Apply-Image /ImageFile:"%iso%" /index:"%index%" /ApplyDir:"V:"!cmdcfg!
+dism /Apply-Image /ImageFile:"%iso%" /index:"%index%" /NoRpFix /ApplyDir:"V:"!cmdcfg!
 echo VHDX Created in^: %vdisk%
 diskpart /s "%~dp0dvhdx.txt" >nul
 set /p con=Would you like to Install It [Y/N]?
