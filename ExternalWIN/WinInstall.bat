@@ -165,7 +165,7 @@ md "%backupdir%" >nul 2>&1
 set bootfile=%backupdir%\boot.wim
 set name=Boot of Windows %wnum%
 echo Backuping Up Boot to %bootfile%
-dism /capture-image /imagefile:"%bootfile%" /capturedir:"S:" /name:"%name%" /Description:"%name%" /compress:maximum
+dism /capture-image /imagefile:"%bootfile%" /capturedir:"S:" /name:"%name%" /Description:"%name%" /NoRpFix /compress:maximum
 IF EXIST "R:\" (
 md "%rbackupdir%" >nul 2>&1
 copy "%bootfile%" "%rbackupdir%\boot.wim"

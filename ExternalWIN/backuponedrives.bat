@@ -37,7 +37,7 @@ echo ^*^.cab
 ) >"!cfgone!"
 REM Delete previous WIM FILE
 echo Backing Up "OneDrive !capdrive! TO !capwim!"
-dism /capture-image /imagefile:"!capwim!" /capturedir:"!capdrive!" /name:"OneDrive Offline Backup" /Description:"!COMPNAME! On !date! !ttime!" /compress:maximum /ConfigFile:"!cfgone!"
+dism /capture-image /imagefile:"!capwim!" /capturedir:"!capdrive!" /name:"OneDrive Offline Backup" /Description:"!COMPNAME! On !date! !ttime!" /compress:maximum /NoRpFix /ConfigFile:"!cfgone!"
 )
 exit /b
 
