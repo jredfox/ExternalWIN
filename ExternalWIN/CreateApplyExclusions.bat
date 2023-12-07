@@ -4,6 +4,7 @@ set wim=%1
 set wim=!wim:"=!
 set index=%~2
 set winpe=%~3
+set CFGNAME=%~4
 IF /I "!winpe:~0,1!" EQU "T" (set winpe=TRUE) ELSE (set winpe=FALSE)
 set targ=%TMP%\EXTWNTARG.txt
 set cfgini=%TMP%\EXTWINDISMApply.ini
@@ -40,7 +41,7 @@ set file=!file:%PHOLDER%=%PSEP%!
 exit /b
 
 :CREATECFG
-set DISMAPPLYCFG=%~dp0ApplyExclusions.cfg
+IF "!CFGNAME!" EQU "" (set DISMAPPLYCFG=%~dp0ApplyExclusions.cfg) ELSE (set DISMAPPLYCFG=%~dp0!CFGNAME!)
 IF NOT EXIST "!DISMAPPLYCFG!" (type NUL >"!DISMAPPLYCFG!")
 exit /b
 
