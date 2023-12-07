@@ -4,6 +4,9 @@ call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order 
 IF !ERRORLEVEL! NEQ 0 (exit /b !ERRORLEVEL!)
 call :LOADCFG
 IF /I "!ExtendedAttrib!" EQU "TRUE" (set extattrib= /EA)
+echo WARNING^: Extracting WIM Images of Entire OS Could Result In Hard To Delete Files
+set /p warn="Do you Wish To Continue [Y/N]?"
+IF /I "!warn!" NEQ "Y" (exit /b)
 set /p wim=Input WIM/ESD File:
 set wim=%wim:"=%
 set /p dir=Input Directory To Extract TO:

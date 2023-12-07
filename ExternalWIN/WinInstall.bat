@@ -16,7 +16,7 @@ set /p index="Input Windows Image Index Number:"
 set /p wnum="Input Windows Version Number:"
 diskpart /s "%~dp0ld.txt"
 set /p disk="Input Disk Number:"
-set /p legacy=MBR LEGACY Installation [Y/N]?
+set /p legacy="MBR LEGACY Installation [Y/N]?"
 set /p sizebase="Input Windows Partition Size in GB:"
 
 rem #######SET VARS####################
