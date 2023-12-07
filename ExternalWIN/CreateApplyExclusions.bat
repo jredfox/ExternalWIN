@@ -9,13 +9,13 @@ IF /I "!winpe:~0,1!" EQU "T" (set winpe=TRUE) ELSE (set winpe=FALSE)
 set targ=%TMP%\EXTWNTARG.txt
 set cfgini=%TMP%\EXTWINDISMApply.ini
 call :CREATECFG
-del /F "!targ!" /s /q /a >nul 2>&1
+del /F /Q /A "!targ!" >nul 2>&1
 cscript /nologo "%~dp0GetWIMTarg.vbs" "!wim!" "!index!" "!winpe!" >"!targ!"
 FOR /F "usebackq delims=" %%I IN ("!targ!") DO (set target=%%I)
 call :FTP "!target!"
 set targpath=!file!
 echo TARGET FOUND^:!target! PATH^:!targpath!
-del /F "!cfgini!" /s /q /a >nul 2>&1
+del /F /Q /A "!cfgini!" >nul 2>&1
 (
 echo ^[ExclusionList^]
 echo ^\EXTWNCAP^$^*

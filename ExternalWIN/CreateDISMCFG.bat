@@ -6,8 +6,8 @@ set tmpdrive=%TMP%\OneDriveFolders.txt
 set wimimg=%~2
 set wimimg=!wimimg:~2!
 call :CREATEEXCLUSIONS
-del /F "!cfgini!" /s /q /a >nul 2>&1
-del /F "!tmpdrive!" /s /q /a >nul 2>&1
+del /F /Q /A "!cfgini!" >nul 2>&1
+del /F /Q /A "!tmpdrive!" >nul 2>&1
 (
 echo ^[ExclusionList^]
 cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\^$ntfs^.log" "!drive!"

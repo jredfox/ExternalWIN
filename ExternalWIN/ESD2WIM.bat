@@ -14,7 +14,7 @@ IF "%~2" NEQ "" (set comp=%~2)
 set esd=%esd:"=%
 call :GETWIMSIZE "!esd!"
 set wim=%esd:.esd=.wim%
-del /F "!wim!" /s /q /a >nul 2>&1
+del /F /Q /A "!wim!" >nul 2>&1
 for /L %%A in (1, 1, !WIMSIZE!) Do (
 echo Extracting Index %%A of !WIMSIZE!
 dism /Export-Image /SourceImageFile:"%esd%" /SourceIndex:%%A /DestinationImageFile:"%wim%" /compress:%comp%

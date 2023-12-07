@@ -22,7 +22,7 @@ mountvol V: /p >nul
 mountvol W: /d >nul
 mountvol S: /d >nul
 mountvol V: /d >nul
-del /f /q /a "%vdisk%" >nul 2>&1
+del /F /Q /A "%vdisk%" >nul 2>&1
 IF EXIST "%vdisk%" (
   echo ERR^: Unable to Detach ^& Delete the vdisk during cleanup %vdisk%
   echo ERR^: PLEASE REBOOT YOUR PC Before trying again

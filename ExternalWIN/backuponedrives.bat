@@ -8,7 +8,7 @@ set ttime=%time: =%
 set EXTIndex=%TMP%\DLOneDriveLinks.txt
 set dirs=%TMP%\DLOneDriveDirs.txt
 set cfgone=%TMP%\DLOneExclusions.ini
-del /F "!dirs!" /s /q /a >nul 2>&1
+del /F /Q /A "!dirs!" >nul 2>&1
 call "%~dp0PrintOneDrive.bat" "!drive!" >"!dirs!"
 call :ISBLANK "!dirs!"
 IF "!isBlank!" EQU "T" (exit /b)
@@ -19,9 +19,9 @@ FOR /F "usebackq delims=" %%I IN ("!dirs!") DO (
 set capdrive=!drive!^:%%I
 set capwim=%%~dpIOneDriveOld.WIM
 set capwim=!drive!^:!capwim:~2!
-del /F "!EXTIndex!" /s /q /a >nul 2>&1
-del /F "!capwim!" /s /q /a >nul 2>&1
-del /F "!cfgone!" /s /q /a >nul 2>&1
+del /F /Q /A "!EXTIndex!" >nul 2>&1
+del /F /Q /A "!capwim!" >nul 2>&1
+del /F /Q /A "!cfgone!" >nul 2>&1
 dir /S /B /A^:LO "!capdrive!" 2>nul>"!EXTIndex!"
 REM create the offline onedrive exclusion list before backup
 (
