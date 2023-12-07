@@ -8,18 +8,21 @@ set /p wimTarget="Enter WIM Extracting To(Target):"
 set wimFrom=%wimFrom:"=%
 set wimTarget=%wimTarget:"=%
 dism /get-imageinfo /imagefile:"%wimFrom%"
-set /p index="Enter WIM Index Or * For All Indexes:"
+call :GETWIMSIZE "!wimFrom!"
+set /p index="Enter WIM Index Or * For All !WIMSIZE! Indexes:"
 set /p comp="Enter WIM Compression Level [maximum (DEFAULT), fast, none]:"
 set index=%index:"=%
 set comp=%comp:"=%
+REM DO Single Index Merge
 IF "%index%" NEQ "*" (
 dism /Export-Image /SourceImageFile:"%wimFrom%" /SourceIndex:%index% /DestinationImageFile:"%wimTarget%" /compress:%comp%
-) ELSE (
-for /L %%i in (1, 1, 256) Do (
+GOTO END
+)
+REM Do All Indexes Merge
+FOR /L %%i IN (1, 1, !WIMSIZE!) Do (
 dism /Export-Image /SourceImageFile:"%wimFrom%" /SourceIndex:%%i /DestinationImageFile:"%wimTarget%" /compress:%comp%
 IF !ERRORLEVEL! NEQ 0 GOTO END
-echo Merged "%wimFrom%" at index "%%i" to "%wimTarget%"
-)
+echo Merged "%wimFrom%" at index %%i of !WIMSIZE! to "%wimTarget%"
 )
 
 :END
@@ -32,5 +35,20 @@ IF %ERRORLEVEL% NEQ 0 (
 echo %~1
 pause
 exit /b 1
+)
+exit /b
+
+:GETWIMSIZE
+set indexedwim=%1
+set indexedwim=!indexedwim:"=!
+set /A WIMSIZE=1
+:LOOPINDEX
+dism /get-imageinfo /imagefile:"!indexedwim!" /index^:!WIMSIZE! >nul
+IF !ERRORLEVEL! NEQ 0 (
+set /A WIMSIZE=!WIMSIZE! - 1
+exit /b
+) ELSE (
+set /A WIMSIZE=!WIMSIZE! + 1
+GOTO LOOPINDEX
 )
 exit /b
