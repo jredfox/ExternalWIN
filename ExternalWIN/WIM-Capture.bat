@@ -76,7 +76,7 @@ REM ## CREATE ONEDRIVE WIM Backups if Specified ##
 set BackupOneDrive=F
 IF "!ISROOT!" EQU "T" (set BackupOneDrive=T)
 IF /I "!let:~2!" EQU "\Users" (set BackupOneDrive=T)
-IF "!BackupOneDrive!" EQU "T" (call "%~dp0backuponedrives.bat" "!drive!" "!COMPNAME!")
+IF "!BackupOneDrive!" EQU "T" (call "%~dp0backuponedrives.bat" "!drive!" "!COMPNAME!" "!extattrib!")
 
 REM ## Create TARGET PATH FILE FOR TARGET DETECTION ##
 call :PTF "!let!"
@@ -87,7 +87,6 @@ exit /b
 set targ=!let!\EXTWNCAP!file!
 del /F /Q /A "!let!\EXTWNCAP^$^*^." >nul 2>&1
 type NUL >"!targ!"
-IF /I "!ExtendedAttrib!" EQU "TRUE" (set extattrib= /EA)
 
 IF NOT EXIST "%wim%" (
 dism /capture-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%desc%" /Description:"%COMPNAME% On %date% %ttime%" /compress:maximum /NoRpFix!extattrib! /ConfigFile:"!EXTDISMCFG!"
@@ -129,6 +128,7 @@ set OptimizedWIMCapture=%%A
 set OneDriveLinkScan=%%B
 set ExtendedAttrib=%%C
 )
+IF /I "!ExtendedAttrib!" EQU "TRUE" (set extattrib= /EA)
 exit /b
 
 :FTP

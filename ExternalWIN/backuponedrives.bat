@@ -3,6 +3,7 @@ setlocal ENABLEDELAYEDEXPANSION
 set drive=%~1
 set drive=!drive:~0,1!
 set COMPNAME=%~2
+set extattrib=%~3
 set ttime=%time: =%
 set EXTIndex=%TMP%\DLOneDriveLinks.txt
 set dirs=%TMP%\DLOneDriveDirs.txt
@@ -37,7 +38,7 @@ echo ^*^.cab
 ) >"!cfgone!"
 REM Delete previous WIM FILE
 echo Backing Up "OneDrive !capdrive! TO !capwim!"
-dism /capture-image /imagefile:"!capwim!" /capturedir:"!capdrive!" /name:"OneDrive Offline Backup" /Description:"!COMPNAME! On !date! !ttime!" /compress:maximum /NoRpFix /ConfigFile:"!cfgone!"
+dism /capture-image /imagefile:"!capwim!" /capturedir:"!capdrive!" /name:"OneDrive Offline Backup" /Description:"!COMPNAME! On !date! !ttime!" /compress:maximum /NoRpFix!extattrib! /ConfigFile:"!cfgone!"
 )
 exit /b
 
