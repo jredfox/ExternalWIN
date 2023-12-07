@@ -8,13 +8,15 @@ IF /I "!ExtendedAttrib!" EQU "TRUE" (set extattrib= /EA)
 echo WARNING^: Extracting WIM Images of Entire OS Could Result In Hard To Delete Files
 set /p warn="Do you Wish To Continue [Y/N]?"
 IF /I "!warn!" NEQ "Y" (exit /b)
-set /p wim=Input WIM/ESD File:
+set /p wim="Input WIM/ESD File:"
 set wim=%wim:"=%
-set /p dir=Input Directory To Extract TO:
+call :GETWIMSIZE
+set WIMSIZE=!count!
+set /p dir="Input Directory To Extract TO:"
+set dir=%dir:"=%
 set dir=%dir:.wim=%
 set dir=%dir:.esd=%
-set dir=%dir:"=%
-set /p index="Enter Index or ^* for all Indexes:"
+set /p index="Enter Index or ^* for all !WIMSIZE! Indexes:"
 IF "%index:~0,1%" EQU "*" (GOTO EXTRACTALL)
 REM #### Extracts a single index ####
 mkdir "%dir%\%index%"
@@ -24,7 +26,7 @@ GOTO END
 
 REM #### Extracts all indexes ##############
 :EXTRACTALL
-for /L %%i in (1, 1, 256) Do (
+for /L %%i in (1, 1, !WIMSIZE!) Do (
 mkdir "%dir%\%%i"
 set index=%%i
 call :APPLYCFG
@@ -33,7 +35,7 @@ IF !ERRORLEVEL! NEQ 0 (
 rmdir /s /q "%dir%\%%i"
 GOTO END
 )
-echo Extracted Index %%i Successfully from "%wim%"
+echo Extracted Index %%i of !WIMSIZE! Successfully from "%wim%"
 )
 
 :END
@@ -77,4 +79,17 @@ IF /I "!ApplyExclusions:~0,1!" NEQ "T" (exit /b)
 echo Generating Apply Exclusion List For Index^:!index!
 call "%~dp0CreateApplyExclusions.bat" "!wim!" "!index!" "!winpe!" "ExtractExclusions.cfg"
 set cmdcfg= ^/ConfigFile^:"!applyini!"
+exit /b
+
+:GETWIMSIZE
+set /A count=1
+:LOOPINDEX
+dism /get-imageinfo /imagefile:"!wim!" /index^:!count! >nul
+IF !ERRORLEVEL! NEQ 0 (
+set /A count=!count! - 1
+exit /b
+) ELSE (
+set /A count=!count! + 1
+GOTO LOOPINDEX
+)
 exit /b
