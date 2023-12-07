@@ -8,10 +8,8 @@ set ttime=%time: =%
 set EXTIndex=%TMP%\DLOneDriveLinks.txt
 set dirs=%TMP%\DLOneDriveDirs.txt
 set cfgone=%TMP%\DLOneExclusions.ini
-set blank=%TMP%\Blank.txt
 del /F "!dirs!" /s /q /a >nul 2>&1
 call "%~dp0PrintOneDrive.bat" "!drive!" >"!dirs!"
-type NUL >"!blank!"
 call :ISBLANK "!dirs!"
 IF "!isBlank!" EQU "T" (exit /b)
 set /p onebackup="Backup All Users Downloaded Offline OneDrive Files [Y\N]?"
@@ -29,7 +27,7 @@ REM create the offline onedrive exclusion list before backup
 (
 echo ^[ExclusionList^]
 cscript /nologo "%~dp0EchoRealtivePath.vbs" "!capwim!" "!capdrive!"
-cscript /nologo "%~dp0PrintOneLinks.vbs" "!EXTIndex!" "!blank!" "!capdrive!"
+cscript /nologo "%~dp0PrintOneLinks.vbs" "!EXTIndex!" "" "!capdrive!"
 echo.
 echo ^[CompressionExclusionList^]
 echo ^*^.mp3
