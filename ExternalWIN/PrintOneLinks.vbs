@@ -43,7 +43,7 @@ End If
 Set objFile = objFSO.OpenTextFile(links, 1, False)
 Do Until objFile.AtEndOfStream
 	line = objFile.ReadLine
-	IF Mid(target, 2, 1) = ":" Then
+	IF Mid(line, 2, 1) = ":" Then
 		line = Mid(line, 3)
 	End If
 	ShouldPrint = true
