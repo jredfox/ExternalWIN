@@ -10,8 +10,7 @@ set /p warn="Do you Wish To Continue [Y/N]?"
 IF /I "!warn!" NEQ "Y" (exit /b)
 set /p wim="Input WIM/ESD File:"
 set wim=%wim:"=%
-call :GETWIMSIZE
-set WIMSIZE=!count!
+call :GETWIMSIZE "!wim!"
 set /p dir="Input Directory To Extract TO:"
 set dir=%dir:"=%
 set dir=%dir:.wim=%
@@ -82,14 +81,16 @@ set cmdcfg= ^/ConfigFile^:"!applyini!"
 exit /b
 
 :GETWIMSIZE
-set /A count=1
+set indexedwim=%1
+set indexedwim=!indexedwim:"=!
+set /A WIMSIZE=1
 :LOOPINDEX
-dism /get-imageinfo /imagefile:"!wim!" /index^:!count! >nul
+dism /get-imageinfo /imagefile:"!indexedwim!" /index^:!WIMSIZE! >nul
 IF !ERRORLEVEL! NEQ 0 (
-set /A count=!count! - 1
+set /A WIMSIZE=!WIMSIZE! - 1
 exit /b
 ) ELSE (
-set /A count=!count! + 1
+set /A WIMSIZE=!WIMSIZE! + 1
 GOTO LOOPINDEX
 )
 exit /b
