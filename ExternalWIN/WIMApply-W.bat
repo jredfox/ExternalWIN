@@ -31,7 +31,8 @@ set let=W
 set /p label1=Input Volume Name^:
 diskpart /s "%~dp0formatvol.txt"
 call :APPLYCFG
-dism /apply-image /imagefile:"%wim%" /index:"%index%" /NoRpFix /applydir:"W:"!cmdcfg!
+IF /I "!ExtendedAttrib!" EQU "TRUE" (set extattrib= /EA)
+dism /apply-image /imagefile:"%wim%" /index:"%index%" /NoRpFix!extattrib! /applydir:"W:"!cmdcfg!
 REM ##### RE-ASSING W:\ #############
 call "%~dp0Assign-RND.bat" "true"
 call "%~dp0FileExplorerPopUp-Enable.bat" "!SleepEnable!" ""
@@ -79,11 +80,12 @@ exit /b
 
 :LOADCFG
 IF "!winpe!" EQU "T" (exit /b)
-FOR /F "tokens=1-3,6 delims= " %%A in ('call "%~dp0LoadConfig.bat"') DO (
+FOR /F "tokens=1-3,6-7 delims= " %%A in ('call "%~dp0LoadConfig.bat"') DO (
 set SleepDisable=%%A
 set SleepEnable=%%B
 set RestartExplorer=%%C
 set ApplyExclusions=%%D
+set ExtendedAttrib=%%E
 )
 exit /b
 

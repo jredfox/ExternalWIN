@@ -55,7 +55,8 @@ diskpart /s "%~dp0createvhdx.txt"
 echo vdisk saved to %vdisk%
 set wim=!iso!
 call :APPLYCFG
-dism /Apply-Image /ImageFile:"%iso%" /index:"%index%" /NoRpFix /ApplyDir:"V:"!cmdcfg!
+IF /I "!ExtendedAttrib!" EQU "TRUE" (set extattrib= /EA)
+dism /Apply-Image /ImageFile:"%iso%" /index:"%index%" /NoRpFix!extattrib! /ApplyDir:"V:"!cmdcfg!
 echo VHDX Created in^: %vdisk%
 diskpart /s "%~dp0dvhdx.txt" >nul
 set /p con=Would you like to Install It [Y/N]?
@@ -248,11 +249,12 @@ exit /b
 
 :LOADCFG
 IF "!winpe!" EQU "T" (exit /b)
-FOR /F "tokens=1-3,6 delims= " %%A in ('call "%~dp0LoadConfig.bat"') DO (
+FOR /F "tokens=1-3,6-7 delims= " %%A in ('call "%~dp0LoadConfig.bat"') DO (
 set SleepDisable=%%A
 set SleepEnable=%%B
 set RestartExplorer=%%C
 set ApplyExclusions=%%D
+set ExtendedAttrib=%%E
 )
 exit /b
 

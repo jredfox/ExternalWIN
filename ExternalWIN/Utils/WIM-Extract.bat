@@ -12,14 +12,14 @@ set /p index="Enter Index or * for all Indexes:"
 IF "%index%" EQU "*" (GOTO EXTRACTALL)
 REM #### Extracts a single index ####
 mkdir "%dir%\%index%"
-dism /apply-image /imagefile:"%wim%" /index:%index% /NoRpFix /applydir:"%dir%\%index%"
+dism /apply-image /imagefile:"%wim%" /index:%index% /NoRpFix /EA /applydir:"%dir%\%index%"
 GOTO END
 
 REM #### Extracts all indexes ##############
 :EXTRACTALL
 for /L %%i in (1, 1, 256) Do (
 mkdir "%dir%\%%i"
-dism /apply-image /imagefile:"%wim%" /index:%%i /NoRpFix /applydir:"%dir%\%%i"
+dism /apply-image /imagefile:"%wim%" /index:%%i /NoRpFix /EA /applydir:"%dir%\%%i"
 IF !ERRORLEVEL! NEQ 0 (
 rmdir /s /q "%dir%\%%i"
 GOTO END

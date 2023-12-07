@@ -91,7 +91,9 @@ diskpart /s "%~dp0ParPrime.txt"
 rem ########Install################
 :INSTALL
 call :APPLYCFG
-dism /apply-image /imagefile:"%wim%" /index:"%index%" /NoRpFix /applydir:"W:"!cmdcfg!
+IF /I "!ExtendedAttrib!" EQU "TRUE" (set extattrib= /EA)
+echo dism /apply-image /imagefile:"%wim%" /index:"%index%" /NoRpFix!extattrib! /applydir:"W:"!cmdcfg!
+pause
 echo Creating Boot Files
 set bootdrive=W
 !bootdrive!:\Windows\System32\bcdboot W:\Windows /f ALL /s S:
@@ -220,11 +222,12 @@ exit /b
 
 :LOADCFG
 IF "!winpe!" EQU "T" (exit /b)
-FOR /F "tokens=1-3,6 delims= " %%A in ('call "%~dp0LoadConfig.bat"') DO (
+FOR /F "tokens=1-3,6-7 delims= " %%A in ('call "%~dp0LoadConfig.bat"') DO (
 set SleepDisable=%%A
 set SleepEnable=%%B
 set RestartExplorer=%%C
 set ApplyExclusions=%%D
+set ExtendedAttrib=%%E
 )
 exit /b
 

@@ -26,6 +26,10 @@ IF /I "!line:~0,16!" EQU "ApplyExclusions:" (
 call :GETBOOL "!line:~16!"
 set ApplyExclusions=!getbool!
 )
+IF /I "!line:~0,15!" EQU "ExtendedAttrib:" (
+call :GETBOOL "!line:~15!"
+set ExtendedAttrib=!getbool!
+)
 )
 REM VERIFY
 (
@@ -53,9 +57,13 @@ IF "!ApplyExclusions!" EQU "" (
 set ApplyExclusions=true
 echo ApplyExclusions^:true
 )
+IF "!ExtendedAttrib!" EQU "" (
+set ExtendedAttrib=false
+echo ExtendedAttrib^:false
+)
 )>>"!cfg!"
 REM PRINT OUTPUT
-echo !SleepDisable! !SleepEnable! !RestartExplorer! !OptimizedWIMCapture! !OneDriveLinkScan! !ApplyExclusions!
+echo !SleepDisable! !SleepEnable! !RestartExplorer! !OptimizedWIMCapture! !OneDriveLinkScan! !ApplyExclusions! !ExtendedAttrib!
 exit /b
 
 :GETBOOL
@@ -71,5 +79,6 @@ exit /b
   echo OptimizedWIMCapture^:true
   echo OneDriveLinkScan^:true
   echo ApplyExclusions^:true
+  echo ExtendedAttrib^:false
 ) >"!cfg!"
 exit /b
