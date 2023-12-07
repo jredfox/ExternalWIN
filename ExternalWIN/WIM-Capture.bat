@@ -87,12 +87,13 @@ exit /b
 set targ=!let!\EXTWNCAP!file!
 del /F /Q /A "!let!\EXTWNCAP^$^*^." >nul 2>&1
 type NUL >"!targ!"
+IF /I "!ExtendedAttrib!" EQU "TRUE" (set extattrib= /EA)
 
 IF NOT EXIST "%wim%" (
-dism /capture-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%desc%" /Description:"%COMPNAME% On %date% %ttime%" /compress:maximum /NoRpFix /ConfigFile:"!EXTDISMCFG!"
+dism /capture-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%desc%" /Description:"%COMPNAME% On %date% %ttime%" /compress:maximum /NoRpFix!extattrib! /ConfigFile:"!EXTDISMCFG!"
 IF !ERRORLEVEL! EQU 0 (echo Captured WIM Successfully to "!wim!") ELSE (echo Capture WIM FAILED Please Delete "!wim!")
 ) ELSE (
-dism /append-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%desc%" /Description:"%COMPNAME% On %date% %ttime%" /NoRpFix /ConfigFile:"!EXTDISMCFG!"
+dism /append-image /imagefile:"%wim%" /capturedir:"%let%" /name:"%desc%" /Description:"%COMPNAME% On %date% %ttime%" /NoRpFix!extattrib! /ConfigFile:"!EXTDISMCFG!"
 IF !ERRORLEVEL! EQU 0 (echo Captured WIM Successfully to "!wim!") ELSE (echo Capture WIM FAILED Delete the Latest Index If a New Index was Created In "!wim!")
 )
 del /F /Q /A "!targ!" >nul 2>&1
@@ -123,9 +124,10 @@ echo changed powerplan of !powerplan! to high performance 8c5e7fda-e8bf-4a96-9a8
 exit /b
 
 :LOADCFG
-FOR /F "tokens=4-5 delims= " %%A in ('call "%~dp0LoadConfig.bat"') DO (
+FOR /F "tokens=4-5,7 delims= " %%A in ('call "%~dp0LoadConfig.bat"') DO (
 set OptimizedWIMCapture=%%A
 set OneDriveLinkScan=%%B
+set ExtendedAttrib=%%C
 )
 exit /b
 

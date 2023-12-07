@@ -92,8 +92,7 @@ rem ########Install################
 :INSTALL
 call :APPLYCFG
 IF /I "!ExtendedAttrib!" EQU "TRUE" (set extattrib= /EA)
-echo dism /apply-image /imagefile:"%wim%" /index:"%index%" /NoRpFix!extattrib! /applydir:"W:"!cmdcfg!
-pause
+dism /apply-image /imagefile:"%wim%" /index:"%index%" /NoRpFix!extattrib! /applydir:"W:"!cmdcfg!
 echo Creating Boot Files
 set bootdrive=W
 !bootdrive!:\Windows\System32\bcdboot W:\Windows /f ALL /s S:
@@ -167,7 +166,7 @@ md "%backupdir%" >nul 2>&1
 set bootfile=%backupdir%\boot.wim
 set name=Boot of Windows %wnum%
 echo Backuping Up Boot to %bootfile%
-dism /capture-image /imagefile:"%bootfile%" /capturedir:"S:" /name:"%name%" /Description:"%name%" /NoRpFix /compress:maximum
+dism /capture-image /imagefile:"%bootfile%" /capturedir:"S:" /name:"%name%" /Description:"%name%" /NoRpFix!extattrib! /compress:maximum
 IF EXIST "R:\" (
 md "%rbackupdir%" >nul 2>&1
 copy "%bootfile%" "%rbackupdir%\boot.wim"
