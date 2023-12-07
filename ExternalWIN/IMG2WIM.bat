@@ -5,7 +5,7 @@ IF !ERRORLEVEL! NEQ 0 (exit /b !ERRORLEVEL!)
 call :LOADCFG
 set /p img="Enter Image(VHD, VHDX, ISO, ESD):"
 set img=%img:"=%
-powershell -ExecutionPolicy Bypass -File "%~dp0IMG2WIM.ps1" -Image "%img%" -EA "!ExtendedAttrib!"
+powershell -ExecutionPolicy Bypass -File "%~dp0IMG2WIM.ps1" -Image "%img%" -ExtraAttrib "!ExtendedAttrib!"
 pause
 exit /b
 

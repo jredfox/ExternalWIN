@@ -1,9 +1,9 @@
 param(
 [Parameter(Mandatory=$true)][string]$Image,
-[Parameter(Mandatory=$true)][string]$EA
+[Parameter(Mandatory=$true)][string]$ExtraAttrib
 )
 $EASTR = ""
-if($EA -eq "TRUE")
+if($ExtraAttrib -eq "TRUE")
 {
   $EASTR = " /EA"
 }
