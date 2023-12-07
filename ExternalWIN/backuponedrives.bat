@@ -3,14 +3,13 @@ setlocal ENABLEDELAYEDEXPANSION
 set drive=%~1
 set drive=!drive:~0,1!
 set COMPNAME=%~2
+set extattrib=%~3
 set ttime=%time: =%
 set EXTIndex=%TMP%\DLOneDriveLinks.txt
 set dirs=%TMP%\DLOneDriveDirs.txt
 set cfgone=%TMP%\DLOneExclusions.ini
-set blank=%TMP%\Blank.txt
-del /F "!dirs!" /s /q /a >nul 2>&1
+del /F /Q /A "!dirs!" >nul 2>&1
 call "%~dp0PrintOneDrive.bat" "!drive!" >"!dirs!"
-type NUL >"!blank!"
 call :ISBLANK "!dirs!"
 IF "!isBlank!" EQU "T" (exit /b)
 set /p onebackup="Backup All Users Downloaded Offline OneDrive Files [Y\N]?"
@@ -20,15 +19,15 @@ FOR /F "usebackq delims=" %%I IN ("!dirs!") DO (
 set capdrive=!drive!^:%%I
 set capwim=%%~dpIOneDriveOld.WIM
 set capwim=!drive!^:!capwim:~2!
-del /F "!EXTIndex!" /s /q /a >nul 2>&1
-del /F "!capwim!" /s /q /a >nul 2>&1
-del /F "!cfgone!" /s /q /a >nul 2>&1
+del /F /Q /A "!EXTIndex!" >nul 2>&1
+del /F /Q /A "!capwim!" >nul 2>&1
+del /F /Q /A "!cfgone!" >nul 2>&1
 dir /S /B /A^:LO "!capdrive!" 2>nul>"!EXTIndex!"
 REM create the offline onedrive exclusion list before backup
 (
 echo ^[ExclusionList^]
 cscript /nologo "%~dp0EchoRealtivePath.vbs" "!capwim!" "!capdrive!"
-cscript /nologo "%~dp0PrintOneLinks.vbs" "!EXTIndex!" "!blank!" "!capdrive!"
+cscript /nologo "%~dp0PrintOneLinks.vbs" "!EXTIndex!" "" "!capdrive!"
 echo.
 echo ^[CompressionExclusionList^]
 echo ^*^.mp3
@@ -37,7 +36,7 @@ echo ^*^.cab
 ) >"!cfgone!"
 REM Delete previous WIM FILE
 echo Backing Up "OneDrive !capdrive! TO !capwim!"
-dism /capture-image /imagefile:"!capwim!" /capturedir:"!capdrive!" /name:"OneDrive Offline Backup" /Description:"!COMPNAME! On !date! !ttime!" /compress:maximum /ConfigFile:"!cfgone!"
+dism /capture-image /imagefile:"!capwim!" /capturedir:"!capdrive!" /name:"OneDrive Offline Backup" /Description:"!COMPNAME! On !date! !ttime!" /compress:maximum /NoRpFix!extattrib! /ConfigFile:"!cfgone!"
 )
 exit /b
 

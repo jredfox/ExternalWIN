@@ -2,10 +2,12 @@
 setlocal enableDelayedExpansion
 set drive=%~1
 set cfgini=%TMP%\EXTWINDISMCapture.ini
+set tmpdrive=%TMP%\OneDriveFolders.txt
 set wimimg=%~2
 set wimimg=!wimimg:~2!
 call :CREATEEXCLUSIONS
-del /F "!cfgini!" /s /q /a >nul 2>&1
+del /F /Q /A "!cfgini!" >nul 2>&1
+del /F /Q /A "!tmpdrive!" >nul 2>&1
 (
 echo ^[ExclusionList^]
 cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\^$ntfs^.log" "!drive!"
@@ -29,7 +31,8 @@ cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\Users^\defaultuser0^*" "!drive!"
 cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\ExternalWIN" "!drive!"
 cscript /nologo "%~dp0EchoRealtivePath.vbs" "!wimimg!" "!drive!"
 cscript /nologo "%~dp0EchoRealtivePath.vbs" "^\Users^\^*^\OneDrive" "!drive!"
-call "%~dp0PrintOneDrive.bat" "!drive!"
+call "%~dp0PrintOneDrive.bat" "!drive!" >"!tmpdrive!"
+cscript /nologo "%~dp0PrintOneLinks.vbs" "!tmpdrive!" "" "!drive!"
 call "%~dp0PrintOneDriveLinks.bat" "!drive!"
 call :CUSTOMEXCLUSIONS
 echo.

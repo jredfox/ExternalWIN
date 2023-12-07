@@ -25,6 +25,7 @@ End Function
 
 ' Cache all of the OneDrive Directories into memory for faster comparison per line 
 Dim OneDirs(), counter
+IF Trim(dirs) <> "" Then
 Set objFile = objFSO.OpenTextFile(dirs, 1, False)
 counter = 0
 Do Until objFile.AtEndOfStream
@@ -36,11 +37,15 @@ Do Until objFile.AtEndOfStream
     End If
 Loop
 objFile.Close
+End If
 
 ' Print OneDrive Links if and only if they are not a child of a onedrive directory
 Set objFile = objFSO.OpenTextFile(links, 1, False)
 Do Until objFile.AtEndOfStream
-    line = Mid(objFile.ReadLine, 3)
+	line = objFile.ReadLine
+	IF Mid(line, 2, 1) = ":" Then
+		line = Mid(line, 3)
+	End If
 	ShouldPrint = true
 	FOR EACH OneDir IN OneDirs
 		IF IsChildOfFile(OneDir, line) Then

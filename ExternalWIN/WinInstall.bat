@@ -16,7 +16,7 @@ set /p index="Input Windows Image Index Number:"
 set /p wnum="Input Windows Version Number:"
 diskpart /s "%~dp0ld.txt"
 set /p disk="Input Disk Number:"
-set /p legacy=MBR LEGACY Installation [Y/N]?
+set /p legacy="MBR LEGACY Installation [Y/N]?"
 set /p sizebase="Input Windows Partition Size in GB:"
 
 rem #######SET VARS####################
@@ -91,7 +91,8 @@ diskpart /s "%~dp0ParPrime.txt"
 rem ########Install################
 :INSTALL
 call :APPLYCFG
-dism /apply-image /imagefile:"%wim%" /index:"%index%" /NoRpFix /applydir:"W:"!cmdcfg!
+IF /I "!ExtendedAttrib!" EQU "TRUE" (set extattrib= /EA)
+dism /apply-image /imagefile:"%wim%" /index:"%index%" /NoRpFix!extattrib! /applydir:"W:"!cmdcfg!
 echo Creating Boot Files
 set bootdrive=W
 !bootdrive!:\Windows\System32\bcdboot W:\Windows /f ALL /s S:
@@ -165,7 +166,7 @@ md "%backupdir%" >nul 2>&1
 set bootfile=%backupdir%\boot.wim
 set name=Boot of Windows %wnum%
 echo Backuping Up Boot to %bootfile%
-dism /capture-image /imagefile:"%bootfile%" /capturedir:"S:" /name:"%name%" /Description:"%name%" /compress:maximum
+dism /capture-image /imagefile:"%bootfile%" /capturedir:"S:" /name:"%name%" /Description:"%name%" /NoRpFix!extattrib! /compress:maximum
 IF EXIST "R:\" (
 md "%rbackupdir%" >nul 2>&1
 copy "%bootfile%" "%rbackupdir%\boot.wim"
@@ -219,12 +220,12 @@ echo changed powerplan of !powerplan! to high performance 8c5e7fda-e8bf-4a96-9a8
 exit /b
 
 :LOADCFG
-IF "!winpe!" EQU "T" (exit /b)
-FOR /F "tokens=1-3,6 delims= " %%A in ('call "%~dp0LoadConfig.bat"') DO (
+FOR /F "tokens=1-3,6-7 delims= " %%A in ('call "%~dp0LoadConfig.bat"') DO (
 set SleepDisable=%%A
 set SleepEnable=%%B
 set RestartExplorer=%%C
 set ApplyExclusions=%%D
+set ExtendedAttrib=%%E
 )
 exit /b
 

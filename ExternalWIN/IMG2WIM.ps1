@@ -1,7 +1,11 @@
 param(
-[Parameter(Mandatory=$true)]
-[string]$Image
+[Parameter(Mandatory=$true)][string]$Image,
+[Parameter(Mandatory=$true)][string]$ExtraAttrib
 )
+if($ExtraAttrib -eq "TRUE")
+{
+  $EASTR = "/EA"
+}
 $Directory = $Image | split-path
 $extn = [IO.Path]::GetExtension($Image)
 if($extn -eq ".WIM")
@@ -27,7 +31,7 @@ if ($extn -ne ".VHD" -and $extn -ne ".VHDX")
    $name = ([io.fileinfo]"$Image").BaseName
    $MountedVhd = Mount-DiskImage -ImagePath $Image -PassThru
    $drive = (Get-DiskImage -ImagePath $Image | Get-Volume).DriveLetter + ":"
-   dism /Capture-Image /ImageFile:"$wimfile" /CaptureDir:"$drive" /Name:"$name" /Description:"$name" /compress:maximum
+   dism /Capture-Image /ImageFile:"$wimfile" /CaptureDir:"$drive" /Name:"$name" /Description:"$name" /compress:maximum /NoRpFix $EASTR
    DisMount-DiskImage -ImagePath $Image | Out-Null
    exit
 }
@@ -54,7 +58,7 @@ if (($Partitions | Get-Volume) -ne $Null) {
         }
         $size = [math]::round(($Partition | Get-Volume).Size / 1MB, 2)
         $fs = "Format: " + ($Partition | Get-Volume).FileSystem + " Size: " + $size + " MB"
-        dism $operation /ImageFile:"$wimfile" /CaptureDir:"$PartitionMountPath" /Name:"$pname" /Description:"$fs" $comp
+        dism $operation /ImageFile:"$wimfile" /CaptureDir:"$PartitionMountPath" /Name:"$pname" /Description:"$fs" /NoRpFix $comp $EASTR
         $Partition | Remove-PartitionAccessPath -AccessPath $PartitionMountPath
         $operation = "/Append-Image" #combine future volumes into the same WIM file
         $comp = ""

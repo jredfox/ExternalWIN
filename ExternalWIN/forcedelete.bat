@@ -2,6 +2,9 @@
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 IF !ERRORLEVEL! NEQ 0 (exit /b !ERRORLEVEL!)
+echo WARNING^: Forcibly Deleting Files Is Dangerous If You Do Not Know What you are doing
+set /p warn="Do you Wish To Continue [Y/N]?"
+IF /I "!warn!" NEQ "Y" (exit /b)
 REM this is to force delete the extracted WIM files when mounting goes wrong. Do not Delete SYSTEM32 with this
 set dir=%~1
 IF "%~1" EQU "" (exit /b)

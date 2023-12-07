@@ -4,17 +4,18 @@ set wim=%1
 set wim=!wim:"=!
 set index=%~2
 set winpe=%~3
+set CFGNAME=%~4
 IF /I "!winpe:~0,1!" EQU "T" (set winpe=TRUE) ELSE (set winpe=FALSE)
 set targ=%TMP%\EXTWNTARG.txt
 set cfgini=%TMP%\EXTWINDISMApply.ini
 call :CREATECFG
-del /F "!targ!" /s /q /a >nul 2>&1
+del /F /Q /A "!targ!" >nul 2>&1
 cscript /nologo "%~dp0GetWIMTarg.vbs" "!wim!" "!index!" "!winpe!" >"!targ!"
 FOR /F "usebackq delims=" %%I IN ("!targ!") DO (set target=%%I)
 call :FTP "!target!"
 set targpath=!file!
 echo TARGET FOUND^:!target! PATH^:!targpath!
-del /F "!cfgini!" /s /q /a >nul 2>&1
+del /F /Q /A "!cfgini!" >nul 2>&1
 (
 echo ^[ExclusionList^]
 echo ^\EXTWNCAP^$^*
@@ -40,7 +41,7 @@ set file=!file:%PHOLDER%=%PSEP%!
 exit /b
 
 :CREATECFG
-set DISMAPPLYCFG=%~dp0ApplyExclusions.cfg
+IF "!CFGNAME!" EQU "" (set DISMAPPLYCFG=%~dp0ApplyExclusions.cfg) ELSE (set DISMAPPLYCFG=%~dp0!CFGNAME!)
 IF NOT EXIST "!DISMAPPLYCFG!" (type NUL >"!DISMAPPLYCFG!")
 exit /b
 
