@@ -220,7 +220,6 @@ echo changed powerplan of !powerplan! to high performance 8c5e7fda-e8bf-4a96-9a8
 exit /b
 
 :LOADCFG
-IF "!winpe!" EQU "T" (exit /b)
 FOR /F "tokens=1-3,6-7 delims= " %%A in ('call "%~dp0LoadConfig.bat"') DO (
 set SleepDisable=%%A
 set SleepEnable=%%B
