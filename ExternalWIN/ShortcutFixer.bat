@@ -8,8 +8,8 @@ set newpath=%3
 set reecurse=%~4
 ) ELSE (
 set /p scandir="Enter Drive to Scan:"
-set oldpath="Enter Old Drive Letter(W Normally):"
-set newpath="Enter New Drive Letter(C Normally):"
+set /p oldpath="Enter Old Drive Letter(W Normally):"
+set /p newpath="Enter New Drive Letter(C Normally):"
 )
 REM ## Remove Quotes Safley from the path without screwing things up ##
 set scandir=!scandir:"=!
