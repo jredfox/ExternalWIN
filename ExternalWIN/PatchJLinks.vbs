@@ -26,34 +26,37 @@ Do Until objFile.AtEndOfStream
 				If InStr(LinkLine, PathOld) > 0 Then
 					LinkLen = Len(LinkLine)
 					indexSep = InStrRev(LinkLine, "[")
-					LinkDir = PathDir & Left(LinkLine, indexSep - 2)
-					TargOrg = Mid(LinkLine, indexSep + 1, LinkLen - indexSep - 1)
-					IF LinkType = "JUNCTION" Then
-						indexJun = InStrRev(LinkLine, ":\")
-						TargNew = Replace(Mid(LinkLine, indexJun - 1, LinkLen - indexJun), PathOld, PathNew, 1, 1)
+					indexSanity = indexSep - 2
+					If indexSanity > 0 Then
+						LinkDir = PathDir & Left(LinkLine, indexSanity)
+						TargOrg = Mid(LinkLine, indexSep + 1, LinkLen - indexSep - 1)
+						IF LinkType = "JUNCTION" Then
+							indexJun = InStrRev(LinkLine, ":\")
+							TargNew = Replace(Mid(LinkLine, indexJun - 1, LinkLen - indexJun + 1), PathOld, PathNew, 1, 1)
+						Else
+							TargNew = Replace(TargOrg, PathOld, PathNew, 1, 1)
+						End If
+						WScript.Echo LinkDir & " " & LinkType & " """ & TargOrg & """ To: """ & TargNew & """"
+						' Generate the Commands
+						DELCMD = "RD """ & LinkDir & """"
+						IF LinkType = "JUNCTION" Then
+							MKFlags = " /J"
+						ElseIf LinkType = "SYMLINKD" Then
+							MKFlags = " /D"
+						Else
+							MKFlags = ""
+							DELCMD = "DEL /F /Q /A """ & LinkDir & """"
+						End If
+						MKCMD = "MKLINK" & MKFlags & " """ & LinkDir & """ " & """" & TargNew & """"
+						runCMD("cmd /c echo " & DELCMD)
+						runCMD("cmd /c echo " & MKCMD)
 					Else
-						TargNew = Replace(TargOrg, PathOld, PathNew, 1, 1)
+						WScript.Echo "ERR Skipping Maulformed Line:" & LinkLine
 					End If
-					WScript.Echo LinkDir & " " & LinkType & " """ & TargOrg & """ To: """ & TargNew & """"
-					' Generate the Commands
-					DELCMD = "RD """ & LinkDir & """"
-					IF LinkType = "JUNCTION" Then
-						MKFlags = " /J"
-					ElseIf LinkType = "SYMLINKD" Then
-						MKFlags = " /D"
-					Else
-						MKFlags = ""
-						DELCMD = "DEL /F /Q /A """ & LinkDir & """"
-					End If
-					MKCMD = "MKLINK" & MKFlags & " """ & LinkDir & """ " & """" & TargNew & """"
-					runCMD("cmd /c echo " & DELCMD)
-					runCMD("cmd /c echo " & MKCMD)
 				Else
 					WScript.Echo "Skipping: " & LinkLine
 				End If
 			End If
-		Else
-			' WScript.Echo "Skipping Missing LinkType:" & line
 		End If
 	End If
 Loop
@@ -63,6 +66,6 @@ Function runCMD(strRunCmd)
  Set objExec = oShell.Exec(strRunCmd)
  Do While Not objExec.StdOut.AtEndOfStream
    cline = objExec.StdOut.ReadLine()
-   WScript.Echo cline
+   ' WScript.Echo cline
  Loop
 End Function
