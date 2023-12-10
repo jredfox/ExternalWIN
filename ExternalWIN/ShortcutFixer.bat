@@ -28,5 +28,4 @@ set JLinks=%TMP%\JLinks.txt
 del /F /Q /A "!JLinks!" >nul 2>&1
 echo Scanning for Juntions and Symbolic Links in "!scandir!"
 dir !reflag!/A^:L-O "!scandir!" >"!JLinks!"
-echo Patching Juntions and Symbolic Links
 cscript /nologo "%~dp0PatchJLinks.vbs" "!JLinks!" "!oldpath!" "!newpath!"
