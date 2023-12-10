@@ -6,11 +6,13 @@ set scandir=%1
 set oldpath=%2
 set newpath=%3
 set reecurse=%~4
+set lnkSearch=%~5
 ) ELSE (
 set /p scandir="Enter Drive to Scan:"
 set /p oldpath="Enter Old Drive Letter(W Normally):"
 set /p newpath="Enter New Drive Letter(C Normally):"
 )
+IF "!lnkSearch!" EQU "" (set lnkSearch=JDF)
 REM ## Remove Quotes Safley from the path without screwing things up ##
 set scandir=!scandir:"=!
 set oldpath=!oldpath:"=!
@@ -28,4 +30,4 @@ set JLinks=%TMP%\JLinks.txt
 del /F /Q /A "!JLinks!" >nul 2>&1
 echo Scanning for Juntions and Symbolic Links in "!scandir!"
 dir !reflag!/A^:L-O "!scandir!" >"!JLinks!"
-cscript /nologo "%~dp0PatchJLinks.vbs" "!JLinks!" "!oldpath!" "!newpath!"
+cscript /nologo "%~dp0PatchJLinks.vbs" "!JLinks!" "!oldpath!" "!newpath!" "!lnkSearch!"

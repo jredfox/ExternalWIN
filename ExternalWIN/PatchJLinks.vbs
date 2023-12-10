@@ -1,9 +1,15 @@
 linksfile = WScript.Arguments(0)
 PathOld = WScript.Arguments(1)
 PathNew = WScript.Arguments(2)
+TYPESLNK = UCase(WScript.Arguments(3))
+' Process Args
+HASJUNC = InStr(TYPESLNK, "J") > 0
+HASSYMDIR = InStr(TYPESLNK, "D") > 0
+HASSYMFILE = InStr(TYPESLNK, "F") > 0
 PathOldJunc = Mid(PathOld, InStrRev(PathOld, ":\") - 1)
+' Start The Program
 PathDir = ""
-WScript.Echo "Fixing Junctions And Symbolic Links:" & " Replacing:" & PathOld & " With:" & PathNew
+WScript.Echo "Patching LINKTYPES:" & TYPESLNK & " Replacing:" & PathOld & " With:" & PathNew
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 Set oShell = WScript.CreateObject("WScript.Shell")
 Set objFile = objFSO.OpenTextFile(linksfile, 1, False)
@@ -22,7 +28,7 @@ Do Until objFile.AtEndOfStream
 		startIndex = InStr(line, "<")
 		If startIndex > 0 Then
 			LinkType = UCase(Mid(line, startIndex + 1, InStr(line, ">") - startIndex - 1))
-			IF LinkType = "JUNCTION" Or LinkType = "SYMLINKD" Or LinkType = "SYMLINK" Then
+			IF (LinkType = "JUNCTION" And HASJUNC) Or (LinkType = "SYMLINKD" And HASSYMDIR) Or (LinkType = "SYMLINK" And HASSYMFILE) Then
 				LinkLine = Trim(Mid(line, InStr(line, ">") + 1))
 				If InStr(LinkLine, PathOld) > 0 Then
 					LinkLen = Len(LinkLine)
