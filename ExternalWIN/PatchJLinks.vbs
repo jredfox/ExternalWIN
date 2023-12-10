@@ -5,7 +5,6 @@ PathDir = ""
 WScript.Echo "Patching Junctions And Symbolic Links:" & " Replacing:" & PathOld & " With:" & PathNew
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 Set oShell = WScript.CreateObject("WScript.Shell")
-' TODO
 Set objFile = objFSO.OpenTextFile(linksfile, 1, False)
 Do Until objFile.AtEndOfStream
 	line = objFile.ReadLine
@@ -45,8 +44,8 @@ Do Until objFile.AtEndOfStream
 							DELCMD = "DEL /F /Q /A """ & LinkDir & """"
 						End If
 						MKCMD = "MKLINK" & MKFlags & " """ & LinkDir & """ " & """" & TargPathNew & """"
-						runCMD("cmd /c echo " & DELCMD)
-						runCMD("cmd /c echo " & MKCMD)
+						runCMD("cmd /c " & DELCMD)
+						runCMD("cmd /c " & MKCMD)
 					Else
 						WScript.Echo "Skipping MaulFormed Dir Entry:" & PathDir & LinkLine
 					End If
