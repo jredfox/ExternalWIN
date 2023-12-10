@@ -6,10 +6,14 @@ TYPESLNK = UCase(WScript.Arguments(3))
 HASJUNC = InStr(TYPESLNK, "J") > 0
 HASSYMDIR = InStr(TYPESLNK, "D") > 0
 HASSYMFILE = InStr(TYPESLNK, "F") > 0
+LNKTYPES = ""
+If HASJUNC THEN LNKTYPES = "J" End If
+If HASSYMDIR THEN LNKTYPES = LNKTYPES & "D" End If
+If HASSYMFILE THEN LNKTYPES = LNKTYPES & "F" End If
 PathOldJunc = Mid(PathOld, InStrRev(PathOld, ":\") - 1)
 ' Start The Program
 PathDir = ""
-WScript.Echo "Patching LINKTYPES:" & TYPESLNK & " Replacing:" & PathOld & " With:" & PathNew
+WScript.Echo "Patching LINKTYPES:" & LNKTYPES & " Replacing:" & PathOld & " With:" & PathNew
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 Set oShell = WScript.CreateObject("WScript.Shell")
 Set objFile = objFSO.OpenTextFile(linksfile, 1, False)
