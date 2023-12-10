@@ -12,6 +12,7 @@ set /p scandir="Enter Drive to Scan:"
 set /p oldpath="Enter Old Drive Letter(W Normally):"
 set /p newpath="Enter New Drive Letter(C Normally):"
 )
+REM ## Set the Default search to include All Types JUNCTIONS SYMDIRS AND SYMFILES ##
 IF "!lnkSearch!" EQU "" (set lnkSearch=JDF)
 REM ## Remove Quotes Safley from the path without screwing things up ##
 set scandir=!scandir:"=!
