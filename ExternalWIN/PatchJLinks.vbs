@@ -1,6 +1,7 @@
 linksfile = WScript.Arguments(0)
 PathOld = WScript.Arguments(1)
 PathNew = WScript.Arguments(2)
+PathOldJunc = Mid(PathOld, InStrRev(PathOld, ":\") - 1)
 PathDir = ""
 WScript.Echo "Fixing Junctions And Symbolic Links:" & " Replacing:" & PathOld & " With:" & PathNew
 Set objFSO = CreateObject("Scripting.FileSystemObject")
@@ -32,7 +33,7 @@ Do Until objFile.AtEndOfStream
 						TargOrg = Mid(LinkLine, indexSep + 1, LinkLen - indexSep - 1)
 						IF LinkType = "JUNCTION" Then
 							indexJun = InStrRev(LinkLine, ":\")
-							TargNew = Replace(Mid(LinkLine, indexJun - 1, LinkLen - indexJun + 1), PathOld, PathNew, 1, 1)
+							TargNew = Replace(Mid(LinkLine, indexJun - 1, LinkLen - indexJun + 1), PathOldJunc, PathNew, 1, 1)
 						Else
 							TargNew = Replace(TargOrg, PathOld, PathNew, 1, 1)
 						End If
