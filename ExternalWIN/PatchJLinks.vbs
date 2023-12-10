@@ -31,7 +31,11 @@ Do Until objFile.AtEndOfStream
 					indexSanity = indexBracket - 2
 					IF indexSanity > 0 Then
 						LinkDir = PathDir & Left(LinkLine, indexSanity)
-						TargPath = Mid(LinkLine, indexBracket + 1, Len(LinkLine) - indexBracket - 1)
+						IF LinkType = "JUNCTION" THEN
+							TargPath = Mid(LinkLine, indexColon, Len(LinkLine) - indexColon)
+						Else 
+							TargPath = Mid(LinkLine, indexBracket + 1, Len(LinkLine) - indexBracket - 1)
+						End If
 						TargPathNew = Replace(TargPath, PathOld, PathNew, 1, 1)
 						WScript.Echo "Patching Link '" & LinkDir & "' '" & TargPath & "' '" & TargPathNew & "'"
 						DELCMD = "RD """ & LinkDir & """"
@@ -44,8 +48,8 @@ Do Until objFile.AtEndOfStream
 							DELCMD = "DEL /F /Q /A """ & LinkDir & """"
 						End If
 						MKCMD = "MKLINK" & MKFlags & " """ & LinkDir & """ " & """" & TargPathNew & """"
-						runCMD("cmd /c " & DELCMD)
-						runCMD("cmd /c " & MKCMD)
+						runCMD("cmd /c echo " & DELCMD)
+						runCMD("cmd /c echo " & MKCMD)
 					Else
 						WScript.Echo "Skipping MaulFormed Dir Entry:" & PathDir & LinkLine
 					End If
@@ -63,6 +67,7 @@ Loop
 Function runCMD(strRunCmd)
  Set objExec = oShell.Exec(strRunCmd)
  Do While Not objExec.StdOut.AtEndOfStream
-  WScript.Echo objExec.StdOut.ReadLine()
+  cline = objExec.StdOut.ReadLine()
+  'WScript.Echo cline
  Loop
 End Function
