@@ -20,43 +20,36 @@ Do Until objFile.AtEndOfStream
 	ElseIf Trim(line) <> "" Then
 		startIndex = InStr(line, "<")
 		If startIndex > 0 Then
-			endIndex = InStr(line, ">")
-			LinkType = UCase(Mid(line, startIndex + 1, endIndex - startIndex - 1))
+			LinkType = UCase(Mid(line, startIndex + 1, InStr(line, ">") - startIndex - 1))
 			IF LinkType = "JUNCTION" Or LinkType = "SYMLINKD" Or LinkType = "SYMLINK" Then
 				LinkLine = Trim(Mid(line, InStr(line, ">") + 1))
-				' Seperate the target from the main path
-				indexColon = InStr(LinkLine, PathOld)
-				If indexColon > 0 Then
-					indexBracket = InStrRev(LinkLine, "[", indexColon)
-					indexSanity = indexBracket - 2
-					IF indexSanity > 0 Then
-						LinkDir = PathDir & Left(LinkLine, indexSanity)
-						OrgTarg = Mid(LinkLine, indexBracket + 1, Len(LinkLine) - indexBracket - 1)
-						IF LinkType = "JUNCTION" Then
-							indexJun = InStrRev(LinkLine, ":\")
-							TargPath = Mid(LinkLine, indexJun - 1, Len(LinkLine) - indexJun)
-						Else
-							TargPath = OrgTarg
-						End If
-						TargPathNew = Replace(TargPath, PathOld, PathNew, 1, 1)
-						WScript.Echo "Patching " & LinkType & " '" & LinkDir & "' '" & OrgTarg & "' '" & TargPathNew & "'"
-						DELCMD = "RD """ & LinkDir & """"
-						IF LinkType = "JUNCTION" Then
-							MKFlags = " /J"
-						ElseIf LinkType = "SYMLINKD" Then
-							MKFlags = " /D"
-						Else
-							MKFlags = ""
-							DELCMD = "DEL /F /Q /A """ & LinkDir & """"
-						End If
-						MKCMD = "MKLINK" & MKFlags & " """ & LinkDir & """ " & """" & TargPathNew & """"
-						runCMD("cmd /c echo " & DELCMD)
-						runCMD("cmd /c echo " & MKCMD)
+				If InStr(LinkLine, PathOld) > 0 Then
+					LinkLen = Len(LinkLine)
+					indexSep = InStrRev(LinkLine, "[")
+					LinkDir = PathDir & Left(LinkLine, indexSep - 2)
+					TargOrg = Mid(LinkLine, indexSep + 1, LinkLen - indexSep - 1)
+					IF LinkType = "JUNCTION" Then
+						indexJun = InStrRev(LinkLine, ":\")
+						TargNew = Replace(Mid(LinkLine, indexJun - 1, LinkLen - indexJun), PathOld, PathNew, 1, 1)
 					Else
-						WScript.Echo "Skipping MaulFormed Dir Entry:" & PathDir & LinkLine
+						TargNew = Replace(TargOrg, PathOld, PathNew, 1, 1)
 					End If
+					WScript.Echo LinkDir & " " & LinkType & " """ & TargOrg & """ To: """ & TargNew & """"
+					' Generate the Commands
+					DELCMD = "RD """ & LinkDir & """"
+					IF LinkType = "JUNCTION" Then
+						MKFlags = " /J"
+					ElseIf LinkType = "SYMLINKD" Then
+						MKFlags = " /D"
+					Else
+						MKFlags = ""
+						DELCMD = "DEL /F /Q /A """ & LinkDir & """"
+					End If
+					MKCMD = "MKLINK" & MKFlags & " """ & LinkDir & """ " & """" & TargNew & """"
+					runCMD("cmd /c echo " & DELCMD)
+					runCMD("cmd /c echo " & MKCMD)
 				Else
-					' WScript.Echo "Skipping Link:" & PathDir & LinkLine
+					WScript.Echo "Skipping: " & LinkLine
 				End If
 			End If
 		Else
@@ -69,7 +62,7 @@ Loop
 Function runCMD(strRunCmd)
  Set objExec = oShell.Exec(strRunCmd)
  Do While Not objExec.StdOut.AtEndOfStream
-  cline = objExec.StdOut.ReadLine()
-  ' WScript.Echo cline
+   cline = objExec.StdOut.ReadLine()
+   WScript.Echo cline
  Loop
 End Function
