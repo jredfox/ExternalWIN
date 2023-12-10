@@ -2,7 +2,7 @@ linksfile = WScript.Arguments(0)
 PathOld = WScript.Arguments(1)
 PathNew = WScript.Arguments(2)
 PathDir = ""
-WScript.Echo "Patching Junctions And Symbolic Links:" & " Replacing:" & PathOld & " With:" & PathNew
+WScript.Echo "Fixing Junctions And Symbolic Links:" & " Replacing:" & PathOld & " With:" & PathNew
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 Set oShell = WScript.CreateObject("WScript.Shell")
 Set objFile = objFSO.OpenTextFile(linksfile, 1, False)
@@ -31,17 +31,19 @@ Do Until objFile.AtEndOfStream
 					indexSanity = indexBracket - 2
 					IF indexSanity > 0 Then
 						LinkDir = PathDir & Left(LinkLine, indexSanity)
-						IF LinkType = "JUNCTION" THEN
-							TargPath = Mid(LinkLine, indexColon, Len(LinkLine) - indexColon)
-						Else 
-							TargPath = Mid(LinkLine, indexBracket + 1, Len(LinkLine) - indexBracket - 1)
+						OrgTarg = Mid(LinkLine, indexBracket + 1, Len(LinkLine) - indexBracket - 1)
+						IF LinkType = "JUNCTION" Then
+							indexJun = InStrRev(LinkLine, ":\")
+							TargPath = Mid(LinkLine, indexJun - 1, Len(LinkLine) - indexJun)
+						Else
+							TargPath = OrgTarg
 						End If
 						TargPathNew = Replace(TargPath, PathOld, PathNew, 1, 1)
-						WScript.Echo "Patching Link '" & LinkDir & "' '" & TargPath & "' '" & TargPathNew & "'"
+						WScript.Echo "Patching " & LinkType & " '" & LinkDir & "' '" & OrgTarg & "' '" & TargPathNew & "'"
 						DELCMD = "RD """ & LinkDir & """"
-						IF LinkType = "JUNCTION" THEN
+						IF LinkType = "JUNCTION" Then
 							MKFlags = " /J"
-						ElseIf LinkType = "SYMLINKD" THEN
+						ElseIf LinkType = "SYMLINKD" Then
 							MKFlags = " /D"
 						Else
 							MKFlags = ""
@@ -68,6 +70,6 @@ Function runCMD(strRunCmd)
  Set objExec = oShell.Exec(strRunCmd)
  Do While Not objExec.StdOut.AtEndOfStream
   cline = objExec.StdOut.ReadLine()
-  'WScript.Echo cline
+  ' WScript.Echo cline
  Loop
 End Function
