@@ -40,6 +40,7 @@ dir !reflag!/A^:L-O "!scandir!" >"!JLinks!"
 cscript /nologo "%~dp0PatchJLinks.vbs" "!JLinks!" "!oldpath!" "!newpath!" "!lnkSearch!"
 exit /b
 
+REM ## USAGE TARGDRIVE IS ONECHAR for the DRIVE LETTER ##
 :CREATEDUMMY
 set TargDrive=%~1
 call :GETDUMMY
@@ -50,7 +51,7 @@ call :GETDUMMY
 )
 set volume=!DummyDrive:~0,1!
 set let=!TargDrive!
-echo Assigning Dummy Drive letter !TargDrive!
+echo Assigning Dummy Drive letter !TargDrive!^:
 diskpart /s "%~dp0AssignVol.txt"
 exit /b
 
