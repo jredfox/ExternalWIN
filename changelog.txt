@@ -17,6 +17,7 @@ Changelog 1.0.12 (BUG MUNCHER II):
 - Added \EXTWINCAP$target file that is dynamcially generated when using WIM-Capture.bat
 - Added forward slash support for WinInstall.bat, WinInstallVHDX-Custom.bat, WinInstallVHDX.bat, WIM-Capture.bat, WIMApply-Universal.bat, WIMApply-W.bat in case user error when inputting files
 - Added WARNINGS to Dangerous scripts such as WIM-Extract.bat and forcedelete.bat
+- Added ShortCutFixer.bat Command Line Utility & User Script. This will fix previous Windows Installations installed from ExternalWIN causing Junctions, SYMLINK Dirs, SYMLINK FILES to have W:\ instead of what they are suppose to be
 - Improved LoadConfig.bat to automatically re-add missing config options without manual deletion
 - Improved Better Directory Paths of ExternalWIN's WIM Images and VDISKS to C:\ExternalWIN\ImageBackups\<COMPUTER>\WIMS and C:\ExternalWIN\ImageBackups\<COMPUTER>\VDISKS for when there isn't a Absolute Path Specified in Regular Windows
 - Improved WIM-Capture.bat Logic No longer Saves anything from C:\ExternalWIN\* as there is VDISKS WIM Images and Backup of reg/boots that aren't really needed in a backup of the C Drive and will save hundreds of GB of space. You can still use WIM-Capture.bat to Capture C:\ExteranlWIN by only capturing it
@@ -38,5 +39,6 @@ TODO NOW:
 
 MASTER TODO:
 - create ShortcutFixer.bat (Must Run in WinPE, Can be specific not just entire C Drive) Fixes Junctions, SYSMLINKS, Shortcuts(lnk files), Hard Links
+- Make sure the DISM /NoRPFix flag doesn't screw up Fresh Windows Installations
 - Make WinInstallVHDX.bat work in WinPE again
 - Improve Logic of WinInstallVHDX.bat's VDISK location in WinPE
