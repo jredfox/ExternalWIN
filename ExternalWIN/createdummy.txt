@@ -1,4 +1,4 @@
-sel vol %HOMEDRIVE%
+sel vol %WORKINGDRIVE%
 shrink desired=10 minimum=10
 create partition primary size=10
 format quick fs=NTFS label="EXTWNDUMMY"

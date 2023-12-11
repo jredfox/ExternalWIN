@@ -59,7 +59,7 @@ IF "!COMPNAME!" EQU "" (set COMPNAME=!ComputerName!)
 
 :INSTALL
 echo Capturing "!let!" on Computer "!COMPNAME!"
-REM If USER Specified a Relitive Path Then Store it in Documents
+REM If USER Specified a Relitive Path in Non WinPE Then Store it in Documents
 IF "!wim:~1,1!" NEQ ":" (set wim=!HOMEDRIVE:~0,1!^:\ExternalWIN\ImageBackups\!COMPNAME!\WIMS\!wim!)
 set wim=!wim!.wim
 set wim=!wim:.wim.wim=.wim!

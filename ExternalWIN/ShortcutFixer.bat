@@ -1,5 +1,8 @@
 @ECHO OFF
 setlocal enableDelayedExpansion
+call :checkAdmin
+IF !ERRORLEVEL! NEQ 0 (exit /b !ERRORLEVEL!)
+call :PP
 set reecurse=T
 IF "%~1" NEQ "" (
 set scandir=%1
@@ -38,11 +41,14 @@ IF /I "!createDummy!" EQU "Y" (call :CREATEDUMMY "!OldDrive!")
 echo Scanning for Juntions and Symbolic Links in "!scandir!"
 dir !reflag!/A^:L-O "!scandir!" >"!JLinks!"
 cscript /nologo "%~dp0PatchJLinks.vbs" "!JLinks!" "!oldpath!" "!newpath!" "!lnkSearch!"
+pause
 exit /b
 
 REM ## USAGE TARGDRIVE IS ONECHAR for the DRIVE LETTER ##
 :CREATEDUMMY
 set TargDrive=%~1
+set WORKINGDRIVE=%~dp0
+set WORKINGDRIVE=!WORKINGDRIVE:~0,1!
 call :GETDUMMY
 IF "!DummyDrive!" EQU "" (
 echo Creating Dummy Drive^.^.^.
@@ -69,4 +75,27 @@ set "drives=DEFGHIJKLMNOPQRSTUVWXYZABC"
 FOR /F "delims=:" %%A IN ('wmic logicaldisk get caption') DO set "drives=!drives:%%A=!"
 set drivess=!drives:%SRCHDrive%=!
 IF "!drivess!" NEQ "!drives!" (set HASDRIVE=F) ELSE (set HASDRIVE=T)
+exit /b
+
+:checkAdmin
+net session >nul 2>&1
+IF !ERRORLEVEL! NEQ 0 (
+echo %~1
+pause
+exit /b 1
+)
+exit /b
+
+:PP
+REM ######## WinPE support change the power plan to maximize perforamnce #########
+set winpe=F
+REM Check if we are in WINPE. If Either where or powershell is missing and X Drive Exists we are in WinPE
+IF NOT EXIST "X:\" (exit /b)
+where powershell >nul 2>&1
+IF !ERRORLEVEL! NEQ 0 (
+set winpe=T
+FOR /f "delims=" %%a in ('POWERCFG -GETACTIVESCHEME') DO @SET powerplan="%%a"
+powercfg /s 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
+echo changed powerplan of !powerplan! to high performance 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
+)
 exit /b

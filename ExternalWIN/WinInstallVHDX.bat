@@ -5,6 +5,7 @@ IF !ERRORLEVEL! NEQ 0 (exit /b !ERRORLEVEL!)
 title ExternalWin Version 1.0.11 VHDX
 call :PP
 call :LOADCFG
+call :GETHOMEDRIVE
 
 rem ############ CLEANUP ##################
 set letvdisk=V
@@ -263,4 +264,11 @@ IF /I "!ApplyExclusions:~0,1!" NEQ "T" (exit /b)
 echo Generating Apply Exclusion List
 call "%~dp0CreateApplyExclusions.bat" "!wim!" "!index!" "!winpe!"
 set cmdcfg= ^/ConfigFile^:"!applyini!"
+exit /b
+
+:GETHOMEDRIVE
+IF "!HOMEDRIVE!" EQU "" (
+set wkdir="%~dp0"
+set HOMEDRIVE=!wkdir:~0,1!
+)
 exit /b
