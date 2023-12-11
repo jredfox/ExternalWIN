@@ -29,7 +29,6 @@ Changelog 1.0.12 (BUG MUNCHER II):
 - Changed LoadConfig.bat now gets called in WinPE as most of the config options are now both for WinPE and Windows
 
 TODO NOW:
-- Get Dummy Drive Working
 - Fix Recursion Error On dir /S all scripts
 - Check wimindex win 7
 - Test \??\ paths, Attributes Preservation, Dummy Drive

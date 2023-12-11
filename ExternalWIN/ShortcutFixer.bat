@@ -35,7 +35,7 @@ del /F /Q /A "!JLinks!" >nul 2>&1
 set NewDrive=!newpath:~0,1!
 call :HASDRIVE "!NewDrive!"
 IF "!HASDRIVE!" NEQ "T" (
-set /p createDummy="Create Dummy Drive to Patch Junctions [Y/N]?"
+set /p createDummy="Create Dummy Drive to Patch Junctions And SYMLINKS [Y/N]?"
 IF /I "!createDummy!" EQU "Y" (call :CREATEDUMMY "!NewDrive!" "!scandir:~0,1!")
 )
 echo Scanning for Juntions and Symbolic Links in "!scandir!"
