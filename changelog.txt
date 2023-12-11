@@ -8,6 +8,7 @@ Changelog 1.0.12 (BUG MUNCHER II):
 - Fixed Accidental Deleting of Operating System files from forcedelete.bat when it was opened as admin by mistake with no first arguement
 - Fixed Junctions, Symlinks, Shortcuts, Hard links getting messed with when capturing or applying the image
 - Fixed having the S flag for del command when it was working with single file deletions and made the code more readable
+- Fixed CleanupPar.bat (fixed always having c drive as true, fixed check logic method and main for loop)
 - Added Dynamic Exclusion Lists Capture/Apply Configs that change based on relative path of the target drive for example \Windows\System32 and the target is \Windows\ it would change to \System32
 - Added Static exclusions that start with S:\target instead of C:\target or \target this is implemented for both Apply and Capture Exclusions. This means it will always be the same path and always get added to the generated exclusion list
 - Added Config Option OptimizedWIMCapture when true if no onedrive accounts are detected it will skip the scanning of the target drive/dir
@@ -36,6 +37,7 @@ TODO NOW:
 - Get Dummy Drive Working
 - Fix Recursion Error On dir /S all scripts
 - Check wimindex win 7
+- Test \??\ paths, Attributes Preservation, Dummy Drive
 
 MASTER TODO:
 - create ShortcutFixer.bat (Must Run in WinPE, Can be specific not just entire C Drive) Fixes Junctions, SYSMLINKS, Shortcuts(lnk files), Hard Links
