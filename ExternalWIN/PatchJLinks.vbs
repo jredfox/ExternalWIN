@@ -35,15 +35,15 @@ Do Until objFile.AtEndOfStream
 			IF (LinkType = "JUNCTION" And HASJUNC) Or (LinkType = "SYMLINKD" And HASSYMDIR) Or (LinkType = "SYMLINK" And HASSYMFILE) Then
 				LinkLine = Trim(Mid(line, InStr(line, ">") + 1))
 				If InStr(LinkLine, PathOld) > 0 Then
-					LinkLen = Len(LinkLine)
 					indexSep = InStrRev(LinkLine, "[")
 					indexSanity = indexSep - 2
 					If indexSanity > 0 Then
 						LinkDir = PathDir & Left(LinkLine, indexSanity)
-						TargOrg = Mid(LinkLine, indexSep + 1, LinkLen - indexSep - 1)
-						IF LinkType = "JUNCTION" Then
-							indexJun = InStrRev(LinkLine, ":\")
-							TargNew = Replace(Mid(LinkLine, indexJun - 1, LinkLen - indexJun + 1), PathOldJunc, PathNew, 1, 1)
+						TargOrg = Mid(LinkLine, indexSep + 1, Len(LinkLine) - indexSep - 1)
+						' All other NT Meta paths are fine using MKLNK /J command Except for This Prefix due to a bug with MKLINK with Junctions Tested Win 10-11
+						IF LinkType = "JUNCTION" And InStr(TargOrg, "\??\") > 0 Then
+							indexJun = InStrRev(TargOrg, ":\")
+							TargNew = Replace(Mid(TargOrg, indexJun - 1), PathOldJunc, PathNew, 1, 1)
 						Else
 							TargNew = Replace(TargOrg, PathOld, PathNew, 1, 1)
 						End If
@@ -59,10 +59,10 @@ Do Until objFile.AtEndOfStream
 							DELCMD = "DEL /F /Q /A """ & LinkDir & """"
 						End If
 						MKCMD = "MKLINK" & MKFlags & " """ & LinkDir & """ " & """" & TargNew & """"
-						SourceAttr = objFSO.GetFile(LinkDir).Attributes
+						' SourceAttr = objFSO.GetFile(LinkDir).Attributes
 						runCMD("cmd /c echo " & DELCMD)
 						runCMD("cmd /c echo " & MKCMD)
-						objFSO.GetFile(LinkDir).Attributes = SourceAttr
+						' objFSO.GetFile(LinkDir).Attributes = SourceAttr
 					Else
 						WScript.Echo "ERR Skipping Maulformed Line:" & LinkLine
 					End If
