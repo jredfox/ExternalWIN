@@ -17,4 +17,8 @@ REM ######## WinPE support change the power plan to maximize perforamnce #######
 set winpe=F
 REM Check if we are in WINPE. If Either where or powershell is missing and X Drive Exists we are in WinPE
 IF NOT EXIST "X:\" (exit /b)
+where powershell >nul 2>&1
+IF !ERRORLEVEL! NEQ 0 (
+set winpe=T
+)
 exit /b
