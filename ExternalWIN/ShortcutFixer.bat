@@ -29,6 +29,43 @@ IF "!newpath:~-1!" NEQ "\" (SET newpath=!newpath!^\)
 IF /I "!reecurse:~0,1!" NEQ "F" (set reflag=/S )
 set JLinks=%TMP%\JLinks.txt
 del /F /Q /A "!JLinks!" >nul 2>&1
+set OldDrive=!oldpath:~0,1!
+call :HASDRIVE "!OldDrive!"
+IF "!HASDRIVE!" NEQ "T" (
+set /p createDummy="Create Dummy Drive to Patch Junctions [Y/N]?"
+IF /I "!createDummy!" EQU "Y" (call :CREATEDUMMY "!OldDrive!")
+)
 echo Scanning for Juntions and Symbolic Links in "!scandir!"
 dir !reflag!/A^:L-O "!scandir!" >"!JLinks!"
 cscript /nologo "%~dp0PatchJLinks.vbs" "!JLinks!" "!oldpath!" "!newpath!" "!lnkSearch!"
+exit /b
+
+:CREATEDUMMY
+set TargDrive=%~1
+call :GETDUMMY
+IF "!DummyDrive!" EQU "" (
+echo Creating Dummy Drive^.^.^.
+diskpart /s "%~dp0createdummy.txt"
+call :GETDUMMY
+)
+set volume=!DummyDrive:~0,1!
+set let=!TargDrive!
+echo Assigning Dummy Drive letter !TargDrive!
+diskpart /s "%~dp0AssignVol.txt"
+exit /b
+
+:GETDUMMY
+FOR /F "tokens=1* delims= " %%a in ('wmic volume where "Label='EXTWNDUMMY'" get Caption 2^>nul') DO (
+set caption=%%a
+IF "!caption:~1,1!" EQU ":" (set DummyDrive=!caption!)
+)
+exit /b
+
+:HASDRIVE
+set SRCHDrive=%~1
+set SRCHDrive=!SRCHDrive:~0,1!
+set "drives=DEFGHIJKLMNOPQRSTUVWXYZABC"
+FOR /F "delims=:" %%A IN ('wmic logicaldisk get caption') DO set "drives=!drives:%%A=!"
+set drivess=!drives:%SRCHDrive%=!
+IF "!drivess!" NEQ "!drives!" (set HASDRIVE=F) ELSE (set HASDRIVE=T)
+exit /b
