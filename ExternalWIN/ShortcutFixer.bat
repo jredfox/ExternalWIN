@@ -32,11 +32,11 @@ IF "!newpath:~-1!" NEQ "\" (SET newpath=!newpath!^\)
 IF /I "!reecurse:~0,1!" NEQ "F" (set reflag=/S )
 set JLinks=%TMP%\JLinks.txt
 del /F /Q /A "!JLinks!" >nul 2>&1
-set OldDrive=!oldpath:~0,1!
-call :HASDRIVE "!OldDrive!"
+set NewDrive=!newpath:~0,1!
+call :HASDRIVE "!NewDrive!"
 IF "!HASDRIVE!" NEQ "T" (
 set /p createDummy="Create Dummy Drive to Patch Junctions [Y/N]?"
-IF /I "!createDummy!" EQU "Y" (call :CREATEDUMMY "!OldDrive!")
+IF /I "!createDummy!" EQU "Y" (call :CREATEDUMMY "!NewDrive!")
 )
 echo Scanning for Juntions and Symbolic Links in "!scandir!"
 dir !reflag!/A^:L-O "!scandir!" >"!JLinks!"
