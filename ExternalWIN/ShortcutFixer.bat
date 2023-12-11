@@ -36,7 +36,7 @@ set NewDrive=!newpath:~0,1!
 call :HASDRIVE "!NewDrive!"
 IF "!HASDRIVE!" NEQ "T" (
 set /p createDummy="Create Dummy Drive to Patch Junctions [Y/N]?"
-IF /I "!createDummy!" EQU "Y" (call :CREATEDUMMY "!NewDrive!")
+IF /I "!createDummy!" EQU "Y" (call :CREATEDUMMY "!NewDrive!" "!scandir:~0,1!")
 )
 echo Scanning for Juntions and Symbolic Links in "!scandir!"
 dir !reflag!/A^:L-O "!scandir!" >"!JLinks!"
@@ -44,11 +44,12 @@ cscript /nologo "%~dp0PatchJLinks.vbs" "!JLinks!" "!oldpath!" "!newpath!" "!lnkS
 pause
 exit /b
 
-REM ## USAGE TARGDRIVE IS ONECHAR for the DRIVE LETTER ##
+REM ## USAGE TARGDRIVE, SCANDRIVE ONE SINGLE DRIVE LETTER ##
 :CREATEDUMMY
 set TargDrive=%~1
-set WORKINGDRIVE=%~dp0FILE
-set WORKINGDRIVE=!WORKINGDRIVE:~0,1!
+set ScanDrive=%~2
+set WORKINGDRIVE=!HOMEDRIVE!
+IF "!WORKINGDRIVE!" EQU "" (set WORKINGDRIVE=!ScanDrive!)
 call :GETDUMMY
 IF "!DummyDrive!" EQU "" (
 echo Creating Dummy Drive^.^.^.

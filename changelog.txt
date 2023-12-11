@@ -28,11 +28,6 @@ Changelog 1.0.12 (BUG MUNCHER II):
 - Improved call PP more often
 - Changed LoadConfig.bat now gets called in WinPE as most of the config options are now both for WinPE and Windows
 
-WIP:
-List Readable Disks of MBR < 4 or any GPT DISKS
-Find Disk with Unallocated space on said disks create partition
-If not found Find First NTFS Partition Shrink 10MB create partition
-
 TODO NOW:
 - Get Dummy Drive Working
 - Fix Recursion Error On dir /S all scripts
