@@ -54,12 +54,19 @@ call :GETDUMMY
 IF "!DummyDrive!" EQU "" (
 echo Creating Dummy Drive^.^.^.
 diskpart /s "%~dp0createdummy.txt"
-call :GETDUMMY
+IF !ERRORLEVEL! NEQ 0 (
+set /p WORKINGDRIVE="Creation Of Dummy Drive Failed Enter Windows Drive to Shrink 10MB:"
+set WORKINGDRIVE=!WORKINGDRIVE:"=!
+set WORKINGDRIVE=!WORKINGDRIVE:~0,1!
+diskpart /s "%~dp0createdummy.txt"
 )
+call :GETDUMMY
+) ELSE (
 set volume=!DummyDrive:~0,1!
 set let=!TargDrive!
 echo Assigning Dummy Drive letter !TargDrive!^:
 diskpart /s "%~dp0AssignVol.txt"
+)
 exit /b
 
 :GETDUMMY
