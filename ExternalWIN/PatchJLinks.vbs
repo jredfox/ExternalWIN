@@ -59,10 +59,13 @@ Do Until objFile.AtEndOfStream
 							DELCMD = "DEL /F /Q /A """ & LinkDir & """"
 						End If
 						MKCMD = "MKLINK" & MKFlags & " """ & LinkDir & """ " & """" & TargNew & """"
-						' SourceAttr = objFSO.GetFile(LinkDir).Attributes
+						LNKAttribs = GetLnkAttr(LinkDir)
 						runCMD("cmd /c echo " & DELCMD)
 						runCMD("cmd /c echo " & MKCMD)
-						' objFSO.GetFile(LinkDir).Attributes = SourceAttr
+						IF LNKAttribs <> "" THEN
+							WScript.Echo "cmd /c echo attrib /L " & LNKAttribs & " """ & LinkDir & """"
+							runCMD("cmd /c echo attrib /L " & LNKAttribs & " """ & LinkDir & """")
+						End If
 					Else
 						WScript.Echo "ERR Skipping Maulformed Line:" & LinkLine
 					End If
@@ -81,4 +84,33 @@ Function runCMD(strRunCmd)
    cline = objExec.StdOut.ReadLine()
    ' WScript.Echo cline
  Loop
+End Function
+
+' Run A CMD and Get it's output as a single line
+Function runCMDOut(strRunCmd)
+ Set objExec = oShell.Exec(strRunCmd)
+ Do While Not objExec.StdOut.AtEndOfStream
+   cmdline = cmdline & objExec.StdOut.ReadLine()
+ Loop
+ runCMDOut = cmdline
+End Function
+
+' Get a Link's Attributes
+Function GetLnkAttr(FileLNK)
+Attribs = ""
+AttLine = runCMDOut("cmd /c attrib /L """ & FileLNK & """")
+indexAtt = InStr(AttLine, ":\") - 2
+IF indexAtt > 0 Then
+	Attribs = Replace(Left(AttLine, indexAtt), " ", "")
+	' Attrib Command has File or Path Not Found
+	IF Right(Attribs, 1) = "-" Then
+		Attribs = ""
+	Else
+		For i = 1 To Len(Attribs)
+			result = result & "+" & Mid(Attribs, i, 1) & " "
+		Next
+		Attribs = Trim(result)
+	End If
+End If
+GetLnkAttr = Attribs
 End Function
