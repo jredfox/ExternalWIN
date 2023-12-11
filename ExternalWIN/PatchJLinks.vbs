@@ -59,8 +59,10 @@ Do Until objFile.AtEndOfStream
 							DELCMD = "DEL /F /Q /A """ & LinkDir & """"
 						End If
 						MKCMD = "MKLINK" & MKFlags & " """ & LinkDir & """ " & """" & TargNew & """"
+						SourceAttr = objFSO.GetFile(LinkDir).Attributes
 						runCMD("cmd /c echo " & DELCMD)
 						runCMD("cmd /c echo " & MKCMD)
+						objFSO.GetFile(LinkDir).Attributes = SourceAttr
 					Else
 						WScript.Echo "ERR Skipping Maulformed Line:" & LinkLine
 					End If
