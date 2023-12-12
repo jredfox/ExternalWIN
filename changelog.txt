@@ -30,11 +30,8 @@ Changelog 1.0.12 (BUG MUNCHER II):
 
 TODO NOW:
 - Fix Recursion Error On dir /S all scripts
-- Check wimindex win 7
-- Test \??\ paths, Attributes Preservation, Dummy Drive
+- Test \??\ paths, Attributes Preservation
 
-MASTER TODO:
-- create ShortcutFixer.bat (Must Run in WinPE, Can be specific not just entire C Drive) Fixes Junctions, SYSMLINKS, Shortcuts(lnk files), Hard Links
-- Make sure the DISM /NoRPFix flag doesn't screw up Fresh Windows Installations
+MASTER TODOO:
 - Make WinInstallVHDX.bat work in WinPE again
 - Improve Logic of WinInstallVHDX.bat's VDISK location in WinPE
