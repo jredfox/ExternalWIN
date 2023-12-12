@@ -5,9 +5,12 @@ TargDir = objFSO.GetAbsolutePathName(WScript.Arguments(0))
 TMPDIR = oShell.ExpandEnvironmentStrings("%TMP%")
 TMPCMD = TMPDIR & "\EXTWNDIRCMD.txt"
 TMPDIRS = TMPDIR & "\EXTWNTMPDIRS.txt"
+DIRSALL = TMPDIR & "\EXTWNDIRSALL.txt"
 ' Cleanup TMPDIRS so the script doesn't get confused
 Call DelFile(TMPDIRS)
+Call DelFile(DIRSALL)
 ' Run the initial dir commands before looping through the text file recursively
+Call InitDir(TargDir)
 Call runDir(TargDir)
 
 ' Runs a Single non Recursive Dir command
@@ -27,6 +30,13 @@ Sub runDir(CMDDir)
   Loop
   CmdFile.Close
   TmpDirFile.Close
+End Sub
+
+' Initialize the DIRSALL file with the root folder
+Sub InitDir(DirINIT)
+	Set DIRALLFILE = objFSO.OpenTextFile(DIRSALL, ForAppending, True)
+	DIRALLFILE.WriteLine DirINIT & line
+	DIRALLFILE.Close
 End Sub
 
 Sub AddSlash(ByRef str)
