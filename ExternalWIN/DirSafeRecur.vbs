@@ -1,7 +1,7 @@
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 Set oShell = CreateObject("WScript.Shell")
 Const ForReading = 1, ForAppending = 8
-TargDir = WScript.Arguments(0)
+TargDir = objFSO.GetAbsolutePathName(WScript.Arguments(0))
 TMPDIR = oShell.ExpandEnvironmentStrings("%TMP%")
 TMPCMD = TMPDIR & "\EXTWNDIRCMD.txt"
 TMPDIRS = TMPDIR & "\EXTWNTMPDIRS.txt"
