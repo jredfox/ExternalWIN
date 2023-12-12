@@ -12,6 +12,19 @@ Call DelFile(DIRSALL)
 ' Run the initial dir commands before looping through the text file recursively
 Call InitDir(TargDir)
 Call runDir(TargDir)
+Call UpdateDirs()
+
+' Update the directories from the TMPDIRS that just generated and then delete the TMPDIRS
+Sub UpdateDirs()
+	Set DIRALLFILE = objFSO.OpenTextFile(DIRSALL, ForAppending, True)
+	Set TMPDIRSFILE = objFSO.OpenTextFile(TMPDIRS, ForReading, False)
+	Do Until TMPDIRSFILE.AtEndOfStream
+		DIRALLFILE.WriteLine TMPDIRSFILE.ReadLine
+	Loop
+	DIRALLFILE.Close
+	TMPDIRSFILE.Close
+	Call DelFile(TMPDIRS)
+End Sub
 
 ' Runs a Single non Recursive Dir command
 Sub runDir(CMDDir)
@@ -23,9 +36,9 @@ Sub runDir(CMDDir)
   Set CmdFile = objFSO.OpenTextFile(TMPCMD, ForReading, False)
   Set TmpDirFile = objFSO.OpenTextFile(TMPDIRS, ForAppending, True)
   Do Until CmdFile.AtEndOfStream
-	line = CmdFile.ReadLine
-	If Trim(line) <> "" Then
-		TmpDirFile.WriteLine CMDDir & line
+	lline = CmdFile.ReadLine
+	If Trim(lline) <> "" Then
+		TmpDirFile.WriteLine CMDDir & lline
 	End If
   Loop
   CmdFile.Close
