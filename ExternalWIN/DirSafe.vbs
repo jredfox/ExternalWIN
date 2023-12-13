@@ -51,14 +51,17 @@ End Function
 Sub EnumerateFolders(folder)
     Dim subfolder
 	If Not IsBlackListed(folder.Path) Then
+		On Error Resume Next
 		For Each file In folder.Files
 			WScript.Echo file
 		Next
 		On Error Resume Next
 		For Each subfolder In folder.Subfolders
-			If Not HasReparsePoint(subfolder) And Not IsBlackListed(subfolder.Path) Then
+			If Not IsBlackListed(subfolder.Path) Then 
 				WScript.Echo subfolder.Path
-				EnumerateFolders(subfolder)
+				If Recurse And Not HasReparsePoint(subfolder) Then 
+					EnumerateFolders(subfolder)
+				End If
 			End If
 		Next
 	End If
@@ -67,6 +70,7 @@ End Sub
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 Set oShell = CreateObject("WScript.Shell")
 Set SDir = objFSO.GetFolder(WScript.Arguments(0))
+Recurse = UCase(WScript.Arguments(1)) <> "FALSE"
 ' Print the intial starting directory
 WScript.Echo SDir.Path
 Call LoadSrchCFG()
