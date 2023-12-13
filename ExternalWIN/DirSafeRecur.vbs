@@ -13,9 +13,32 @@ Call DelFile(DIRSALL)
 Call InitDir(TargDir)
 Call runDir(TargDir)
 Call UpdateDirs()
+' Start Getting the directories Recursively
+ShouldRun = True
+CurrentDir = TargDir
+Call AddSlash(CurrentDir)
+Do While ShouldRun = True
+ShouldRun = False
+FoundDir = False
+Set DIRSALLFILE = objFSO.OpenTextFile(DIRSALL, ForReading, False)
+Do Until DIRSALLFILE.AtEndOfStream
+	dirline = DIRSALLFILE.ReadLine
+	Call AddSlash(dirline)
+	If FoundDir Then
+		Call runDir(dirline)
+		ShouldRun = True
+		CurrentDir = dirline
+	ElseIF CurrentDir = dirline Then
+	   FoundDir = True
+	End If
+Loop
+DIRSALLFILE.Close
+Call UpdateDirs()
+Loop
 
 ' Update the directories from the TMPDIRS that just generated and then delete the TMPDIRS
 Sub UpdateDirs()
+If objFSO.FileExists(TMPDIRS) Then
 	Set DIRALLFILE = objFSO.OpenTextFile(DIRSALL, ForAppending, True)
 	Set TMPDIRSFILE = objFSO.OpenTextFile(TMPDIRS, ForReading, False)
 	Do Until TMPDIRSFILE.AtEndOfStream
@@ -24,10 +47,11 @@ Sub UpdateDirs()
 	DIRALLFILE.Close
 	TMPDIRSFILE.Close
 	Call DelFile(TMPDIRS)
+End If
 End Sub
 
 ' Runs a Single non Recursive Dir command
-Sub runDir(CMDDir)
+Sub runDir(ByRef CMDDir)
   Call DelFile(TMPCMD)
   ' Keyword call is used so that the AddSlash can be called with parenthesis
   Call AddSlash(CMDDir)
