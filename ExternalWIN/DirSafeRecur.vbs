@@ -11,15 +11,19 @@ Call DelFile(TMPDIRS)
 Call DelFile(DIRSALL)
 ' Run the initial dir commands before looping through the text file recursively
 Call InitDir(TargDir)
+Set AppendTMPDIRS = objFSO.OpenTextFile(TMPDIRS, ForAppending, True)
 Call runDir(TargDir)
 Call UpdateDirs()
 ' Start Getting the directories Recursively
 ShouldRun = True
 CurrentDir = TargDir
 Call AddSlash(CurrentDir)
+
 Do While ShouldRun = True
+WScript.Echo "Starting At Index:" & CurrentDir
 ShouldRun = False
 FoundDir = False
+Set AppendTMPDIRS = objFSO.OpenTextFile(TMPDIRS, ForAppending, True)
 Set DIRSALLFILE = objFSO.OpenTextFile(DIRSALL, ForReading, False)
 Do Until DIRSALLFILE.AtEndOfStream
 	dirline = DIRSALLFILE.ReadLine
@@ -38,6 +42,7 @@ Loop
 
 ' Update the directories from the TMPDIRS that just generated and then delete the TMPDIRS
 Sub UpdateDirs()
+AppendTMPDIRS.Close
 If objFSO.FileExists(TMPDIRS) Then
 	Set DIRALLFILE = objFSO.OpenTextFile(DIRSALL, ForAppending, True)
 	Set TMPDIRSFILE = objFSO.OpenTextFile(TMPDIRS, ForReading, False)
@@ -53,20 +58,14 @@ End Sub
 ' Runs a Single non Recursive Dir command
 Sub runDir(ByRef CMDDir)
   Call DelFile(TMPCMD)
-  ' Keyword call is used so that the AddSlash can be called with parenthesis
   Call AddSlash(CMDDir)
-  Call runCmd("cmd /c dir /B /A:D-L """ & CMDDir & """ >""" & TMPCMD & """")
-  ' Read the DIR CMD and append it to the TMPDIRS for later re-allocation
-  Set CmdFile = objFSO.OpenTextFile(TMPCMD, ForReading, False)
-  Set TmpDirFile = objFSO.OpenTextFile(TMPDIRS, ForAppending, True)
-  Do Until CmdFile.AtEndOfStream
-	lline = CmdFile.ReadLine
-	If Trim(lline) <> "" Then
-		TmpDirFile.WriteLine CMDDir & lline
+  Set objExec = oShell.Exec("cmd /c dir /B /A:D-L """ & CMDDir & """")
+  Do While Not objExec.StdOut.AtEndOfStream
+	cline = objExec.StdOut.ReadLine()
+	If Trim(cline) <> "" Then
+		AppendTMPDIRS.WriteLine CMDDir & cline
 	End If
   Loop
-  CmdFile.Close
-  TmpDirFile.Close
 End Sub
 
 ' Initialize the DIRSALL file with the root folder
