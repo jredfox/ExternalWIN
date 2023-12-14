@@ -103,7 +103,7 @@ Set SDir = objFSO.GetFolder(objFSO.GetAbsolutePathName(StrArg))
 Recurse = True
 PrintType = 1
 If WScript.Arguments.Count > 1 Then
-	Recurse = UCase(Trim(WScript.Arguments(1))) <> "FALSE"
+	Recurse = UCase(Trim(WScript.Arguments(1))) <> "TRUE"
 End If
 If WScript.Arguments.Count > 2 Then
 	PrintType = CInt(Trim(WScript.Arguments(2)))
