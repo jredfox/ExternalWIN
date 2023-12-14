@@ -15,7 +15,7 @@ Sub LoadSrchCFG()
 counter = 0
 cfgpath = CreateObject("Scripting.FileSystemObject").GetParentFolderName(WScript.ScriptFullName)
 Call AddSlash(cfgpath)
-Set CFGFILE = objFSO.OpenTextFile(cfgpath & "SRCHOneLinks.cfg", ForReading, True)
+Set CFGFILE = objFSO.OpenTextFile(cfgpath & "DirSRCHBlacklist.cfg", ForReading, True)
 Do Until CFGFILE.AtEndOfStream
 	line = Trim(CFGFILE.ReadLine)
 	If line <> "" Then
