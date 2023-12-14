@@ -57,9 +57,10 @@ Sub EnumerateFolders(folder)
 		Next
 		On Error Resume Next
 		For Each subfolder In folder.Subfolders
-			If Not IsBlackListed(subfolder.Path) Then
+			SubPath = subfolder.Path
+			If Not IsBlackListed(SubPath) Then
 				IDirL = HasReparsePoint(subfolder)
-				Call PrintFile(subfolder.Path, IDirL, True)
+				Call PrintFile(SubPath, IDirL, True)
 				If Recurse And Not IDirL Then 
 					EnumerateFolders(subfolder)
 				End If
