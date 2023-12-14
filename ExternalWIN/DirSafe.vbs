@@ -40,7 +40,6 @@ Function IsBlackListed(filePath)
     Call AddSlash(filePath)
 	IsBlackListed = False
     FOR EACH bdir IN BlackList
-	' WScript.Echo "BLIST " & bdir & " " & Mid(filePath, 3)
 		If InStr(1, Mid(filePath, 3), bdir, vbTextCompare) = 1 Then
 			IsBlackListed = True
 			EXIT FOR
@@ -72,6 +71,7 @@ End Sub
 Sub PrintFile(PFile, IsLink, IsDir)
 	' Check If The File Attributes allows Printing of the file
 	' Exit Sub 
+	Attribs = PFile.Attributes
 	FileLine = PFile
 	If PLnks Then
 		If IsParseable Then
@@ -91,7 +91,11 @@ End Sub
 ' Start Argument Handling
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 Set oShell = CreateObject("WScript.Shell")
-Set SDir = objFSO.GetFolder(WScript.Arguments(0))
+InDir = WScript.Arguments(0)
+If (InDir = "/?" Or LCase(InDir) = "/help") Then
+	Help()
+End If
+Set SDir = objFSO.GetFolder(InDir)
 Recurse = True
 PrintType = 1
 If WScript.Arguments.Count > 1 Then
@@ -110,3 +114,34 @@ IsParseable = PrintType > 2
 Call PrintFile(SDir.Path, HasReparsePoint(SDir), objFSO.FolderExists(SDir))
 Call LoadSrchCFG()
 Call EnumerateFolders(SDir)
+
+Sub Help()
+WScript.Echo ""
+WScript.Echo "#####################################################"
+WScript.Echo "DirSafe.vbs <BOOL RECURSE> <INT PRINTTYPE> <ATTRIBS>"
+WScript.Echo "#####################################################"
+WScript.Echo vbCrLf & "Print Types"
+WScript.Echo "_____________________________________________________"
+WScript.Echo "1 Bare = C:\Path" & vbCrLf & "2 Mimic Dir = <TYPE> Path [Target]" & vbCrLf & "3 Parsable = <TYPE> <PATH> <LINKTARGET>" & vbCrLf & "4 Hard Links = <TYPE> <PATH> <LINKTARGET> [HARDLINK1;HardLink2]" & vbCrLf
+WScript.Echo "Attributes:"
+WScript.Echo "_____________________________________________________"
+WScript.Echo "A Archiving"
+WScript.Echo "B SMR Blob"
+WScript.Echo "C Compressed"
+WScript.Echo "D Dirs"
+WScript.Echo "E Encrypted"
+WScript.Echo "H Hidden"
+WScript.Echo "I Not Indexed"
+WScript.Echo "L Reparse"
+WScript.Echo "M Cloud Files"
+WScript.Echo "N Null"
+WScript.Echo "O Offline"
+WScript.Echo "P Pinned"
+WScript.Echo "R ReadOnly"
+WScript.Echo "S System"
+WScript.Echo "U Unpinned"
+WScript.Echo "V Integrity (ReFS Only)"
+WScript.Echo "X No Scrub  (ReFS Only)"
+WScript.Echo "- Prefix meaning not"
+WScript.Quit
+End Sub
