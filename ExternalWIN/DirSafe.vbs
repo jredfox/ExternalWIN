@@ -126,7 +126,7 @@ WScript.Echo "DirSafe.vbs <BOOL RECURSE> <INT PRINTTYPE> <ATTRIBS>"
 WScript.Echo "#####################################################"
 WScript.Echo vbCrLf & "Print Types"
 WScript.Echo "_____________________________________________________"
-WScript.Echo "1 Bare = C:\Path" & vbCrLf & "2 Mimic Dir = <TYPE> Path [Target]" & vbCrLf & "3 Parsable = <TYPE> <PATH> <LINKTARGET>" & vbCrLf & "4 Hard Links = <TYPE> <PATH> <LINKTARGET> [HARDLINK1;HardLink2]" & vbCrLf
+WScript.Echo "1 Bare = Path" & vbCrLf & "2 Mimic Dir = <TYPE> Path [Target]" & vbCrLf & "3 Parsable = <TYPE> <PATH> <LINKTARGET>" & vbCrLf & "4 Hard Links = <TYPE> <PATH> <LINKTARGET> [HARDLINK1;HardLink2]" & vbCrLf
 WScript.Echo "Attributes:"
 WScript.Echo "_____________________________________________________"
 WScript.Echo "A Archiving"
