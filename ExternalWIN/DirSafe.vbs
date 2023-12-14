@@ -91,19 +91,19 @@ End Sub
 ' Start Argument Handling
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 Set oShell = CreateObject("WScript.Shell")
-If WScript.Arguments.Count < 1 Then
-	Help()
+StrArg = ""
+If WScript.Arguments.Count > 0 Then
+	StrArg = WScript.Arguments(0)
 End If
-StrArg = WScript.Arguments(0)
 IsHelp = Trim(LCase(StrArg))
 If (IsHelp = "/?" Or IsHelp = "/help") Then
 	Help()
 End If
 Set SDir = objFSO.GetFolder(objFSO.GetAbsolutePathName(StrArg))
-Recurse = True
+Recurse = False
 PrintType = 1
 If WScript.Arguments.Count > 1 Then
-	Recurse = UCase(Trim(WScript.Arguments(1))) <> "TRUE"
+	Recurse = UCase(Trim(WScript.Arguments(1))) = "TRUE"
 End If
 If WScript.Arguments.Count > 2 Then
 	PrintType = CInt(Trim(WScript.Arguments(2)))
