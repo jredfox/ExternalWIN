@@ -71,7 +71,7 @@ End Sub
 Sub PrintFile(PFile, IsLink, IsDir)
 	' Check If The File Attributes allows Printing of the file
 	' Exit Sub 
-	Attribs = PFile.Attributes
+	' Attribs = PFile.Attributes
 	FileLine = PFile
 	If PLnks Then
 		If IsParseable Then
@@ -91,11 +91,15 @@ End Sub
 ' Start Argument Handling
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 Set oShell = CreateObject("WScript.Shell")
-InDir = WScript.Arguments(0)
-If (InDir = "/?" Or LCase(InDir) = "/help") Then
+If WScript.Arguments.Count < 1 Then
 	Help()
 End If
-Set SDir = objFSO.GetFolder(InDir)
+StrArg = WScript.Arguments(0)
+IsHelp = Trim(LCase(StrArg))
+If (IsHelp = "/?" Or IsHelp = "/help") Then
+	Help()
+End If
+Set SDir = objFSO.GetFolder(objFSO.GetAbsolutePathName(StrArg))
 Recurse = True
 PrintType = 1
 If WScript.Arguments.Count > 1 Then
@@ -132,7 +136,7 @@ WScript.Echo "D Dirs"
 WScript.Echo "E Encrypted"
 WScript.Echo "H Hidden"
 WScript.Echo "I Not Indexed"
-WScript.Echo "L Reparse"
+WScript.Echo "L Reparse Points"
 WScript.Echo "M Cloud Files"
 WScript.Echo "N Null"
 WScript.Echo "O Offline"
