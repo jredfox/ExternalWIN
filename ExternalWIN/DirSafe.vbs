@@ -52,9 +52,9 @@ Sub EnumerateFolders(folder)
     Dim subfolder
 	If Not IsBlackListed(folder.Path) Then
 		On Error Resume Next
-		For Each file In folder.Files
-			WScript.Echo file
-		Next
+		'For Each file In folder.Files
+			'WScript.Echo file
+		'Next
 		On Error Resume Next
 		For Each subfolder In folder.Subfolders
 			If Not IsBlackListed(subfolder.Path) Then 
@@ -71,9 +71,18 @@ Set objFSO = CreateObject("Scripting.FileSystemObject")
 Set oShell = CreateObject("WScript.Shell")
 Set SDir = objFSO.GetFolder(WScript.Arguments(0))
 Recurse = True
+PrintType = 1
 If WScript.Arguments.Count > 1 Then
-	Recurse = UCase(WScript.Arguments(1)) <> "FALSE"
+	Recurse = UCase(Trim(WScript.Arguments(1))) <> "FALSE"
 End If
+If WScript.Arguments.Count > 2 Then
+	PrintType = CInt(Trim(WScript.Arguments(2)))
+	If PrintType > 4 Or PrintType < 1 Then
+		WScript.Echo "ERR: PrintType Must Be a Value Between 1-4"
+		WScript.Quit
+	End If
+End If
+WScript.Echo PrintType
 ' Print the intial starting directory
 WScript.Echo SDir.Path
 Call LoadSrchCFG()
