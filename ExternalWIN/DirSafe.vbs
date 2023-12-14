@@ -70,7 +70,10 @@ End Sub
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 Set oShell = CreateObject("WScript.Shell")
 Set SDir = objFSO.GetFolder(WScript.Arguments(0))
-Recurse = UCase(WScript.Arguments(1)) <> "FALSE"
+Recurse = True
+If WScript.Arguments.Count > 1 Then
+	Recurse = UCase(WScript.Arguments(1)) <> "FALSE"
+End If
 ' Print the intial starting directory
 WScript.Echo SDir.Path
 Call LoadSrchCFG()
