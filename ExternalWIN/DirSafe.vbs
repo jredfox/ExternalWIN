@@ -52,14 +52,15 @@ Sub EnumerateFolders(folder)
     Dim subfolder
 	If Not IsBlackListed(folder.Path) Then
 		On Error Resume Next
-		'For Each file In folder.Files
-			'WScript.Echo file
-		'Next
+		For Each file In folder.Files
+			Call PrintFile(file.Path, HasReparsePoint(file), False)
+		Next
 		On Error Resume Next
 		For Each subfolder In folder.Subfolders
-			If Not IsBlackListed(subfolder.Path) Then 
-				WScript.Echo subfolder.Path
-				If Recurse And Not HasReparsePoint(subfolder) Then 
+			If Not IsBlackListed(subfolder.Path) Then
+				IDirL = HasReparsePoint(subfolder)
+				Call PrintFile(subfolder.Path, IDirL, True)
+				If Recurse And Not IDirL Then 
 					EnumerateFolders(subfolder)
 				End If
 			End If
@@ -67,6 +68,26 @@ Sub EnumerateFolders(folder)
 	End If
 End Sub
 
+Sub PrintFile(PFile, IsLink, IsDir)
+	' Check If The File Attributes allows Printing of the file
+	' Exit Sub 
+	FileLine = PFile
+	If PLnks Then
+		If IsParseable Then
+			FileLine = "<" & FileLine & ">"
+		End If
+		If IsLink Then
+			FileLine = "<LINK> " & FileLine
+		ElseIf IsDir Then
+			FileLine = "<DIR> " & FileLine
+		ElseIf IsParseable Then
+			FileLine = "<FILE> " & FileLine
+		End IF
+	End IF
+	WScript.Echo FileLine
+End Sub
+
+' Start Argument Handling
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 Set oShell = CreateObject("WScript.Shell")
 Set SDir = objFSO.GetFolder(WScript.Arguments(0))
@@ -82,8 +103,9 @@ If WScript.Arguments.Count > 2 Then
 		WScript.Quit
 	End If
 End If
-WScript.Echo PrintType
+PLnks = PrintType > 1
+IsParseable = PrintType > 2
 ' Print the intial starting directory
-WScript.Echo SDir.Path
+Call PrintFile(SDir.Path, HasReparsePoint(SDir), objFSO.FolderExists(SDir))
 Call LoadSrchCFG()
 Call EnumerateFolders(SDir)
