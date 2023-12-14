@@ -30,7 +30,6 @@ Changelog 1.0.12 (BUG MUNCHER II):
 
 TODO NOW:
 - Fix Recursion Error On dir /S all scripts
-- Test \??\ paths, Attributes Preservation
 
 MASTER TODOO:
 - Make WinInstallVHDX.bat work in WinPE again

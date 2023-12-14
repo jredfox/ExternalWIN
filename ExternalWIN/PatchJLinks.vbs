@@ -69,7 +69,6 @@ Do Until objFile.AtEndOfStream
 						runCMD("cmd /c " & DELCMD)
 						runCMD("cmd /c " & MKCMD)
 						IF LNKAttribs <> "" THEN
-							WScript.Echo "cmd /c attrib /L " & LNKAttribs & " """ & LinkDir & """"
 							runCMD("cmd /c attrib /L " & LNKAttribs & " """ & LinkDir & """")
 						End If
 					Else
