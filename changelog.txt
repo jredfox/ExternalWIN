@@ -28,9 +28,12 @@ Changelog 1.0.12 (BUG MUNCHER II):
 - Improved call PP more often
 - Changed LoadConfig.bat now gets called in WinPE as most of the config options are now both for WinPE and Windows
 
-TODO NOW:
-- Fix Recursion Error On dir /S all scripts
+Issues:
+- Reparse Point doesn't dictate if it's a JUNCTION,SYMLINKD,SYMLINK dir /A:L will still list them but mark them as a directory there is more to this
+- Need to figure out how to compile for WinPE
+- Almost all Batch For Commands need to be changed to type if it's reading from a file that may contain special characters
 
 MASTER TODOO:
+- dir /S recursion issue
 - Make WinInstallVHDX.bat work in WinPE again
 - Improve Logic of WinInstallVHDX.bat's VDISK location in WinPE
