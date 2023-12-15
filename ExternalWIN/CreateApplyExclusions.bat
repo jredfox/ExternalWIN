@@ -11,7 +11,7 @@ set cfgini=%TMP%\EXTWINDISMApply.ini
 call :CREATECFG
 del /F /Q /A "!targ!" >nul 2>&1
 cscript /nologo "%~dp0GetWIMTarg.vbs" "!wim!" "!index!" "!winpe!" >"!targ!"
-FOR /F "usebackq delims=" %%I IN ("!targ!") DO (set target=%%I)
+FOR /F "delims=" %%I IN ('type "!targ!"') DO (set target=%%I)
 call :FTP "!target!"
 set targpath=!file!
 echo TARGET FOUND^:!target! PATH^:!targpath!

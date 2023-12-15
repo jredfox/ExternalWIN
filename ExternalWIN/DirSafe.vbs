@@ -51,9 +51,9 @@ Sub EnumerateFolders(folder)
     Dim subfolder
 	If Not IsBlackListed(folder.Path) Then
 		On Error Resume Next
-		For Each file In folder.Files
-			Call PrintFile(file.Path, HasReparsePoint(file), False)
-		Next
+		'For Each file In folder.Files
+		'	Call PrintFile(file.Path, HasReparsePoint(file), False)
+		'Next
 		On Error Resume Next
 		For Each subfolder In folder.Subfolders
 			SubPath = subfolder.Path
@@ -85,7 +85,9 @@ Sub PrintFile(PFile, IsLink, IsDir)
 			FileLine = "<FILE> " & FileLine
 		End IF
 	End IF
+	If IsLink Then
 	WScript.Echo FileLine
+	End If
 End Sub
 
 ' Start Argument Handling
