@@ -16,7 +16,7 @@ call :ISBLANK "!dirs!"
 IF "!isBlank!" EQU "T" (exit /b)
 )
 dir /S /B /A^:LO "!drive!" 2>nul>"!EXTIndex!"
-dir /S /B /A^:L "!drive:~0,1!^:\Windows\System32\WDI" 2>nul>>"!EXTIndex!"
+dir /S /B /A^:L-O "!drive:~0,1!^:\Windows\System32\WDI" 2>nul>>"!EXTIndex!"
 cscript /nologo "%~dp0PrintOneLinks.vbs" "!EXTIndex!" "!dirs!" "!drive!"
 exit /b
 
