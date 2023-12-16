@@ -51,7 +51,7 @@ Sub EnumerateFolders(folder)
     Dim subfolder
 	FPath = folder.Path
 	If Not IsBlackListed(FPath) Then
-		Call runDir(dircmd & " """ & FPath & """", FPath)
+		Call runDir(dircmd & " """ & folder & """", FPath)
 		On Error Resume Next
 		For Each subfolder In folder.Subfolders
 			If Recurse And (Not IsBlackListed(subfolder.Path)) And (Not HasReparsePoint(subfolder)) Then
@@ -66,11 +66,6 @@ Sub runDir(strRunCmd, folder)
  dir = folder
  AddSlash(dir)
  Set objExec = oShell.Exec(strRunCmd)
- ' Wait for the command to finish
-Do While objExec.Status = 0
-    WScript.Sleep 0
-Loop
-If objExec.ExitCode = 0 Then
  Do While Not objExec.StdOut.AtEndOfStream
 	cline = objExec.StdOut.ReadLine()
 	If Bare Then
@@ -79,7 +74,6 @@ If objExec.ExitCode = 0 Then
 		WScript.Echo cline
 	End If
  Loop
- End If
 End Sub
 
 ' Start Argument Handling
