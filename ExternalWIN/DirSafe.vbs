@@ -10,7 +10,7 @@ Sub EnumerateFolders(folder)
 		For Each subfolder In folder.Subfolders
 			SubPath = subfolder.Path
 			If Recurse And (Not IsBlackListed(SubPath)) And (Not IsDirLink(subfolder, SubPath)) Then
-				EnumerateFolders(subfolder)
+				Call EnumerateFolders(subfolder)
 			End If
 		Next
 	End If
