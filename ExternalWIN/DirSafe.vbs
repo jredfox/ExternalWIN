@@ -51,7 +51,8 @@ Function HasReparsePoint(folder)
     End If
 End Function
 
-Function IsLink(UPath)
+Function IsLink(FPATH)
+UPath = FPATH
 IsLink = True
 If Right(UPath, 1) = "\" Then
 	UPath = Left(UPath, Len(UPath) - 1)
@@ -79,7 +80,8 @@ For Each val In NoLnks
 Next
 End Function
 
-Function IsBlackListed(filePath)
+Function IsBlackListed(fp)
+	filePath = fp
     Call AddSlash(filePath)
 	IsBlackListed = False
     FOR EACH bdir IN BlackList
