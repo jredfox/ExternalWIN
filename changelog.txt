@@ -29,8 +29,8 @@ Changelog 1.0.12 (BUG MUNCHER II):
 - Changed LoadConfig.bat now gets called in WinPE as most of the config options are now both for WinPE and Windows
 
 Issues:
-- Reparse Point doesn't dictate if it's a JUNCTION,SYMLINKD,SYMLINK dir /A:L will still list them but mark them as a directory there is more to this
-- Need to figure out how to compile for WinPE
+- Make LinkFinder.vbs that spits out all junctions(mount points), symlinkd, symlink with target quicker then DirSafe.vbs
+- Make an EXE Version Of SafeDir.vbs to ensure speed when possible
 - Almost all Batch For Commands need to be changed to type if it's reading from a file that may contain special characters
 
 MASTER TODOO:
