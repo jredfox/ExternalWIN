@@ -9,8 +9,44 @@ Function HasReparsePoint(folder)
     End If
 End Function
 
+Function IsDirLink(folder)
+IsDirLink = HasReparsePoint(folder)
+'If and only if it has a reparse point check if it's a a link
+IF IsDirLink Then
+   IsDirLink = IsLink(folder.Path)
+End If
+End Function
+
+Function IsLink(ByVal UPath)
+IsLink = True
+If Right(UPath, 1) = "\" Then
+	UPath = Left(UPath, Len(UPath) - 1)
+End If
+Set objExec = oShell.Exec("cmd /c fsutil reparsepoint query """ & UPath & """")
+ReparseId = ""
+' Get the ReparsePoint Id
+Do While Not objExec.StdOut.AtEndOfStream
+	fline = UCase(objExec.StdOut.ReadLine())
+	pos = InStr(fline, ":")
+	If pos > 0 Then
+		pos2 = InStr(pos, fline, "0X")
+		If pos2 > 0 Then
+			ReparseId = Trim(Mid(fline, pos + 1))
+			Exit Do
+		End If
+	End If
+Loop
+' See If Reparse Value Matches a non link reparse point value
+For Each val In NoLnks
+	If val = ReparseId Then
+		IsLink = False
+		Exit For
+	End If
+Next
+End Function
+
 ' Creates the Black list into memory for fast recall
-Dim BlackList(), counter
+Dim BlackList(), counter, NoLnks(), countera
 Sub LoadSrchCFG()
 counter = 0
 cfgpath = CreateObject("Scripting.FileSystemObject").GetParentFolderName(WScript.ScriptFullName)
@@ -28,6 +64,22 @@ Do Until CFGFILE.AtEndOfStream
         counter = counter + 1
 	End If
 Loop
+CFGFILE.Close
+' Load the Non Shortcuts ReparsePoint WhiteList
+Set CFGLNKFILE = objFSO.OpenTextFile(cfgpath & "DirNonShortcuts.cfg", ForReading, True)
+Do Until CFGLNKFILE.AtEndOfStream
+	line = Trim(CFGLNKFILE.ReadLine)
+	If line <> "" Then
+		pos = InStr(line, "=")
+		If pos > 0 Then
+			line = UCase(Trim(Mid(line, pos + 1)))
+			ReDim Preserve NoLnks(countera)
+			NoLnks(countera) = line
+			countera = countera + 1
+		End If
+	End if
+Loop
+CFGLNKFILE.Close
 End Sub
 
 Sub AddSlash(ByRef str)
@@ -54,8 +106,8 @@ Sub EnumerateFolders(folder)
 		Call runDir(dircmd & " """ & FPath & """", FPath)
 		On Error Resume Next
 		For Each subfolder In folder.Subfolders
-			If Recurse And (Not IsBlackListed(subfolder.Path)) And (Not HasReparsePoint(subfolder)) Then
-					EnumerateFolders(subfolder)
+			If Recurse And (Not IsBlackListed(subfolder.Path)) And (Not IsDirLink(subfolder)) Then
+				EnumerateFolders(subfolder)
 			End If
 		Next
 	End If
@@ -112,7 +164,7 @@ Call EnumerateFolders(SDir)
 Sub Help()
 WScript.Echo ""
 WScript.Echo "#####################################################"
-WScript.Echo "DirSafe.vbs <BOOL RECURSE> <BOOL BARE> <ATTRIBS>"
+WScript.Echo "DirSafe.vbs <DIR> <BOOL RECURSE> <BOOL BARE> <ATTRIBS>"
 WScript.Echo "#####################################################"
 WScript.Echo "A Archiving"
 WScript.Echo "D Dirs"
