@@ -118,7 +118,7 @@ If Bare Then
 Else
 	dircmd = "cmd /c dir /A"
 End If
-' Change /A to /A:Attribs
+' Change /A to /A:Attribs and you can add additional flags by adding a space fallowed by arguments
 If AttFilter <> "" Then
 	dircmd = dircmd & ":" & AttFilter
 End If
