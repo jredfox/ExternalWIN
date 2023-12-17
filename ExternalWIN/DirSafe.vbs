@@ -81,11 +81,11 @@ Next
 End Function
 
 Function IsBlackListed(fp)
-	filePath = fp
+	filePath = Mid(fp, 3)
     Call AddSlash(filePath)
 	IsBlackListed = False
     FOR EACH bdir IN BlackList
-		If InStr(1, Mid(filePath, 3), bdir, vbTextCompare) = 1 Then
+		If InStr(1, filePath, bdir, vbTextCompare) = 1 Then
 			IsBlackListed = True
 			EXIT FOR
 		END IF
