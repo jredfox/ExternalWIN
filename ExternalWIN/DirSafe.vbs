@@ -110,9 +110,18 @@ If (IsHelp = "/?" Or IsHelp = "/help") Then
 	Help()
 End If
 Set SDir = objFSO.GetFolder(objFSO.GetAbsolutePathName(StrArg))
-Recurse = UCase(Trim(WScript.Arguments(1))) = "TRUE"
-Bare = UCase(Trim(WScript.Arguments(2))) = "TRUE"
-AttFilter = Trim(WScript.Arguments(3))
+Recurse = False
+Bare = False
+AttFilter = ""
+If WScript.Arguments.Count > 1 Then
+	Recurse = UCase(Trim(WScript.Arguments(1))) = "TRUE"
+	If WScript.Arguments.Count > 2 Then
+		Bare = UCase(Trim(WScript.Arguments(2))) = "TRUE"
+	End If
+	If WScript.Arguments.Count > 3 Then
+		AttFilter = Trim(WScript.Arguments(3))
+	End If
+End If
 If Bare Then
 	dircmd = "cmd /c dir /B /A"
 Else
