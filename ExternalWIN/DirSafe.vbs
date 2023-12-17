@@ -1,4 +1,46 @@
 Const ForReading = 1, ForAppending = 8
+Dim BlackList(), NoLnks(), counter, countera
+
+Sub EnumerateFolders(folder)
+	FPath = folder.Path
+	If Not IsBlackListed(FPath) Then
+		Call runDir(dircmd & " """ & FPath & """", FPath)
+		On Error Resume Next
+		Dim subfolder
+		For Each subfolder In folder.Subfolders
+			SubPath = subfolder.Path
+			If Recurse And (Not IsBlackListed(SubPath)) And (Not IsDirLink(subfolder, SubPath)) Then
+				EnumerateFolders(subfolder)
+			End If
+		Next
+	End If
+End Sub
+
+' Run a command no output
+Sub runDir(strRunCmd, folder)
+ dir = folder
+ Call AddSlash(dir)
+ Set objExec = oShell.Exec(strRunCmd)
+ Do While Not objExec.StdOut.AtEndOfStream
+	cline = objExec.StdOut.ReadLine()
+	If Bare Then
+		WScript.Echo dir & cline
+	Else
+		cmdline = cmdline & cline & vbCrlf
+	End If
+ Loop
+ If Not Bare And objExec.ExitCode = 0 Then
+	cmdline = Left(cmdline, InStrRev(cmdline, vbCrLf) - 1)
+	WScript.Echo cmdline
+ End If
+End Sub
+
+Function IsDirLink(folder, FPATH)
+IsDirLink = HasReparsePoint(folder)
+IF IsDirLink Then
+   IsDirLink = IsLink(FPATH)
+End If
+End Function
 
 ' Function to check reparse point attribute
 Function HasReparsePoint(folder)
@@ -9,15 +51,7 @@ Function HasReparsePoint(folder)
     End If
 End Function
 
-Function IsDirLink(folder)
-IsDirLink = HasReparsePoint(folder)
-'If and only if it has a reparse point check if it's a a link
-IF IsDirLink Then
-   IsDirLink = IsLink(folder.Path)
-End If
-End Function
-
-Function IsLink(ByVal UPath)
+Function IsLink(UPath)
 IsLink = True
 If Right(UPath, 1) = "\" Then
 	UPath = Left(UPath, Len(UPath) - 1)
@@ -45,8 +79,51 @@ For Each val In NoLnks
 Next
 End Function
 
+Function IsBlackListed(filePath)
+    Call AddSlash(filePath)
+	IsBlackListed = False
+    FOR EACH bdir IN BlackList
+		If InStr(1, Mid(filePath, 3), bdir, vbTextCompare) = 1 Then
+			IsBlackListed = True
+			EXIT FOR
+		END IF
+	NEXT
+End Function
+
+Sub AddSlash(ByRef str)
+    If Right(str, 1) <> "\" Then
+        str = str & "\"
+    End If
+End Sub
+
+' Start Argument Handling
+Set objFSO = CreateObject("Scripting.FileSystemObject")
+Set oShell = CreateObject("WScript.Shell")
+StrArg = ""
+If WScript.Arguments.Count > 0 Then
+	StrArg = WScript.Arguments(0)
+End If
+IsHelp = Trim(LCase(StrArg))
+If (IsHelp = "/?" Or IsHelp = "/help") Then
+	Help()
+End If
+Set SDir = objFSO.GetFolder(objFSO.GetAbsolutePathName(StrArg))
+Recurse = UCase(Trim(WScript.Arguments(1))) = "TRUE"
+Bare = UCase(Trim(WScript.Arguments(2))) = "TRUE"
+AttFilter = Trim(WScript.Arguments(3))
+If Bare Then
+	dircmd = "cmd /c dir /B /A"
+Else
+	dircmd = "cmd /c dir /A"
+End If
+' Change /A to /A:Attribs
+If AttFilter <> "" Then
+	dircmd = dircmd & ":" & AttFilter
+End If
+Call LoadSrchCFG()
+Call EnumerateFolders(SDir)
+
 ' Creates the Black list into memory for fast recall
-Dim BlackList(), counter, NoLnks(), countera
 Sub LoadSrchCFG()
 counter = 0
 cfgpath = CreateObject("Scripting.FileSystemObject").GetParentFolderName(WScript.ScriptFullName)
@@ -81,85 +158,6 @@ Do Until CFGLNKFILE.AtEndOfStream
 Loop
 CFGLNKFILE.Close
 End Sub
-
-Sub AddSlash(ByRef str)
-    If Right(str, 1) <> "\" Then
-        str = str & "\"
-    End If
-End Sub
-
-Function IsBlackListed(filePath)
-    Call AddSlash(filePath)
-	IsBlackListed = False
-    FOR EACH bdir IN BlackList
-		If InStr(1, Mid(filePath, 3), bdir, vbTextCompare) = 1 Then
-			IsBlackListed = True
-			EXIT FOR
-		END IF
-	NEXT
-End Function
-
-Sub EnumerateFolders(folder)
-    Dim subfolder
-	FPath = folder.Path
-	If Not IsBlackListed(FPath) Then
-		Call runDir(dircmd & " """ & FPath & """", FPath)
-		On Error Resume Next
-		For Each subfolder In folder.Subfolders
-			If Recurse And (Not IsBlackListed(subfolder.Path)) And (Not IsDirLink(subfolder)) Then
-				EnumerateFolders(subfolder)
-			End If
-		Next
-	End If
-End Sub
-
-' Run a command no output
-Sub runDir(strRunCmd, folder)
- dir = folder
- AddSlash(dir)
- Set objExec = oShell.Exec(strRunCmd)
- ' Wait for the command to finish
-Do While objExec.Status = 0
-    WScript.Sleep 0
-Loop
-If objExec.ExitCode = 0 Then
- Do While Not objExec.StdOut.AtEndOfStream
-	cline = objExec.StdOut.ReadLine()
-	If Bare Then
-		WScript.Echo dir & cline
-	Else
-		WScript.Echo cline
-	End If
- Loop
- End If
-End Sub
-
-' Start Argument Handling
-Set objFSO = CreateObject("Scripting.FileSystemObject")
-Set oShell = CreateObject("WScript.Shell")
-StrArg = ""
-If WScript.Arguments.Count > 0 Then
-	StrArg = WScript.Arguments(0)
-End If
-IsHelp = Trim(LCase(StrArg))
-If (IsHelp = "/?" Or IsHelp = "/help") Then
-	Help()
-End If
-Set SDir = objFSO.GetFolder(objFSO.GetAbsolutePathName(StrArg))
-Recurse = UCase(Trim(WScript.Arguments(1))) = "TRUE"
-Bare = UCase(Trim(WScript.Arguments(2))) = "TRUE"
-AttFilter = Trim(WScript.Arguments(3))
-If Bare Then
-	dircmd = "cmd /c dir /B /A"
-Else
-	dircmd = "cmd /c dir /A"
-End If
-' Change /A to /A:Attribs
-If AttFilter <> "" Then
-	dircmd = dircmd & ":" & AttFilter
-End If
-Call LoadSrchCFG()
-Call EnumerateFolders(SDir)
 
 Sub Help()
 WScript.Echo ""
