@@ -2,16 +2,21 @@ Const ForReading = 1, ForAppending = 8
 Dim BlackList(), NoLnks(), counter, countera
 Dim ArrDirs(), ArrWildCards(), counterDirs, counterWild
 
-Sub EnumerateFolders(folder)
+Sub EnumerateFolders(folder, index)
 	FPath = folder.Path
 	If Not IsBlackListed(FPath) Then
-		Call runDir(dircmd & " """ & FPath & """", FPath)
+		For Each d In ArrWildCards(index)
+			DPath = FPath
+			Call AddSlash(DPath)
+			DPath = DPath & d
+			Call runDir(dircmd & " """ & DPath & """", FPath)
+		Next
 		On Error Resume Next
 		Dim subfolder
 		For Each subfolder In folder.Subfolders
 			SubPath = subfolder.Path
 			If Recurse And (Not IsBlackListed(SubPath)) And (Not IsDirLink(subfolder, SubPath)) Then
-				Call EnumerateFolders(subfolder)
+				Call EnumerateFolders(subfolder, index)
 			End If
 		Next
 	End If
@@ -110,7 +115,6 @@ IsHelp = Trim(LCase(StrArg))
 If (IsHelp = "/?" Or IsHelp = "/help") Then
 	Help()
 End If
-'Set SDir = objFSO.GetFolder(objFSO.GetAbsolutePathName(StrArg))
 Recurse = False
 Bare = False
 AttFilter = ""
@@ -136,8 +140,7 @@ Call LoadSrchCFG()
 Call ParseDirs(StrArg)
 c = 0
 For Each d In ArrDirs
-	WScript.Echo "Searching:" & d
-	Call EnumerateFolders(objFSO.GetFolder(objFSO.GetAbsolutePathName(d)))
+	Call EnumerateFolders(objFSO.GetFolder(d), c)
 	c = c + 1
 Next
 
@@ -158,6 +161,9 @@ End Sub
 
 ' Parse the Array of dirs and wildcards per dir
 Sub ParseDirs(strdirs)
+If strdirs = "" Then
+	strdirs = objFSO.GetAbsolutePathName("")
+End If
 dirsplits = Split(strdirs, ";")
 For Each strdir In dirsplits
 	WIndex = MinIndex(InStr(strdir, "*"), InStr(strdir, "?"))
@@ -181,7 +187,7 @@ For Each strdir In dirsplits
 		Call AddItem(ArrWildCards, counterWild, Cards)
 	Else
 		Call AddItem(ArrDirs, counterDirs, objFSO.GetAbsolutePathName(strdir))
-		Call AddItem(ArrWildCards, counterWild, Split("", ","))
+		Call AddItem(ArrWildCards, counterWild, Array(""))
 	End If
 Next
 End Sub
