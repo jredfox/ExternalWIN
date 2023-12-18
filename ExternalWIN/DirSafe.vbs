@@ -104,46 +104,6 @@ Sub AddSlash(ByRef str)
     End If
 End Sub
 
-' Start Argument Handling
-Set objFSO = CreateObject("Scripting.FileSystemObject")
-Set oShell = CreateObject("WScript.Shell")
-StrArg = ""
-If WScript.Arguments.Count > 0 Then
-	StrArg = WScript.Arguments(0)
-End If
-IsHelp = Trim(LCase(StrArg))
-If (IsHelp = "/?" Or IsHelp = "/help") Then
-	Help()
-End If
-Recurse = False
-Bare = False
-AttFilter = ""
-If WScript.Arguments.Count > 1 Then
-	Recurse = UCase(Trim(WScript.Arguments(1))) = "TRUE"
-	If WScript.Arguments.Count > 2 Then
-		Bare = UCase(Trim(WScript.Arguments(2))) = "TRUE"
-	End If
-	If WScript.Arguments.Count > 3 Then
-		AttFilter = Trim(WScript.Arguments(3))
-	End If
-End If
-If Bare Then
-	dircmd = "cmd /c dir /B /A"
-Else
-	dircmd = "cmd /c dir /A"
-End If
-' Change /A to /A:Attribs and you can add additional flags by adding a space fallowed by arguments
-If AttFilter <> "" Then
-	dircmd = dircmd & ":" & AttFilter
-End If
-Call LoadSrchCFG()
-Call ParseDirs(StrArg)
-c = 0
-For Each d In ArrDirs
-	Call EnumerateFolders(objFSO.GetFolder(d), c)
-	c = c + 1
-Next
-
 ' Gets the Minimum Valid index
 Function MinIndex(a, b)
     If (a < 1) Or (b < a And b > 0) Then
@@ -228,11 +188,51 @@ Loop
 CFGLNKFILE.Close
 End Sub
 
+' Start Argument Handling
+Set objFSO = CreateObject("Scripting.FileSystemObject")
+Set oShell = CreateObject("WScript.Shell")
+StrArg = ""
+If WScript.Arguments.Count > 0 Then
+	StrArg = WScript.Arguments(0)
+End If
+IsHelp = Trim(LCase(StrArg))
+If (IsHelp = "/?" Or IsHelp = "/help") Then
+	Help()
+End If
+Recurse = False
+Bare = False
+AttFilter = ""
+If WScript.Arguments.Count > 1 Then
+	Recurse = UCase(Trim(WScript.Arguments(1))) = "TRUE"
+	If WScript.Arguments.Count > 2 Then
+		Bare = UCase(Trim(WScript.Arguments(2))) = "TRUE"
+	End If
+	If WScript.Arguments.Count > 3 Then
+		AttFilter = Trim(WScript.Arguments(3))
+	End If
+End If
+If Bare Then
+	dircmd = "cmd /c dir /B /A"
+Else
+	dircmd = "cmd /c dir /A"
+End If
+' Change /A to /A:Attribs and you can add additional flags by adding a space fallowed by arguments
+If AttFilter <> "" Then
+	dircmd = dircmd & ":" & AttFilter
+End If
+Call LoadSrchCFG()
+Call ParseDirs(StrArg)
+c = 0
+For Each d In ArrDirs
+	Call EnumerateFolders(objFSO.GetFolder(d), c)
+	c = c + 1
+Next
+
 Sub Help()
 WScript.Echo ""
-WScript.Echo "#####################################################"
+WScript.Echo "#################################################################################"
 WScript.Echo "DirSafe.vbs <DIR Or Dir;Dir2\*PDF|File*.txt> <BOOL RECURSE> <BOOL BARE> <ATTRIBS>"
-WScript.Echo "#####################################################"
+WScript.Echo "#################################################################################"
 WScript.Echo "A Archiving"
 WScript.Echo "D Dirs"
 WScript.Echo "H Hidden"
