@@ -1,5 +1,6 @@
 Const ForReading = 1, ForAppending = 8
 Dim BlackList(), NoLnks(), counter, countera
+Dim ArrDirs(), ArrWildCards(), counterDirs, counterWild
 
 Sub EnumerateFolders(folder)
 	FPath = folder.Path
@@ -109,7 +110,7 @@ IsHelp = Trim(LCase(StrArg))
 If (IsHelp = "/?" Or IsHelp = "/help") Then
 	Help()
 End If
-Set SDir = objFSO.GetFolder(objFSO.GetAbsolutePathName(StrArg))
+'Set SDir = objFSO.GetFolder(objFSO.GetAbsolutePathName(StrArg))
 Recurse = False
 Bare = False
 AttFilter = ""
@@ -132,7 +133,58 @@ If AttFilter <> "" Then
 	dircmd = dircmd & ":" & AttFilter
 End If
 Call LoadSrchCFG()
-Call EnumerateFolders(SDir)
+Call ParseDirs(StrArg)
+c = 0
+For Each d In ArrDirs
+	WScript.Echo "Searching:" & d
+	Call EnumerateFolders(objFSO.GetFolder(objFSO.GetAbsolutePathName(d)))
+	c = c + 1
+Next
+
+' Gets the Minimum Valid index
+Function MinIndex(a, b)
+    If (a < 1) Or (b < a And b > 0) Then
+        MinIndex = b
+    Else
+        MinIndex = a
+    End If
+End Function
+' add item to array
+Sub AddItem(arr, size, val)
+	ReDim Preserve arr(size)
+    arr(size) = val
+	size = size + 1
+End Sub
+
+' Parse the Array of dirs and wildcards per dir
+Sub ParseDirs(strdirs)
+dirsplits = Split(strdirs, ";")
+For Each strdir In dirsplits
+	WIndex = MinIndex(InStr(strdir, "*"), InStr(strdir, "?"))
+	If WIndex > 0 Then
+		SlashIndex = InStrRev(strdir, "\", WIndex)
+		If SlashIndex < 1 Then
+			SIndex = WIndex
+		Else
+			SIndex = SlashIndex + 1
+		End If
+		DirIndex = SlashIndex - 1
+		If DirIndex < 1 Then
+			DirIndex = 0
+		End If
+		If DirIndex = 0 And Left(strdir, 1) = "\" Then
+			DirIndex = DirIndex + 1
+		End If
+		Call AddItem(ArrDirs, counterDirs, objFSO.GetAbsolutePathName(Mid(strdir, 1, DirIndex)))
+		wildcard = Mid(strdir, SIndex)
+		Cards = Split(wildcard, "|")
+		Call AddItem(ArrWildCards, counterWild, Cards)
+	Else
+		Call AddItem(ArrDirs, counterDirs, objFSO.GetAbsolutePathName(strdir))
+		Call AddItem(ArrWildCards, counterWild, Split("", ","))
+	End If
+Next
+End Sub
 
 ' Creates the Black list into memory for fast recall
 Sub LoadSrchCFG()
@@ -173,7 +225,7 @@ End Sub
 Sub Help()
 WScript.Echo ""
 WScript.Echo "#####################################################"
-WScript.Echo "DirSafe.vbs <DIR> <BOOL RECURSE> <BOOL BARE> <ATTRIBS>"
+WScript.Echo "DirSafe.vbs <DIR Or Dir;Dir2\*PDF|File*.txt> <BOOL RECURSE> <BOOL BARE> <ATTRIBS>"
 WScript.Echo "#####################################################"
 WScript.Echo "A Archiving"
 WScript.Echo "D Dirs"
