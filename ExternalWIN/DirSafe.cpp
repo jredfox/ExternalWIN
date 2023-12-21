@@ -29,6 +29,7 @@ int main(int argc, char* argv[]) {
 	LoadCFG(nonlnkscfg);
 	cout << nonlnkscfg << endl;
     wstring dirarg = L"C:\\Users\\jredfox";
+    dirarg = L"C:\\Users\\subba\\OneDrive";
     if(dirarg.size() > 1 && EndsWith(dirarg, L"\\"))
     	dirarg = dirarg.substr(0, dirarg.length() - 1);
 
@@ -91,6 +92,10 @@ bool isLink(wstring dir, DWORD att)
 	return false;
 }
 
+/**
+ * ONEDRIVE reparse points don't show themsevles unless under C:\Windows is the parent directory.
+ * Luckfully this method handles when the program is installed in the windows folder itself
+ */
 DWORD GetReparsePointId(wstring path)
 {
     HANDLE hFile = CreateFileW(
@@ -126,6 +131,7 @@ DWORD GetReparsePointId(wstring path)
         CloseHandle(hFile);
         return 0;
     }
+    CloseHandle(hFile);
     return reparseData->ReparseTag;
 }
 
@@ -178,8 +184,38 @@ string trim(string str)
     return str;
 }
 
+bool exists(const std::string& filePath) {
+    DWORD fileAttributes = GetFileAttributes(filePath.c_str());
+    return fileAttributes != INVALID_FILE_ATTRIBUTES;
+}
+
 void LoadCFG(string cfg)
 {
+	//create config file if it doesn't exist and then read config file
+	if(!exists(cfg))
+	{
+		ofstream filewriter(cfg);
+		filewriter << "IO_REPARSE_TAG_CLOUD_6 = 0x9000601A" << endl;
+		filewriter << "IO_REPARSE_TAG_CLOUD = 0x9000001A" << endl;
+		filewriter << "IO_REPARSE_TAG_CLOUD_1 = 0x9000101A" << endl;
+		filewriter << "IO_REPARSE_TAG_CLOUD_2 = 0x9000201A" << endl;
+		filewriter << "IO_REPARSE_TAG_CLOUD_3 = 0x9000301A" << endl;
+		filewriter << "IO_REPARSE_TAG_CLOUD_4 = 0x9000401A" << endl;
+		filewriter << "IO_REPARSE_TAG_CLOUD_5 = 0x9000501A" << endl;
+		filewriter << "IO_REPARSE_TAG_CLOUD_7 = 0x9000701A" << endl;
+		filewriter << "IO_REPARSE_TAG_CLOUD_8 = 0x9000801A" << endl;
+		filewriter << "IO_REPARSE_TAG_CLOUD_9 = 0x9000901A" << endl;
+		filewriter << "IO_REPARSE_TAG_CLOUD_A = 0x9000A01A" << endl;
+		filewriter << "IO_REPARSE_TAG_CLOUD_B = 0x9000B01A" << endl;
+		filewriter << "IO_REPARSE_TAG_CLOUD_C = 0x9000C01A" << endl;
+		filewriter << "IO_REPARSE_TAG_CLOUD_D = 0x9000D01A" << endl;
+		filewriter << "IO_REPARSE_TAG_CLOUD_E = 0x9000E01A" << endl;
+		filewriter << "IO_REPARSE_TAG_CLOUD_F = 0x9000F01A" << endl;
+		filewriter << "IO_REPARSE_TAG_ONEDRIVE = 0x80000021" << endl;
+		filewriter << "IO_REPARSE_TAG_CLOUD_MASK = 0x0000F000" << endl;
+		filewriter.close();
+	}
+
     std::ifstream file(cfg);
     if (file.is_open())
     {
