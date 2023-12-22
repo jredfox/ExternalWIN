@@ -39,7 +39,7 @@ typedef struct _REPARSE_DATA_BUFFER {
 using namespace std;
 
 //Declare Vars here
-bool recurse = false;
+bool recurse = true;
 vector<DWORD> NoLNKS;
 
 //Declare Methods here
@@ -60,8 +60,7 @@ int main(int argc, char* argv[]) {
 	string WorkingDir = parent(string(argv[0]));
 	string nonlnkscfg = WorkingDir + "\\DirNonShortcuts.cfg";
 	LoadCFG(nonlnkscfg);
-	cout << nonlnkscfg << endl;
-    wstring dirarg = L"C:\\Users\\jredfox\\Desktop";
+    wstring dirarg = L"C:\\";
 //    dirarg = L"C:\\Users\\subba\\OneDrive";
     if(dirarg.size() > 1 && EndsWith(dirarg, L"\\"))
     	dirarg = dirarg.substr(0, dirarg.length() - 1);
@@ -72,7 +71,7 @@ int main(int argc, char* argv[]) {
 }
 
 void ListDirectories(const std::wstring& directory) {
-	wcout << endl << " Directory of " << directory << endl << endl;
+//	wcout << endl << " Directory of " << directory << endl << endl;
     WIN32_FIND_DATAW findFileData;
     HANDLE hFind = INVALID_HANDLE_VALUE;
 
@@ -80,7 +79,7 @@ void ListDirectories(const std::wstring& directory) {
     hFind = FindFirstFileW(searchPath.c_str(), &findFileData);
 
     if (hFind == INVALID_HANDLE_VALUE) {
-        std::wcout << L"Access Denied: " << directory << std::endl;
+        wcerr << L"Access Denied: " << directory << std::endl;
         return;
     }
 
@@ -93,7 +92,6 @@ void ListDirectories(const std::wstring& directory) {
     	bool isDIR = att & FILE_ATTRIBUTE_DIRECTORY;
     	if(rpid == IO_REPARSE_TAG_MOUNT_POINT)
     	{
-    		wcout << currentPath << endl;
     		targ = L" [" + getTarget(currentPath) + L"]";
     		type = L"<JUNCTION> ";
     	}
@@ -111,7 +109,7 @@ void ListDirectories(const std::wstring& directory) {
         {
             if (wcscmp(findFileData.cFileName, L".") != 0 && wcscmp(findFileData.cFileName, L"..") != 0)
             {
-            	wcout << type << findFileData.cFileName << targ << endl;
+//            	wcout << type << findFileData.cFileName << targ << endl;
             	if (!isLink(rpid) && recurse)
             	{
 //            		targ.clear();
@@ -122,7 +120,7 @@ void ListDirectories(const std::wstring& directory) {
         }
         else
         {
-        	wcout << type << findFileData.cFileName << targ << endl;
+//        	wcout << type << findFileData.cFileName << targ << endl;
         }
     } while (FindNextFileW(hFind, &findFileData) != 0);
 
@@ -145,10 +143,7 @@ DWORD GetReparsePointId(wstring path, DWORD att)
 {
 	if(att & FILE_ATTRIBUTE_REPARSE_POINT)
 	{
-		DWORD t =  GetRPTag(path);
-		if(t == 0)
-			cout << "FAILED ATT:" << att << endl;
-		return t;
+		return GetRPTag(path);
 	}
 	return 0;
 }
