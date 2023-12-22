@@ -40,7 +40,8 @@ typedef struct _REPARSE_DATA_BUFFER {
 using namespace std;
 
 //Declare Vars here
-bool recurse = true;
+bool Recurse = true;
+bool Bare = false;
 vector<DWORD> NoLNKS;
 
 //Declare Methods here
@@ -73,7 +74,6 @@ int main(int argc, char* argv[]) {
 }
 
 void ListDirectories(const std::wstring& directory) {
-//	wcout << endl << " Directory of " << directory << endl << endl;
     WIN32_FIND_DATAW findFileData;
     HANDLE hFind = INVALID_HANDLE_VALUE;
 
@@ -84,6 +84,8 @@ void ListDirectories(const std::wstring& directory) {
         wcerr << L"Access Denied: " << directory << std::endl;
         return;
     }
+	if(!Bare)
+		wcout << endl << " Directory of " << directory << endl << endl;
 
     do {
     	std::wstring currentPath = directory + L"\\" + findFileData.cFileName;
@@ -92,27 +94,33 @@ void ListDirectories(const std::wstring& directory) {
     	wstring targ = L"";
     	wstring type = L"";
     	bool isDIR = att & FILE_ATTRIBUTE_DIRECTORY;
-    	if(rpid == IO_REPARSE_TAG_MOUNT_POINT)
+    	if(!Bare)
     	{
-    		targ = L" [" + getTarget(currentPath) + L"]";
-    		type = L"<JUNCTION> ";
-    	}
-    	else if(rpid == IO_REPARSE_TAG_SYMLINK)
-    	{
-    		targ = L" [" + getTarget(currentPath) + L"]";
-    		type = isDIR ? L"<SYMLINKD> " : L"<SYMLINK> ";
-    	}
-    	else if(isDIR)
-    	{
-    		type = L"<DIR> ";
+			if(rpid == IO_REPARSE_TAG_MOUNT_POINT)
+			{
+				targ = L" [" + getTarget(currentPath) + L"]";
+				type = L"<JUNCTION> ";
+			}
+			else if(rpid == IO_REPARSE_TAG_SYMLINK)
+			{
+				targ = L" [" + getTarget(currentPath) + L"]";
+				type = isDIR ? L"<SYMLINKD> " : L"<SYMLINK> ";
+			}
+			else if(isDIR)
+			{
+				type = L"<DIR> ";
+			}
     	}
 
         if (isDIR)
         {
             if (wcscmp(findFileData.cFileName, L".") != 0 && wcscmp(findFileData.cFileName, L"..") != 0)
             {
-            	wcout << type << currentPath << targ << endl;
-            	if (!isLink(rpid) && recurse)
+            	if(Bare)
+            		wcout << type << currentPath << targ << endl;
+            	else
+            		wcout << type << findFileData.cFileName << targ << endl;
+            	if (!isLink(rpid) && Recurse)
             	{
             		targ.clear();
             		type.clear();
@@ -122,7 +130,10 @@ void ListDirectories(const std::wstring& directory) {
         }
         else
         {
-        	wcout << type << currentPath << targ << endl;
+        	if(Bare)
+        		wcout << type << currentPath << targ << endl;
+        	else
+        		wcout << type << findFileData.cFileName << targ << endl;
         }
     } while (FindNextFileW(hFind, &findFileData) != 0);
 
