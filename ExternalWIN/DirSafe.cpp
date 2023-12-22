@@ -112,8 +112,8 @@ void ListDirectories(const std::wstring& directory) {
 //            	wcout << type << findFileData.cFileName << targ << endl;
             	if (!isLink(rpid) && recurse)
             	{
-//            		targ.clear();
-//            		type.clear();
+            		targ.clear();
+            		type.clear();
                 	ListDirectories(currentPath);
             	}
             }
@@ -161,7 +161,9 @@ DWORD GetRPTag(wstring path)
 			FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, 0);
 
     if (hFile == INVALID_HANDLE_VALUE) {
-        std::cerr << "Failed To Get ReparsePoint. Error code: " << GetLastError() << std::endl;
+		cerr << "ReparsePoint Failed:" << GetLastError() << " ";
+		wcerr << path << endl;
+        CloseHandle(hFile);
         return 0;
     }
 
@@ -180,7 +182,8 @@ DWORD GetRPTag(wstring path)
         &bytesReturned,
         NULL
     )) {
-        std::wcerr << path << L" Failed to get reparse point information. Error code: " << GetLastError() << std::endl;
+		cerr << "ReparsePoint Failed:" << GetLastError() << " ";
+		wcerr << path << endl;
         CloseHandle(hFile);
         return 0;
     }
@@ -200,8 +203,9 @@ wstring getTarget(wstring path)
 
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
-		cerr << "hFile ERR Invalid Handle:" << GetLastError() << " ";
+		cerr << "ReparsePoint Failed:" << GetLastError() << " ";
 		wcerr << path << endl;
+		CloseHandle(hFile);
 		return L"";
 	}
 
