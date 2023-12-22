@@ -46,10 +46,11 @@ vector<DWORD> NoLNKS;
 
 //Declare Methods here
 void ListDirectories(const std::wstring& directory);
-bool isLink(DWORD RPID);
-DWORD GetRPTag(wstring path);
-DWORD GetReparsePointId(wstring path, DWORD att);
-wstring getTarget(wstring path);
+bool isLink(DWORD &RPID);
+DWORD GetRPTag(wstring &path);
+DWORD GetReparsePointId(wstring &path, DWORD &att);
+wstring getTarget(wstring &path);
+bool foundFile(wstring &path, wstring &n, DWORD &attr, DWORD &RPID);
 
 bool EndsWith (const std::wstring &fullString, const std::wstring &ending);
 string toHex(unsigned long v);
@@ -64,7 +65,7 @@ int main(int argc, char* argv[]) {
 	string nonlnkscfg = WorkingDir + "\\DirNonShortcuts.cfg";
 	LoadCFG(nonlnkscfg);
     wstring dirarg = L"C:\\Users\\jredfox\\Desktop";
-//    dirarg = L"C:\\Users\\subba\\OneDrive";
+    dirarg = L"C:\\";
     if(dirarg.size() > 1 && EndsWith(dirarg, L"\\"))
     	dirarg = dirarg.substr(0, dirarg.length() - 1);
 
@@ -84,8 +85,7 @@ void ListDirectories(const std::wstring& directory) {
         wcerr << L"Access Denied: " << directory << std::endl;
         return;
     }
-	if(!Bare)
-		wcout << endl << " Directory of " << directory << endl << endl;
+    bool idir = Bare; //if bare is true don't print it
 
     do {
     	std::wstring currentPath = directory + L"\\" + findFileData.cFileName;
@@ -94,6 +94,7 @@ void ListDirectories(const std::wstring& directory) {
     	wstring targ = L"";
     	wstring type = L"";
     	bool isDIR = att & FILE_ATTRIBUTE_DIRECTORY;
+    	wstring name = findFileData.cFileName;
     	if(!Bare)
     	{
 			if(rpid == IO_REPARSE_TAG_MOUNT_POINT)
@@ -111,40 +112,62 @@ void ListDirectories(const std::wstring& directory) {
 				type = L"<DIR> ";
 			}
     	}
-
-        if (isDIR)
-        {
-            if (wcscmp(findFileData.cFileName, L".") != 0 && wcscmp(findFileData.cFileName, L"..") != 0)
-            {
-            	if(Bare)
-            		wcout << type << currentPath << targ << endl;
-            	else
-            		wcout << type << findFileData.cFileName << targ << endl;
-            	if (!isLink(rpid) && Recurse)
-            	{
-            		targ.clear();
-            		type.clear();
-                	ListDirectories(currentPath);
-            	}
-            }
-        }
-        else
-        {
-        	if(Bare)
-        		wcout << type << currentPath << targ << endl;
-        	else
-        		wcout << type << findFileData.cFileName << targ << endl;
-        }
+		if(foundFile(currentPath, name, att, rpid))
+		{
+			//print the initial directory
+			if(!idir)
+			{
+				wcout << endl << L" Directory of " << directory << endl << endl;
+				idir = true;
+			}
+			if(Bare)
+				wcout << type << currentPath << targ << endl;
+			else
+				wcout << type << findFileData.cFileName << targ << endl;
+		}
     } while (FindNextFileW(hFind, &findFileData) != 0);
-
     FindClose(hFind);
+
+    //Go Through all Sub Directories
+    if(Recurse)
+    {
+		hFind = FindFirstFileW(searchPath.c_str(), &findFileData);
+		if (hFind != INVALID_HANDLE_VALUE)
+		{
+			do
+			{
+				DWORD att = findFileData.dwFileAttributes;
+				if(att & FILE_ATTRIBUTE_DIRECTORY)
+				{
+					wstring name = findFileData.cFileName;
+		            if ((name != L".") && (name != L".."))
+		            {
+		            	std::wstring currentPath = directory + L"\\" + name;
+		            	DWORD rp = GetReparsePointId(currentPath, att);
+		            	if (!isLink(rp))
+		                	ListDirectories(currentPath);
+		            }
+				}
+			} while (FindNextFileW(hFind, &findFileData) != 0);
+		}
+		FindClose(hFind);
+    }
+}
+
+bool foundFile(wstring &path, wstring &name, DWORD &attr, DWORD &RPID)
+{
+	if ((name != L".") && (name != L".."))
+	{
+		return true;
+	}
+	return false;
 }
 
 /**
  * ONEDRIVE reparse points don't show themselves unless under C:\Windows is the parent directory.
  * Fortunately this method handles when the program is installed in the windows folder itself
  */
-bool isLink(DWORD RPID)
+bool isLink(DWORD &RPID)
 {
 	for (DWORD n : NoLNKS)
 		if (n == RPID)
@@ -152,7 +175,7 @@ bool isLink(DWORD RPID)
 	return RPID != 0;
 }
 
-DWORD GetReparsePointId(wstring path, DWORD att)
+DWORD GetReparsePointId(wstring &path, DWORD &att)
 {
 	if(att & FILE_ATTRIBUTE_REPARSE_POINT)
 	{
@@ -164,7 +187,7 @@ DWORD GetReparsePointId(wstring path, DWORD att)
 /**
  * Handles any reparse points including non microsoft ones
  */
-DWORD GetRPTag(wstring path)
+DWORD GetRPTag(wstring &path)
 {
 	HANDLE hFile = CreateFileW(path.c_str(),
 			FILE_READ_EA, //0,
@@ -203,7 +226,7 @@ DWORD GetRPTag(wstring path)
     return tag;
 }
 
-wstring getTarget(wstring path)
+wstring getTarget(wstring &path)
 {
 	HANDLE hFile = CreateFileW(path.c_str(),
 			FILE_READ_EA, //0,
