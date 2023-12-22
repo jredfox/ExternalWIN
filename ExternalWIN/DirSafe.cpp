@@ -76,6 +76,10 @@ void ListDirectories(const std::wstring& directory) {
     FindClose(hFind);
 }
 
+/**
+ * ONEDRIVE reparse points don't show themselves unless under C:\Windows is the parent directory.
+ * Fortunately this method handles when the program is installed in the windows folder itself
+ */
 bool isLink(wstring dir, DWORD att)
 {
 	DWORD RPID = 0;
@@ -93,8 +97,7 @@ bool isLink(wstring dir, DWORD att)
 }
 
 /**
- * ONEDRIVE reparse points don't show themsevles unless under C:\Windows is the parent directory.
- * Luckfully this method handles when the program is installed in the windows folder itself
+ * Handles any reparse points including non microsoft ones
  */
 DWORD GetReparsePointId(wstring path)
 {
