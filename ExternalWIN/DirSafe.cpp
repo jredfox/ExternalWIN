@@ -101,14 +101,12 @@ bool isLink(wstring dir, DWORD att)
  */
 DWORD GetReparsePointId(wstring path)
 {
-    HANDLE hFile = CreateFileW(
-    		path.c_str(),
-    		0,
-			FILE_SHARE_VALID_FLAGS,
+	HANDLE hFile = CreateFileW(path.c_str(),
+			FILE_READ_EA, //0,
+			FILE_SHARE_VALID_FLAGS, //FILE_SHARE_WRITE|FILE_SHARE_DELETE
 			0,
 			OPEN_EXISTING,
-            FILE_FLAG_OPEN_REPARSE_POINT|FILE_FLAG_BACKUP_SEMANTICS,
-			0);
+			FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, 0);
 
     if (hFile == INVALID_HANDLE_VALUE) {
         std::cerr << "Failed To Get ReparsePoint. Error code: " << GetLastError() << std::endl;
