@@ -131,8 +131,9 @@ DWORD GetReparsePointId(wstring path)
         CloseHandle(hFile);
         return 0;
     }
+    DWORD tag = reparseData->ReparseTag;
     CloseHandle(hFile);
-    return reparseData->ReparseTag;
+    return tag;
 }
 
 bool EndsWith (const std::wstring &fullString, const std::wstring &ending) {
