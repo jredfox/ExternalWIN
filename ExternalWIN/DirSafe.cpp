@@ -6,6 +6,7 @@
 #include <fstream>
 #include <vector>
 #include <iomanip>
+#include <fcntl.h>
 typedef struct _REPARSE_DATA_BUFFER {
   ULONG  ReparseTag;
   USHORT  ReparseDataLength;
@@ -57,6 +58,7 @@ string parent(string path);
 void LoadCFG(string cfg);
 
 int main(int argc, char* argv[]) {
+	_setmode( _fileno(stdout), _O_U8TEXT );
 	string WorkingDir = parent(string(argv[0]));
 	string nonlnkscfg = WorkingDir + "\\DirNonShortcuts.cfg";
 	LoadCFG(nonlnkscfg);
@@ -109,7 +111,7 @@ void ListDirectories(const std::wstring& directory) {
         {
             if (wcscmp(findFileData.cFileName, L".") != 0 && wcscmp(findFileData.cFileName, L"..") != 0)
             {
-            	wcout << type << findFileData.cFileName << targ << endl;
+            	wcout << type << currentPath << targ << endl;
             	if (!isLink(rpid) && recurse)
             	{
             		targ.clear();
@@ -120,7 +122,7 @@ void ListDirectories(const std::wstring& directory) {
         }
         else
         {
-        	wcout << type << findFileData.cFileName << targ << endl;
+        	wcout << type << currentPath << targ << endl;
         }
     } while (FindNextFileW(hFind, &findFileData) != 0);
 
@@ -161,8 +163,7 @@ DWORD GetRPTag(wstring path)
 			FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, 0);
 
     if (hFile == INVALID_HANDLE_VALUE) {
-		cerr << "ReparsePoint Failed:" << GetLastError() << " ";
-		wcerr << path << endl;
+		wcerr << L"ReparsePoint Failed:" << GetLastError() << " " << path << endl;
         CloseHandle(hFile);
         return 0;
     }
@@ -182,8 +183,7 @@ DWORD GetRPTag(wstring path)
         &bytesReturned,
         NULL
     )) {
-		cerr << "ReparsePoint Failed:" << GetLastError() << " ";
-		wcerr << path << endl;
+		wcerr << L"ReparsePoint Failed:" << GetLastError() << " " << path << endl;
         CloseHandle(hFile);
         return 0;
     }
@@ -203,8 +203,7 @@ wstring getTarget(wstring path)
 
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
-		cerr << "ReparsePoint Failed:" << GetLastError() << " ";
-		wcerr << path << endl;
+		wcerr << L"ReparsePoint Failed:" << GetLastError() << " " << path << endl;
 		CloseHandle(hFile);
 		return L"";
 	}
@@ -220,9 +219,8 @@ wstring getTarget(wstring path)
     CloseHandle(hFile);
     if (bRet == FALSE)
     {
-      cerr << "DeviceIoControl ERR:" << GetLastError() << " ";
-      wcerr << path.c_str() << endl;
-      return L"";
+    	wcerr << L"ReparsePoint Failed:" << GetLastError() << " " << path << endl;
+    	return L"";
     }
 
     wstring targ = L"";
@@ -249,12 +247,12 @@ wstring getTarget(wstring path)
       }
       else
       {
-    	  cerr << "No Mount-Point or Symblic-Link..." << endl;
+    	  wcerr << L"No Mount-Point or Symblic-Link..." << endl;
       }
     }
     else
     {
-    	cerr << "Not a Microsoft-reparse point - could not query data!" << endl;
+    	wcerr << L"Not a Microsoft-reparse point - could not query data!" << endl;
     }
     free(rdata);
     return targ;
@@ -352,6 +350,6 @@ void LoadCFG(string cfg)
         }
         file.close();
     } else {
-        std::cout << "Err Loading Config: " << GetLastError() << std::endl;
+        std::wcerr << L"Err Loading Config: " << GetLastError() << std::endl;
     }
 }
