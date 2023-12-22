@@ -6,6 +6,36 @@
 #include <fstream>
 #include <vector>
 #include <iomanip>
+typedef struct _REPARSE_DATA_BUFFER {
+  ULONG  ReparseTag;
+  USHORT  ReparseDataLength;
+  USHORT  Reserved;
+  union {
+    struct {
+      USHORT  SubstituteNameOffset;
+      USHORT  SubstituteNameLength;
+      USHORT  PrintNameOffset;
+      USHORT  PrintNameLength;
+      ULONG   Flags; // it seems that the docu is missing this entry (at least 2008-03-07)
+      WCHAR  PathBuffer[1];
+      } SymbolicLinkReparseBuffer;
+    struct {
+      USHORT  SubstituteNameOffset;
+      USHORT  SubstituteNameLength;
+      USHORT  PrintNameOffset;
+      USHORT  PrintNameLength;
+      WCHAR  PathBuffer[1];
+      } MountPointReparseBuffer;
+    struct {
+      UCHAR  DataBuffer[1];
+    } GenericReparseBuffer;
+  };
+} REPARSE_DATA_BUFFER, *PREPARSE_DATA_BUFFER;
+
+#define REPARSE_DATA_BUFFER_HEADER_SIZE  FIELD_OFFSET(REPARSE_DATA_BUFFER, GenericReparseBuffer)
+#ifndef MAXIMUM_REPARSE_DATA_BUFFER_SIZE
+#define MAXIMUM_REPARSE_DATA_BUFFER_SIZE  ( 16 * 1024 )
+#endif
 using namespace std;
 
 //Declare Vars here
@@ -13,12 +43,15 @@ bool recurse = false;
 vector<DWORD> NoLNKS;
 
 //Declare Methods here
-bool isLink(wstring dir, DWORD att);
 void ListDirectories(const std::wstring& directory);
+bool isLink(DWORD RPID);
+DWORD GetRPTag(wstring path);
+DWORD GetReparsePointId(wstring path, DWORD att);
+wstring getTarget(wstring path);
+
 bool EndsWith (const std::wstring &fullString, const std::wstring &ending);
 string toHex(unsigned long v);
 DWORD fromHex(string v);
-DWORD GetReparsePointId(wstring path);
 int revIndexOf(string str, string key);
 string parent(string path);
 void LoadCFG(string cfg);
@@ -28,18 +61,18 @@ int main(int argc, char* argv[]) {
 	string nonlnkscfg = WorkingDir + "\\DirNonShortcuts.cfg";
 	LoadCFG(nonlnkscfg);
 	cout << nonlnkscfg << endl;
-    wstring dirarg = L"C:\\Users\\jredfox";
-    dirarg = L"C:\\Users\\subba\\OneDrive";
+    wstring dirarg = L"C:\\Users\\jredfox\\Desktop";
+//    dirarg = L"C:\\Users\\subba\\OneDrive";
     if(dirarg.size() > 1 && EndsWith(dirarg, L"\\"))
     	dirarg = dirarg.substr(0, dirarg.length() - 1);
 
-    std::wcout << L"Listing directories in: " << dirarg << std::endl;
     ListDirectories(dirarg);
 
     return 0;
 }
 
 void ListDirectories(const std::wstring& directory) {
+	wcout << endl << " Directory of " << directory << endl << endl;
     WIN32_FIND_DATAW findFileData;
     HANDLE hFind = INVALID_HANDLE_VALUE;
 
@@ -52,24 +85,44 @@ void ListDirectories(const std::wstring& directory) {
     }
 
     do {
+    	std::wstring currentPath = directory + L"\\" + findFileData.cFileName;
     	DWORD att = findFileData.dwFileAttributes;
-        if (att & FILE_ATTRIBUTE_DIRECTORY)
+    	DWORD rpid = GetReparsePointId(currentPath, att);//Resource Point ID
+    	wstring targ = L"";
+    	wstring type = L"";
+    	bool isDIR = att & FILE_ATTRIBUTE_DIRECTORY;
+    	if(rpid == IO_REPARSE_TAG_MOUNT_POINT)
+    	{
+    		wcout << currentPath << endl;
+    		targ = L" [" + getTarget(currentPath) + L"]";
+    		type = L"<JUNCTION> ";
+    	}
+    	else if(rpid == IO_REPARSE_TAG_SYMLINK)
+    	{
+    		targ = L" [" + getTarget(currentPath) + L"]";
+    		type = isDIR ? L"<SYMLINKD> " : L"<SYMLINK> ";
+    	}
+    	else if(isDIR)
+    	{
+    		type = L"<DIR> ";
+    	}
+
+        if (isDIR)
         {
             if (wcscmp(findFileData.cFileName, L".") != 0 && wcscmp(findFileData.cFileName, L"..") != 0)
             {
-            	std::wstring currentDir = directory + L"\\" + findFileData.cFileName;
-            	wcout << currentDir << " " << att << endl;
-            	if (/*recurse &&*/ !isLink(currentDir, att) && recurse)
+            	wcout << type << findFileData.cFileName << targ << endl;
+            	if (!isLink(rpid) && recurse)
             	{
-            		//std::wcout << currentDir << std::endl;
-                	ListDirectories(currentDir);
+//            		targ.clear();
+//            		type.clear();
+                	ListDirectories(currentPath);
             	}
             }
         }
         else
         {
-//        	std::wstring currentFile = directory + L"\\" + findFileData.cFileName;
-//        	isLink(currentFile, att);
+        	wcout << type << findFileData.cFileName << targ << endl;
         }
     } while (FindNextFileW(hFind, &findFileData) != 0);
 
@@ -80,26 +133,30 @@ void ListDirectories(const std::wstring& directory) {
  * ONEDRIVE reparse points don't show themselves unless under C:\Windows is the parent directory.
  * Fortunately this method handles when the program is installed in the windows folder itself
  */
-bool isLink(wstring dir, DWORD att)
+bool isLink(DWORD RPID)
 {
-	DWORD RPID = 0;
+	for (DWORD n : NoLNKS)
+		if (n == RPID)
+			return false;
+	return RPID != 0;
+}
+
+DWORD GetReparsePointId(wstring path, DWORD att)
+{
 	if(att & FILE_ATTRIBUTE_REPARSE_POINT)
 	{
-		RPID = GetReparsePointId(dir);
-		for(DWORD n : NoLNKS)
-			if(n == RPID)
-				return false;
-		wcout << "Link Found:" << dir;
-		cout << " ReparseId:" << toHex(RPID) << endl;
-		return true;//TODO: check the reparse point tag code here
+		DWORD t =  GetRPTag(path);
+		if(t == 0)
+			cout << "FAILED ATT:" << att << endl;
+		return t;
 	}
-	return false;
+	return 0;
 }
 
 /**
  * Handles any reparse points including non microsoft ones
  */
-DWORD GetReparsePointId(wstring path)
+DWORD GetRPTag(wstring path)
 {
 	HANDLE hFile = CreateFileW(path.c_str(),
 			FILE_READ_EA, //0,
@@ -135,6 +192,73 @@ DWORD GetReparsePointId(wstring path)
     DWORD tag = reparseData->ReparseTag;
     CloseHandle(hFile);
     return tag;
+}
+
+wstring getTarget(wstring path)
+{
+	HANDLE hFile = CreateFileW(path.c_str(),
+			FILE_READ_EA, //0,
+			FILE_SHARE_VALID_FLAGS, //FILE_SHARE_WRITE|FILE_SHARE_DELETE
+			0,
+			OPEN_EXISTING,
+			FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, 0);
+
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		cerr << "hFile ERR Invalid Handle:" << GetLastError() << " ";
+		wcerr << path << endl;
+		return L"";
+	}
+
+	// Allocate the reparse data structure
+    DWORD dwBufSize = MAXIMUM_REPARSE_DATA_BUFFER_SIZE;
+    REPARSE_DATA_BUFFER* rdata;
+    rdata = (REPARSE_DATA_BUFFER*) malloc(dwBufSize);
+
+    // Query the reparse data
+    DWORD dwRetLen;
+    BOOL bRet = DeviceIoControl(hFile, FSCTL_GET_REPARSE_POINT, NULL, 0, rdata, dwBufSize, &dwRetLen, NULL);
+    CloseHandle(hFile);
+    if (bRet == FALSE)
+    {
+      cerr << "DeviceIoControl ERR:" << GetLastError() << " ";
+      wcerr << path.c_str() << endl;
+      return L"";
+    }
+
+    wstring targ = L"";
+	ULONG ReparseTag = rdata->ReparseTag;
+    if (IsReparseTagMicrosoft(ReparseTag))
+    {
+    	if (ReparseTag == IO_REPARSE_TAG_SYMLINK)
+    	{
+    		size_t plen = rdata->SymbolicLinkReparseBuffer.PrintNameLength / sizeof(WCHAR);
+    		WCHAR *szPrintName = new WCHAR[plen+1];
+    		wcsncpy_s(szPrintName, plen+1, &rdata->SymbolicLinkReparseBuffer.PathBuffer[rdata->SymbolicLinkReparseBuffer.PrintNameOffset / sizeof(WCHAR)], plen);
+    		szPrintName[plen] = 0;
+    		targ = szPrintName;
+    		delete [] szPrintName;
+      }
+      else if (ReparseTag == IO_REPARSE_TAG_MOUNT_POINT)
+      {
+    	  size_t plen = rdata->MountPointReparseBuffer.PrintNameLength / sizeof(WCHAR);
+    	  WCHAR *szPrintName = new WCHAR[plen+1];
+    	  wcsncpy_s(szPrintName, plen+1, &rdata->MountPointReparseBuffer.PathBuffer[rdata->MountPointReparseBuffer.PrintNameOffset / sizeof(WCHAR)], plen);
+    	  szPrintName[plen] = 0;
+    	  targ = szPrintName;
+    	  delete [] szPrintName;
+      }
+      else
+      {
+    	  cerr << "No Mount-Point or Symblic-Link..." << endl;
+      }
+    }
+    else
+    {
+    	cerr << "Not a Microsoft-reparse point - could not query data!" << endl;
+    }
+    free(rdata);
+    return targ;
 }
 
 bool EndsWith (const std::wstring &fullString, const std::wstring &ending) {
