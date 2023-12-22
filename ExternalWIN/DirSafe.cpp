@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
 	string WorkingDir = parent(string(argv[0]));
 	string nonlnkscfg = WorkingDir + "\\DirNonShortcuts.cfg";
 	LoadCFG(nonlnkscfg);
-    wstring dirarg = L"C:\\";
+    wstring dirarg = L"C:\\Users\\jredfox\\Desktop";
 //    dirarg = L"C:\\Users\\subba\\OneDrive";
     if(dirarg.size() > 1 && EndsWith(dirarg, L"\\"))
     	dirarg = dirarg.substr(0, dirarg.length() - 1);
@@ -109,7 +109,7 @@ void ListDirectories(const std::wstring& directory) {
         {
             if (wcscmp(findFileData.cFileName, L".") != 0 && wcscmp(findFileData.cFileName, L"..") != 0)
             {
-//            	wcout << type << findFileData.cFileName << targ << endl;
+            	wcout << type << findFileData.cFileName << targ << endl;
             	if (!isLink(rpid) && recurse)
             	{
             		targ.clear();
@@ -120,7 +120,7 @@ void ListDirectories(const std::wstring& directory) {
         }
         else
         {
-//        	wcout << type << findFileData.cFileName << targ << endl;
+        	wcout << type << findFileData.cFileName << targ << endl;
         }
     } while (FindNextFileW(hFind, &findFileData) != 0);
 
