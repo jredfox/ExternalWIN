@@ -40,8 +40,9 @@ typedef struct _REPARSE_DATA_BUFFER {
 using namespace std;
 
 //Declare Vars here
-bool Recurse = true;
+bool Recurse = false;
 bool Bare = false;
+wstring Attribs = L"";
 vector<DWORD> NoLNKS;
 
 //Declare Methods here
@@ -51,6 +52,7 @@ DWORD GetRPTag(wstring &path);
 DWORD GetReparsePointId(wstring &path, DWORD &att);
 wstring getTarget(wstring &path);
 bool foundFile(wstring &path, wstring &n, DWORD &attr, DWORD &RPID);
+std::wstring GetAbsolutePath(const std::wstring& path);
 
 bool EndsWith (const std::wstring &fullString, const std::wstring &ending);
 string toHex(unsigned long v);
@@ -58,20 +60,82 @@ DWORD fromHex(string v);
 int revIndexOf(string str, string key);
 string parent(string path);
 void LoadCFG(string cfg);
+bool parseBool(wstring s);
+wstring tolower(wstring s);
+wstring trim(wstring str);
+wstring toupper(wstring s);
 
-int main(int argc, char* argv[]) {
+int main(int a, char* sargs[]) {
+	string WorkingDir = parent(string(sargs[0]));
+	setlocale(LC_CTYPE, "");
+	cout << WorkingDir << endl;
 	_setmode( _fileno(stdout), _O_U8TEXT );
-	string WorkingDir = parent(string(argv[0]));
+	int argc;
+	LPWSTR* args = CommandLineToArgvW(GetCommandLineW(), &argc);
+	//Parse command Line Args
+	wstring dirarg;
+	 if(argc > 1)
+		 dirarg = GetAbsolutePath(wstring(args[1]));
+	 else
+		 dirarg = GetAbsolutePath(L"");
+    if(argc > 2)
+    	Recurse = parseBool(args[2]);
+    if(argc > 3)
+    	Bare = parseBool(args[3]);
+    if(argc > 4)
+    	Attribs = toupper(trim(args[4]));
+    wcout << Recurse << " " << Bare << " " << Attribs << endl;
+
+	//Get the working directory and load the config
 	string nonlnkscfg = WorkingDir + "\\DirNonShortcuts.cfg";
 	LoadCFG(nonlnkscfg);
-    wstring dirarg = L"C:\\Users\\jredfox\\Desktop";
-    dirarg = L"C:\\";
     if(dirarg.size() > 1 && EndsWith(dirarg, L"\\"))
     	dirarg = dirarg.substr(0, dirarg.length() - 1);
 
     ListDirectories(dirarg);
 
     return 0;
+}
+
+bool parseBool(wstring s)
+{
+	return s.size() > 0 ? (tolower(trim(s)) == L"true") : false;
+}
+
+wstring toupper(wstring s)
+{
+	for(auto& c : s)
+		c = toupper(c);
+	return s;
+}
+
+wstring tolower(wstring s)
+{
+	for(auto& c : s)
+		c = tolower(c);
+	return s;
+}
+
+std::wstring GetAbsolutePath(const std::wstring& path) {
+	wstring copypath = path;
+	//handle empty strings
+	if(trim(copypath) == L"")
+	{
+		wchar_t buffer[MAX_PATH];
+		GetCurrentDirectoryW(MAX_PATH, buffer);
+		return wstring(buffer);
+	}
+    wchar_t absolutePath[MAX_PATH];
+
+    DWORD length = GetFullPathNameW(path.c_str(), MAX_PATH, absolutePath, nullptr);
+
+    if (length == 0) {
+        // Handle error
+        std::wcerr << L"Error getting absolute path." << std::endl;
+        return L"";
+    }
+
+    return std::wstring(absolutePath);
 }
 
 void ListDirectories(const std::wstring& directory) {
@@ -332,6 +396,13 @@ string parent(string path)
 {
 	int index = revIndexOf(path, "\\");
 	return path.substr(0, index);
+}
+
+wstring trim(wstring str)
+{
+    str.erase(str.find_last_not_of(' ')+1);         //suffixing spaces
+    str.erase(0, str.find_first_not_of(' '));       //prefixing spaces
+    return str;
 }
 
 string trim(string str)
