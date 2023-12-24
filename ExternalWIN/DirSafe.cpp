@@ -7,6 +7,7 @@
 #include <vector>
 #include <iomanip>
 #include <fcntl.h>
+
 typedef struct _REPARSE_DATA_BUFFER {
   ULONG  ReparseTag;
   USHORT  ReparseDataLength;
@@ -55,46 +56,50 @@ bool foundFile(wstring &path, wstring &n, DWORD &attr, DWORD &RPID);
 std::wstring GetAbsolutePath(const std::wstring& path);
 
 bool EndsWith (const std::wstring &fullString, const std::wstring &ending);
-string toHex(unsigned long v);
-DWORD fromHex(string v);
-int revIndexOf(string str, string key);
-string parent(string path);
-void LoadCFG(string cfg);
+wstring toHex(unsigned long v);
+DWORD fromHex(wstring v);
+int revIndexOf(wstring str, wstring key);
+wstring parent(wstring path);
+void LoadCFG(wstring cfg);
 bool parseBool(wstring s);
 wstring tolower(wstring s);
 wstring trim(wstring str);
 wstring toupper(wstring s);
 
 int main(int a, char* sargs[]) {
-	string WorkingDir = parent(string(sargs[0]));
 	setlocale(LC_CTYPE, "");
-	cout << WorkingDir << endl;
 	_setmode( _fileno(stdout), _O_U8TEXT );
 	int argc;
 	LPWSTR* args = CommandLineToArgvW(GetCommandLineW(), &argc);
 	//Parse command Line Args
+	wstring WorkingDir = parent(wstring(args[0]));
 	wstring dirarg;
 	 if(argc > 1)
-		 dirarg = GetAbsolutePath(wstring(args[1]));
+	 {
+		 dirarg = wstring(args[1]);
+		 if(dirarg.size() > 1 && EndsWith(dirarg, L"\""))
+			dirarg = dirarg.substr(0, dirarg.length() - 1);
+		 if(dirarg.size() > 1 && EndsWith(dirarg, L"\\"))
+			dirarg = dirarg.substr(0, dirarg.length() - 1);
+		 dirarg = GetAbsolutePath(dirarg);
+	 }
 	 else
+	 {
 		 dirarg = GetAbsolutePath(L"");
-    if(argc > 2)
+	 }
+	 if(argc > 2) {
     	Recurse = parseBool(args[2]);
-    if(argc > 3)
+	 }
+	 if(argc > 3) {
     	Bare = parseBool(args[3]);
-    if(argc > 4)
+	 }
+	 if(argc > 4) {
     	Attribs = toupper(trim(args[4]));
-    wcout << Recurse << " " << Bare << " " << Attribs << endl;
-
-	//Get the working directory and load the config
-	string nonlnkscfg = WorkingDir + "\\DirNonShortcuts.cfg";
-	LoadCFG(nonlnkscfg);
-    if(dirarg.size() > 1 && EndsWith(dirarg, L"\\"))
-    	dirarg = dirarg.substr(0, dirarg.length() - 1);
-
-    ListDirectories(dirarg);
-
-    return 0;
+	 }
+	 //Get the working directory and load the config
+	 LoadCFG(WorkingDir + L"\\DirNonShortcuts.cfg");
+	 ListDirectories(dirarg);
+	 return 0;
 }
 
 bool parseBool(wstring s)
@@ -364,19 +369,19 @@ bool EndsWith (const std::wstring &fullString, const std::wstring &ending) {
     }
 }
 
-DWORD fromHex(string v)
+DWORD fromHex(wstring v)
 {
 	return std::stoul(v, nullptr, 16);
 }
 
-string toHex(DWORD v)
+wstring toHex(DWORD v)
 {
-	std::stringstream ss;
-	ss << std::uppercase << "0X" << std::setfill('0') << std::setw(8) << std::hex << v;
+	std::wstringstream ss;
+	ss << std::uppercase << L"0X" << std::setfill(L'0') << std::setw(8) << std::hex << v;
 	return ss.str();
 }
 
-int revIndexOf(string str, string key)
+int revIndexOf(wstring str, wstring key)
 {
 	size_t found = str.rfind(key);
 	if(found != std::string::npos)
@@ -384,7 +389,7 @@ int revIndexOf(string str, string key)
 	return -1;
 }
 
-int IndexOf(string str, string key)
+int IndexOf(wstring str, wstring key)
 {
 	size_t found = str.find(key);
 	if(found != std::string::npos)
@@ -392,9 +397,9 @@ int IndexOf(string str, string key)
 	return -1;
 }
 
-string parent(string path)
+wstring parent(wstring path)
 {
-	int index = revIndexOf(path, "\\");
+	int index = revIndexOf(path, L"\\");
 	return path.substr(0, index);
 }
 
@@ -405,56 +410,51 @@ wstring trim(wstring str)
     return str;
 }
 
-string trim(string str)
-{
-    str.erase(str.find_last_not_of(' ')+1);         //suffixing spaces
-    str.erase(0, str.find_first_not_of(' '));       //prefixing spaces
-    return str;
-}
-
-bool exists(const std::string& filePath) {
-    DWORD fileAttributes = GetFileAttributes(filePath.c_str());
+bool exists(const std::wstring& filePath) {
+    DWORD fileAttributes = GetFileAttributesW(filePath.c_str());
     return fileAttributes != INVALID_FILE_ATTRIBUTES;
 }
 
-void LoadCFG(string cfg)
+void LoadCFG(wstring cfg)
 {
 	//create config file if it doesn't exist and then read config file
 	if(!exists(cfg))
 	{
-		ofstream filewriter(cfg);
-		filewriter << "IO_REPARSE_TAG_CLOUD_6 = 0x9000601A" << endl;
-		filewriter << "IO_REPARSE_TAG_CLOUD = 0x9000001A" << endl;
-		filewriter << "IO_REPARSE_TAG_CLOUD_1 = 0x9000101A" << endl;
-		filewriter << "IO_REPARSE_TAG_CLOUD_2 = 0x9000201A" << endl;
-		filewriter << "IO_REPARSE_TAG_CLOUD_3 = 0x9000301A" << endl;
-		filewriter << "IO_REPARSE_TAG_CLOUD_4 = 0x9000401A" << endl;
-		filewriter << "IO_REPARSE_TAG_CLOUD_5 = 0x9000501A" << endl;
-		filewriter << "IO_REPARSE_TAG_CLOUD_7 = 0x9000701A" << endl;
-		filewriter << "IO_REPARSE_TAG_CLOUD_8 = 0x9000801A" << endl;
-		filewriter << "IO_REPARSE_TAG_CLOUD_9 = 0x9000901A" << endl;
-		filewriter << "IO_REPARSE_TAG_CLOUD_A = 0x9000A01A" << endl;
-		filewriter << "IO_REPARSE_TAG_CLOUD_B = 0x9000B01A" << endl;
-		filewriter << "IO_REPARSE_TAG_CLOUD_C = 0x9000C01A" << endl;
-		filewriter << "IO_REPARSE_TAG_CLOUD_D = 0x9000D01A" << endl;
-		filewriter << "IO_REPARSE_TAG_CLOUD_E = 0x9000E01A" << endl;
-		filewriter << "IO_REPARSE_TAG_CLOUD_F = 0x9000F01A" << endl;
-		filewriter << "IO_REPARSE_TAG_ONEDRIVE = 0x80000021" << endl;
-		filewriter << "IO_REPARSE_TAG_CLOUD_MASK = 0x0000F000" << endl;
+		std::wofstream filewriter(cfg.c_str());
+		filewriter << L"IO_REPARSE_TAG_CLOUD_6 = 0x9000601A" << endl;
+		filewriter << L"IO_REPARSE_TAG_CLOUD = 0x9000001A" << endl;
+		filewriter << L"IO_REPARSE_TAG_CLOUD_1 = 0x9000101A" << endl;
+		filewriter << L"IO_REPARSE_TAG_CLOUD_2 = 0x9000201A" << endl;
+		filewriter << L"IO_REPARSE_TAG_CLOUD_3 = 0x9000301A" << endl;
+		filewriter << L"IO_REPARSE_TAG_CLOUD_4 = 0x9000401A" << endl;
+		filewriter << L"IO_REPARSE_TAG_CLOUD_5 = 0x9000501A" << endl;
+		filewriter << L"IO_REPARSE_TAG_CLOUD_7 = 0x9000701A" << endl;
+		filewriter << L"IO_REPARSE_TAG_CLOUD_8 = 0x9000801A" << endl;
+		filewriter << L"IO_REPARSE_TAG_CLOUD_9 = 0x9000901A" << endl;
+		filewriter << L"IO_REPARSE_TAG_CLOUD_A = 0x9000A01A" << endl;
+		filewriter << L"IO_REPARSE_TAG_CLOUD_B = 0x9000B01A" << endl;
+		filewriter << L"IO_REPARSE_TAG_CLOUD_C = 0x9000C01A" << endl;
+		filewriter << L"IO_REPARSE_TAG_CLOUD_D = 0x9000D01A" << endl;
+		filewriter << L"IO_REPARSE_TAG_CLOUD_E = 0x9000E01A" << endl;
+		filewriter << L"IO_REPARSE_TAG_CLOUD_F = 0x9000F01A" << endl;
+		filewriter << L"IO_REPARSE_TAG_ONEDRIVE = 0x80000021" << endl;
+		filewriter << L"IO_REPARSE_TAG_CLOUD_MASK = 0x0000F000" << endl;
 		filewriter.close();
 	}
 
-    std::ifstream file(cfg);
+    std::wifstream file(cfg.c_str());
     if (file.is_open())
     {
-        std::string line;
+        std::wstring line;
         while (std::getline(file, line))
         {
-        	line = trim(line.substr(IndexOf(line, "=") + 1));
+        	line = trim(line.substr(IndexOf(line, L"=") + 1));
         	NoLNKS.push_back(fromHex(line));
         }
-        file.close();
-    } else {
+    }
+    else
+    {
         std::wcerr << L"Err Loading Config: " << GetLastError() << std::endl;
     }
+    file.close();
 }
