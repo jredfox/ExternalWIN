@@ -45,6 +45,7 @@ bool Recurse = false;
 bool Bare = false;
 wstring Attribs = L"";
 vector<DWORD> NoLNKS;
+vector<wstring> SRCHBL;
 
 //Declare Methods here
 void ListDirectories(const std::wstring& directory);
@@ -59,6 +60,7 @@ void help();
 bool EndsWith (const std::wstring &fullString, const std::wstring &ending);
 wstring toHex(unsigned long v);
 DWORD fromHex(wstring v);
+int IndexOf(wstring str, wstring key);
 int revIndexOf(wstring str, wstring key);
 wstring parent(wstring path);
 void LoadCFG(wstring cfg);
@@ -66,6 +68,7 @@ bool parseBool(wstring s);
 wstring tolower(wstring s);
 wstring trim(wstring str);
 wstring toupper(wstring s);
+vector<wstring> split(const std::wstring& input, wchar_t c);
 
 int main(int a, char* sargs[]) {
 	setlocale(LC_CTYPE, "");
@@ -93,20 +96,48 @@ int main(int a, char* sargs[]) {
 		 dirarg = GetAbsolutePath(L"");
 	 }
 	 if(argc > 2) {
-    	Recurse = parseBool(args[2]);
+    	Recurse = parseBool(trim(args[2]));
 	 }
 	 if(argc > 3) {
-    	Bare = parseBool(args[3]);
+    	Bare = parseBool(trim(args[3]));
 	 }
 	 if(argc > 4) {
     	Attribs = toupper(trim(args[4]));
 	 }
+	 //Dynamic Exclusions
+	 if(argc > 5)
+	 {
+		 vector<wstring> bl = split(trim(args[5]), L';');
+		 for(wstring line : bl)
+		 {
+	        line = trim(line.substr(IndexOf(line, L"=") + 1));
+	        if(line.substr(1, 1) == L":")
+	        	line = line.substr(2);
+	        if(line != L"")
+	        	SRCHBL.push_back(line);
+		 }
+	 }
 	 //Get the working directory and load the config
-	 LoadCFG(WorkingDir + L"\\DirNonShortcuts.cfg");
+	 LoadCFG(WorkingDir);
 	 ListDirectories(dirarg);
 	 return 0;
 }
 
+vector<wstring> split(const std::wstring& input, wchar_t c) {
+	vector<wstring> arr;
+    size_t startPos = 0;
+    size_t foundPos = input.find(c, startPos);
+    while (foundPos != std::wstring::npos)
+    {
+        std::wstring sub = input.substr(startPos, foundPos - startPos);
+        arr.push_back(sub);
+        startPos = foundPos + 1;
+        foundPos = input.find(L';', startPos);
+    }
+    std::wstring lastSub = input.substr(startPos);
+    arr.push_back(lastSub);
+    return arr;
+}
 bool parseBool(wstring s)
 {
 	return s.size() > 0 ? (tolower(trim(s)) == L"true") : false;
@@ -420,8 +451,10 @@ bool exists(const std::wstring& filePath) {
     return fileAttributes != INVALID_FILE_ATTRIBUTES;
 }
 
-void LoadCFG(wstring cfg)
+void LoadCFG(wstring workdir)
 {
+	wstring cfg = workdir + L"\\DirNonShortcuts.cfg";
+	wstring cfgsrch = workdir + L"\\DirSRCHBlacklist.cfg";
 	//create config file if it doesn't exist and then read config file
 	if(!exists(cfg))
 	{
@@ -454,7 +487,8 @@ void LoadCFG(wstring cfg)
         while (std::getline(file, line))
         {
         	line = trim(line.substr(IndexOf(line, L"=") + 1));
-        	NoLNKS.push_back(fromHex(line));
+        	if(line != L"")
+        		NoLNKS.push_back(fromHex(line));
         }
     }
     else
@@ -462,14 +496,41 @@ void LoadCFG(wstring cfg)
         std::wcerr << L"Err Loading Config: " << GetLastError() << std::endl;
     }
     file.close();
+
+    //Parse Search Blacklist
+	if(!exists(cfgsrch))
+	{
+		std::wofstream filewriter(cfgsrch.c_str());
+		filewriter << L"C:\\Windows\\servicing" << endl;
+		filewriter << L"C:\\Windows\\WinSxS" << endl;
+		filewriter.close();
+	}
+    std::wifstream srchfile(cfgsrch.c_str());
+    if (srchfile.is_open())
+    {
+        std::wstring line;
+        while (std::getline(srchfile, line))
+        {
+        	line = trim(line.substr(IndexOf(line, L"=") + 1));
+        	if(line.substr(1, 1) == L":")
+        		line = line.substr(2);
+        	if(line != L"")
+        		SRCHBL.push_back(line);
+        }
+    }
+    else
+    {
+        std::wcerr << L"Err Loading Blacklist: " << GetLastError() << std::endl;
+    }
+    srchfile.close();
 }
 
 void help()
 {
 	wcout << L"" << endl;
-	wcout << L"##################################################################################" << endl;
-	wcout << L"DirSafe.exe <DIR Or Dir;Dir2\\*PDF|File*.txt> <BOOL RECURSE> <BOOL BARE> <ATTRIBS>" << endl;
-	wcout << L"##################################################################################" << endl;
+	wcout << L"###############################################################################################" << endl;
+	wcout << L"DirSafe.exe <DIR Or Dir;Dir2\\*PDF|File*.txt> <BOOL RECURSE> <BOOL BARE> <ATTRIBS> <Exclusions>" << endl;
+	wcout << L"###############################################################################################" << endl;
 	wcout << L"A Archiving" << endl;
 	wcout << L"D Dirs" << endl;
 	wcout << L"H Hidden" << endl;
