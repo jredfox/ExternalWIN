@@ -54,6 +54,7 @@ DWORD GetReparsePointId(wstring &path, DWORD &att);
 wstring getTarget(wstring &path);
 bool foundFile(wstring &path, wstring &n, DWORD &attr, DWORD &RPID);
 std::wstring GetAbsolutePath(const std::wstring& path);
+void help();
 
 bool EndsWith (const std::wstring &fullString, const std::wstring &ending);
 wstring toHex(unsigned long v);
@@ -77,6 +78,10 @@ int main(int a, char* sargs[]) {
 	 if(argc > 1)
 	 {
 		 dirarg = wstring(args[1]);
+		 //Implement the Help command
+		 wstring strhelp = tolower(trim(dirarg));
+		 if(strhelp == L"/?" || strhelp == L"/help")
+			 help();
 		 if(dirarg.size() > 1 && EndsWith(dirarg, L"\""))
 			dirarg = dirarg.substr(0, dirarg.length() - 1);
 		 if(dirarg.size() > 1 && EndsWith(dirarg, L"\\"))
@@ -457,4 +462,22 @@ void LoadCFG(wstring cfg)
         std::wcerr << L"Err Loading Config: " << GetLastError() << std::endl;
     }
     file.close();
+}
+
+void help()
+{
+	wcout << L"" << endl;
+	wcout << L"##################################################################################" << endl;
+	wcout << L"DirSafe.exe <DIR Or Dir;Dir2\\*PDF|File*.txt> <BOOL RECURSE> <BOOL BARE> <ATTRIBS>" << endl;
+	wcout << L"##################################################################################" << endl;
+	wcout << L"A Archiving" << endl;
+	wcout << L"D Dirs" << endl;
+	wcout << L"H Hidden" << endl;
+	wcout << L"I Not Indexed" << endl;
+	wcout << L"L Reparse Points" << endl;
+	wcout << L"O Offline" << endl;
+	wcout << L"R ReadOnly" << endl;
+	wcout << L"S System" << endl;
+	wcout << L"- Prefix meaning not" << endl;
+	exit(0);
 }
