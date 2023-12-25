@@ -104,7 +104,7 @@ int main() {
 		dirarg = wstring(args[1]);
 		//Implement the Help command
 		wstring strhelp = tolower(trim(dirarg));
-		if(strhelp == L"/?" || strhelp == L"/help")
+		if(strhelp == L"\\?" || strhelp == L"\\help")
 			help();
 
 		dirarg = GetAbsolutePath(dirarg);
@@ -126,12 +126,6 @@ int main() {
 	 if(argc > 4) {
     	Attribs = toupper(trim(args[4]));
     	ParseAttribs(Attribs);
-//    	for(DWORD d : AttribsFilter)
-//    		wcout << toHex(d) << endl;
-//    	wcout << "BL" << endl;
-//    	for(DWORD d : AttribsFilterBL)
-//    		wcout << toHex(d) << endl;
-//    	exit(0);
 	 }
 	 //Dynamic Exclusions
 	 if(argc > 5)
@@ -518,17 +512,26 @@ void LoadCFG(wstring workdir)
 void help()
 {
 	wcout << L"" << endl;
-	wcout << L"###############################################################################################" << endl;
-	wcout << L"DirSafe.exe <DIR Or Dir;Dir2\\*PDF|File*.txt> <BOOL RECURSE> <BOOL BARE> <ATTRIBS> <Exclusions>" << endl;
-	wcout << L"###############################################################################################" << endl;
+	wcout << L"###################################################################################################################" << endl;
+	wcout << L"DirSafe.exe <DIR Or Dir;Dir2\\*PDF|File*.txt> <BOOL RECURSE> <BOOL BARE> <ATTRIBS> <REPARSEPOINTS> <Exclusion;Dir2>" << endl;
+	wcout << L"###################################################################################################################" << endl;
 	wcout << L"A Archiving" << endl;
-	wcout << L"D Dirs" << endl;
+	wcout << L"B SMR Blob" << endl;
+	wcout << L"D Directories" << endl;
+	wcout << L"C Compressed" << endl;
+	wcout << L"E Encrypted" << endl;
 	wcout << L"H Hidden" << endl;
 	wcout << L"I Not Indexed" << endl;
 	wcout << L"L Reparse Points" << endl;
+	wcout << L"M Recall On Data Access" << endl;
 	wcout << L"O Offline" << endl;
+	wcout << L"P Pinned" << endl;
+	wcout << L"Q Recall On Open" << endl;
 	wcout << L"R ReadOnly" << endl;
 	wcout << L"S System" << endl;
+	wcout << L"U UnPinned" << endl;
+	wcout << L"V Integrity(ReFS)" << endl;
+	wcout << L"X No Scrub(ReFS)" << endl;
 	wcout << L"- Prefix meaning not" << endl;
 	exit(0);
 }
