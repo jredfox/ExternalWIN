@@ -715,7 +715,7 @@ vector<wstring> split(const std::wstring& input, wchar_t c) {
         std::wstring sub = input.substr(startPos, foundPos - startPos);
         arr.push_back(sub);
         startPos = foundPos + 1;
-        foundPos = input.find(L';', startPos);
+        foundPos = input.find(c, startPos);
     }
     std::wstring lastSub = input.substr(startPos);
     arr.push_back(lastSub);
