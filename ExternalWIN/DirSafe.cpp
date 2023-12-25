@@ -69,27 +69,60 @@ wstring tolower(wstring s);
 wstring trim(wstring str);
 wstring toupper(wstring s);
 vector<wstring> split(const std::wstring& input, wchar_t c);
+wstring AddSlash(wstring &s);
+bool isBlackListed(const wstring &dir);
 
-int main(int a, char* sargs[]) {
+std::wstring ReplaceAll(std::wstring& str, const std::wstring& from, const std::wstring& to) {
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+    }
+    return str;
+}
+
+LPWSTR toLPWSTR(const std::wstring& str) {
+    // Allocate memory for LPWSTR
+    LPWSTR lpwstr = new wchar_t[str.size() + 1]; // +1 for  null terminator
+
+    // Copy the content of std::wstring into LPWSTR
+    wcscpy_s(lpwstr, str.size() + 1, str.c_str());
+
+    return lpwstr;
+}
+
+int main() {
 	setlocale(LC_CTYPE, "");
 	_setmode( _fileno(stdout), _O_U8TEXT );
+
+	//Make the command lines suitable for paths
+	wstring cmdline = GetCommandLineW();
+	ReplaceAll(cmdline, L"\\\\", L"\\");
+	ReplaceAll(cmdline, L"\\", L"/");
+	LPWSTR lpwstrcmd = toLPWSTR(cmdline);
 	int argc;
-	LPWSTR* args = CommandLineToArgvW(GetCommandLineW(), &argc);
-	//Parse command Line Args
+	LPWSTR* cargs = CommandLineToArgvW(lpwstrcmd, &argc);
+	vector<wstring> args;
+	for(int i=0; i < argc; i++)
+	{
+		wstring s = cargs[i];
+		args.push_back(ReplaceAll(s, L"/", L"\\"));
+	}
+
 	wstring WorkingDir = parent(wstring(args[0]));
 	wstring dirarg;
-	 if(argc > 1)
-	 {
-		 dirarg = wstring(args[1]);
-		 //Implement the Help command
-		 wstring strhelp = tolower(trim(dirarg));
-		 if(strhelp == L"/?" || strhelp == L"/help")
-			 help();
-		 if(dirarg.size() > 1 && EndsWith(dirarg, L"\""))
+	if(argc > 1)
+	{
+		dirarg = wstring(args[1]);
+		//Implement the Help command
+		wstring strhelp = tolower(trim(dirarg));
+		if(strhelp == L"/?" || strhelp == L"/help")
+			help();
+		//Handle errors
+		if(dirarg.size() > 1 && EndsWith(dirarg, L"\\"))
 			dirarg = dirarg.substr(0, dirarg.length() - 1);
-		 if(dirarg.size() > 1 && EndsWith(dirarg, L"\\"))
-			dirarg = dirarg.substr(0, dirarg.length() - 1);
-		 dirarg = GetAbsolutePath(dirarg);
+
+		dirarg = GetAbsolutePath(dirarg);
 	 }
 	 else
 	 {
@@ -110,17 +143,41 @@ int main(int a, char* sargs[]) {
 		 vector<wstring> bl = split(trim(args[5]), L';');
 		 for(wstring line : bl)
 		 {
-	        line = trim(line.substr(IndexOf(line, L"=") + 1));
+	        line = tolower(trim(line));
 	        if(line.substr(1, 1) == L":")
 	        	line = line.substr(2);
 	        if(line != L"")
-	        	SRCHBL.push_back(line);
+	        	SRCHBL.push_back(AddSlash(line));
 		 }
 	 }
 	 //Get the working directory and load the config
 	 LoadCFG(WorkingDir);
 	 ListDirectories(dirarg);
 	 return 0;
+}
+
+bool isBlackListed(const wstring &c)
+{
+	//transform the path into an exclusion comparable path
+	wstring child = tolower(c);
+    if(child.substr(1, 1) == L":") {
+    	child = child.substr(2);
+    }
+	if(child.back() != L'\\') {
+		child = child + L"\\";
+	}
+
+	for(wstring parent : SRCHBL)
+		if(IndexOf(child, parent) == 0)
+			return true;
+	return false;
+}
+
+wstring AddSlash(wstring &s)
+{
+	if((s.size() > 1) && (s.back() != L'\\'))
+		s = s + L"\\";
+	return s;
 }
 
 vector<wstring> split(const std::wstring& input, wchar_t c) {
@@ -158,13 +215,17 @@ wstring tolower(wstring s)
 }
 
 std::wstring GetAbsolutePath(const std::wstring& path) {
-	wstring copypath = path;
-	//handle empty strings
-	if(trim(copypath) == L"")
+	wstring copypath = trim(path);
+	//handle empty strings or drives
+	if(copypath == L"")
 	{
 		wchar_t buffer[MAX_PATH];
 		GetCurrentDirectoryW(MAX_PATH, buffer);
 		return wstring(buffer);
+	}
+	else if((copypath.size() == 2) && (copypath.substr(1, 1) == L":"))
+	{
+		return copypath + L"\\";
 	}
     wchar_t absolutePath[MAX_PATH];
 
@@ -180,6 +241,10 @@ std::wstring GetAbsolutePath(const std::wstring& path) {
 }
 
 void ListDirectories(const std::wstring& directory) {
+	if(isBlackListed(directory))
+	{
+		return;
+	}
     WIN32_FIND_DATAW findFileData;
     HANDLE hFind = INVALID_HANDLE_VALUE;
 
@@ -511,11 +576,11 @@ void LoadCFG(wstring workdir)
         std::wstring line;
         while (std::getline(srchfile, line))
         {
-        	line = trim(line.substr(IndexOf(line, L"=") + 1));
+        	line = tolower(trim(line));
         	if(line.substr(1, 1) == L":")
         		line = line.substr(2);
         	if(line != L"")
-        		SRCHBL.push_back(line);
+        		SRCHBL.push_back(AddSlash(line));
         }
     }
     else
