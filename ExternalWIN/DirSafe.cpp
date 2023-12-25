@@ -46,7 +46,8 @@ bool Bare = false;
 wstring Attribs = L"";
 vector<DWORD> NoLNKS;
 vector<wstring> SRCHBL;
-
+vector<DWORD> AttribsFilter;
+vector<DWORD> AttribsFilterBL;
 //Declare program Methods here
 void ListDirectories(const std::wstring& directory);
 bool isBlackListed(const wstring &dir);
@@ -58,6 +59,7 @@ wstring GetTarget(wstring &path);
 std::wstring GetAbsolutePath(const std::wstring& path);
 void LoadCFG(wstring cfg);
 void help();
+void ParseAttribs(wstring att);
 
 //Declare Utility methods here
 wstring AddSlash(wstring &s);
@@ -94,6 +96,7 @@ int main() {
 		args.push_back(ReplaceAll(s, L"/", L"\\"));
 	}
 
+	//Parse Args
 	wstring WorkingDir = parent(wstring(args[0]));
 	wstring dirarg;
 	if(argc > 1)
@@ -103,11 +106,12 @@ int main() {
 		wstring strhelp = tolower(trim(dirarg));
 		if(strhelp == L"/?" || strhelp == L"/help")
 			help();
-		//Handle errors
-		if(dirarg.size() > 1 && EndsWith(dirarg, L"\\"))
-			dirarg = dirarg.substr(0, dirarg.length() - 1);
 
 		dirarg = GetAbsolutePath(dirarg);
+		//Handle Errors
+		if(dirarg.size() > 3 && EndsWith(dirarg, L"\\")) {
+			dirarg = dirarg.substr(0, dirarg.length() - 1);
+		}
 	 }
 	 else
 	 {
@@ -121,6 +125,13 @@ int main() {
 	 }
 	 if(argc > 4) {
     	Attribs = toupper(trim(args[4]));
+    	ParseAttribs(Attribs);
+//    	for(DWORD d : AttribsFilter)
+//    		wcout << toHex(d) << endl;
+//    	wcout << "BL" << endl;
+//    	for(DWORD d : AttribsFilterBL)
+//    		wcout << toHex(d) << endl;
+//    	exit(0);
 	 }
 	 //Dynamic Exclusions
 	 if(argc > 5)
@@ -244,11 +255,11 @@ bool isBlackListed(const wstring &c)
 
 bool foundFile(wstring &path, wstring &name, DWORD &attr, DWORD &RPID)
 {
-	if ((name != L".") && (name != L".."))
+	if ((name == L".") && (name == L".."))
 	{
-		return true;
+		return false;
 	}
-	return false;
+	return true;
 }
 
 /**
@@ -496,6 +507,77 @@ void help()
 	wcout << L"S System" << endl;
 	wcout << L"- Prefix meaning not" << endl;
 	exit(0);
+}
+
+/**
+ * parse the attributes variable from a string into the AttribsFilter & AttribsFilterBL
+ */
+void ParseAttribs(wstring att)
+{
+	vector<DWORD>* attribs = &AttribsFilter;
+	for (wchar_t ch : att)
+	{
+		switch (ch)
+		{
+			case L'-':
+				attribs = &AttribsFilterBL;
+			break;
+			case L'R':
+				attribs->push_back(FILE_ATTRIBUTE_READONLY);
+			break;
+			case L'H':
+				attribs->push_back(FILE_ATTRIBUTE_HIDDEN);
+			break;
+			case L'S':
+				attribs->push_back(FILE_ATTRIBUTE_SYSTEM);
+			break;
+			case L'D':
+				attribs->push_back(FILE_ATTRIBUTE_DIRECTORY);
+			break;
+			case L'A':
+				attribs->push_back(FILE_ATTRIBUTE_ARCHIVE);
+			break;
+			case L'L':
+				attribs->push_back(FILE_ATTRIBUTE_REPARSE_POINT);
+			break;
+			case L'O':
+				attribs->push_back(FILE_ATTRIBUTE_OFFLINE);
+			break;
+			case L'I':
+				attribs->push_back(FILE_ATTRIBUTE_NOT_CONTENT_INDEXED);
+			break;
+			//START Extended Attributes
+			case L'P':
+				attribs->push_back(FILE_ATTRIBUTE_PINNED);
+			break;
+			case L'U':
+				attribs->push_back(FILE_ATTRIBUTE_UNPINNED);
+			break;
+			//OneDrive or cloud files but they won't always have this attribute reparse points are more reliable in determining onedrive files
+			case L'M':
+				attribs->push_back(FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS);
+			break;
+			case L'C':
+				attribs->push_back(FILE_ATTRIBUTE_COMPRESSED);
+			break;
+			case L'E':
+				attribs->push_back(FILE_ATTRIBUTE_ENCRYPTED);
+			break;
+			//ReFS attribs
+			case L'X':
+				attribs->push_back(FILE_ATTRIBUTE_NO_SCRUB_DATA);
+			break;
+			case L'V':
+				attribs->push_back(FILE_ATTRIBUTE_INTEGRITY_STREAM);
+			break;
+			case L'B':
+				attribs->push_back(FILE_ATTRIBUTE_STRICTLY_SEQUENTIAL);
+			break;
+			default:
+            // Do nothing or add cases for other characters if needed
+            break;
+		}
+	}
 }
 
 //#####################
