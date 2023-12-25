@@ -48,6 +48,8 @@ vector<DWORD> NoLNKS;
 vector<wstring> SRCHBL;
 vector<DWORD> AttribsFilter;
 vector<DWORD> AttribsFilterBL;
+vector<DWORD> RPFilter;
+bool HasRPF = false;
 //Declare program Methods here
 void ListDirectories(const std::wstring& directory);
 bool isBlackListed(const wstring &dir);
@@ -127,8 +129,19 @@ int main() {
     	Attribs = toupper(trim(args[4]));
     	ParseAttribs(Attribs);
 	 }
+	 if(argc > 5) {
+		vector<wstring> rps = split(toupper(trim(args[5])), L';');
+		for(wstring r : rps)
+		{
+			if(!r.empty())
+			{
+				HasRPF = true;
+				RPFilter.push_back(fromHex(trim(r)));
+			}
+		}
+	 }
 	 //Dynamic Exclusions
-	 if(argc > 5)
+	 if(argc > 6)
 	 {
 		 vector<wstring> bl = split(trim(args[5]), L';');
 		 for(wstring line : bl)
@@ -270,10 +283,29 @@ bool isAtt(DWORD &att)
 	return true;//if att is not on the blacklist and has no attribute filter return true otherwise it's false
 }
 
+/**
+ * ReparsePoint Filter
+ */
+bool isRP(wstring &path, DWORD &attr)
+{
+	if(!HasRPF)
+		return true;
+	DWORD tag = GetReparsePointId(path, attr);
+	if(tag != 0)
+	{
+		for(DWORD d : RPFilter)
+		{
+			if(d == tag)
+				return true;
+		}
+	}
+	return false;
+}
+
 
 bool foundFile(wstring &path, wstring &name, DWORD &attr, DWORD &RPID)
 {
-	if ((name == L".") || (name == L"..") || !isAtt(attr))
+	if ((name == L".") || (name == L"..") || !isAtt(attr) || !isRP(path, attr))
 	{
 		return false;
 	}
