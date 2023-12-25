@@ -1,0 +1,23 @@
+Download and install MinGWxARCH(x64 x86 arm64) with win32(API TYPE) and msvcrt(THREAD MODEL)
+Project --> Properties --> C/C++ Build --> Settings --> MinGW C++ Linker --> Miscellaneous --> Add option "-static -static-libgcc -static-libstdc++"
+
+DirSafe.exe
+- Recursion safe directory walker
+- Dynamic & Static Exclusions
+- Attribute Filter
+- Reparse Point Filter (Junction / Mount Point, Symlink, Symlinkd)
+- Multi Directory seperated by ;
+- WildCards seperated by | (support wildcard file names, wildcard blacklist directory and file names)
+
+TODO:
+- Attributes Advanced filter with OOP objects format:[SHA|OM-I--D] -Means not for that attr comparison --Means globally not.
+- RP Advanced filter that allows for disabling directory or file per tag F = Files or D = Directory and unspecified is both
+
+Additional Options:
+- Throw file not found error if no files are found for for any directory searched
+- Time and File Sizes for Normal and Parsible
+
+Printing options
+N = Normal <type> C:\path [target]
+B = Bare C:\path
+P = Parsible everyting in <type> <path> <target>

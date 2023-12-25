@@ -29,7 +29,8 @@ Changelog 1.0.12 (BUG MUNCHER II):
 - Changed LoadConfig.bat now gets called in WinPE as most of the config options are now both for WinPE and Windows
 
 Issues:
-- dir /S recursion issue
+- dirsafe.exe make sure it's running from %SYSTEMROOT% if not winpe
+- finish dirsafe.exe
 - Almost all Batch For Commands need to be changed to type if it's reading from a file that may contain special characters
 
 MASTER TODOO:
