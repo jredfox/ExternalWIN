@@ -143,7 +143,7 @@ int main() {
 	 //Dynamic Exclusions
 	 if(argc > 6)
 	 {
-		 vector<wstring> bl = split(trim(args[5]), L';');
+		 vector<wstring> bl = split(trim(args[6]), L';');
 		 for(wstring line : bl)
 		 {
 	        line = tolower(trim(line));
