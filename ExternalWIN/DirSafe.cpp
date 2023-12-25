@@ -194,6 +194,7 @@ void ListDirectories(const std::wstring& directory) {
 				type = L"<DIR> ";
 			}
     	}
+
 		if(foundFile(currentPath, name, att, rpid))
 		{
 			//print the initial directory
@@ -253,9 +254,32 @@ bool isBlackListed(const wstring &c)
 	return false;
 }
 
+/**
+ * The Attribute Filter
+ */
+bool isAtt(DWORD &att)
+{
+	for(DWORD d : AttribsFilterBL)
+	{
+		if(att & d)
+		{
+			return false;
+		}
+	}
+	for(DWORD d : AttribsFilter)
+	{
+		if(!(att & d))
+		{
+			return false;
+		}
+	}
+	return true;//if att is not on the blacklist and has no attribute filter return true otherwise it's false
+}
+
+
 bool foundFile(wstring &path, wstring &name, DWORD &attr, DWORD &RPID)
 {
-	if ((name == L".") || (name == L".."))
+	if ((name == L".") || (name == L"..") || !isAtt(attr))
 	{
 		return false;
 	}
@@ -556,6 +580,9 @@ void ParseAttribs(wstring att)
 			//OneDrive or cloud files but they won't always have this attribute reparse points are more reliable in determining onedrive files
 			case L'M':
 				attribs->push_back(FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS);
+			break;
+			case L'Q':
+				attribs->push_back(FILE_ATTRIBUTE_RECALL_ON_OPEN);
 			break;
 			case L'C':
 				attribs->push_back(FILE_ATTRIBUTE_COMPRESSED);
