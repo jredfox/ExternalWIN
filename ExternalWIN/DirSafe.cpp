@@ -47,49 +47,34 @@ wstring Attribs = L"";
 vector<DWORD> NoLNKS;
 vector<wstring> SRCHBL;
 
-//Declare Methods here
+//Declare program Methods here
 void ListDirectories(const std::wstring& directory);
-bool isLink(DWORD &RPID);
-DWORD GetRPTag(wstring &path);
-DWORD GetReparsePointId(wstring &path, DWORD &att);
-wstring getTarget(wstring &path);
+bool isBlackListed(const wstring &dir);
 bool foundFile(wstring &path, wstring &n, DWORD &attr, DWORD &RPID);
+bool isLink(DWORD &RPID);
+DWORD GetReparsePointId(wstring &path, DWORD &att);
+DWORD GetRPTag(wstring &path);
+wstring GetTarget(wstring &path);
 std::wstring GetAbsolutePath(const std::wstring& path);
+void LoadCFG(wstring cfg);
 void help();
 
+//Declare Utility methods here
+wstring AddSlash(wstring &s);
 bool EndsWith (const std::wstring &fullString, const std::wstring &ending);
-wstring toHex(unsigned long v);
+bool exists(const std::wstring& filePath);
 DWORD fromHex(wstring v);
 int IndexOf(wstring str, wstring key);
-int revIndexOf(wstring str, wstring key);
 wstring parent(wstring path);
-void LoadCFG(wstring cfg);
 bool parseBool(wstring s);
-wstring tolower(wstring s);
-wstring trim(wstring str);
-wstring toupper(wstring s);
+wstring ReplaceAll(wstring& str, const wstring& from, const wstring& to);
+int revIndexOf(wstring str, wstring key);
 vector<wstring> split(const std::wstring& input, wchar_t c);
-wstring AddSlash(wstring &s);
-bool isBlackListed(const wstring &dir);
-
-std::wstring ReplaceAll(std::wstring& str, const std::wstring& from, const std::wstring& to) {
-    size_t start_pos = 0;
-    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
-        str.replace(start_pos, from.length(), to);
-        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
-    }
-    return str;
-}
-
-LPWSTR toLPWSTR(const std::wstring& str) {
-    // Allocate memory for LPWSTR
-    LPWSTR lpwstr = new wchar_t[str.size() + 1]; // +1 for  null terminator
-
-    // Copy the content of std::wstring into LPWSTR
-    wcscpy_s(lpwstr, str.size() + 1, str.c_str());
-
-    return lpwstr;
-}
+wstring toHex(unsigned long v);
+wstring tolower(wstring s);
+LPWSTR toLPWSTR(const std::wstring& str);
+wstring toupper(wstring s);
+wstring trim(wstring str);
 
 int main() {
 	setlocale(LC_CTYPE, "");
@@ -156,90 +141,6 @@ int main() {
 	 return 0;
 }
 
-bool isBlackListed(const wstring &c)
-{
-	//transform the path into an exclusion comparable path
-	wstring child = tolower(c);
-    if(child.substr(1, 1) == L":") {
-    	child = child.substr(2);
-    }
-	if(child.back() != L'\\') {
-		child = child + L"\\";
-	}
-
-	for(wstring parent : SRCHBL)
-		if(IndexOf(child, parent) == 0)
-			return true;
-	return false;
-}
-
-wstring AddSlash(wstring &s)
-{
-	if((s.size() > 1) && (s.back() != L'\\'))
-		s = s + L"\\";
-	return s;
-}
-
-vector<wstring> split(const std::wstring& input, wchar_t c) {
-	vector<wstring> arr;
-    size_t startPos = 0;
-    size_t foundPos = input.find(c, startPos);
-    while (foundPos != std::wstring::npos)
-    {
-        std::wstring sub = input.substr(startPos, foundPos - startPos);
-        arr.push_back(sub);
-        startPos = foundPos + 1;
-        foundPos = input.find(L';', startPos);
-    }
-    std::wstring lastSub = input.substr(startPos);
-    arr.push_back(lastSub);
-    return arr;
-}
-bool parseBool(wstring s)
-{
-	return s.size() > 0 ? (tolower(trim(s)) == L"true") : false;
-}
-
-wstring toupper(wstring s)
-{
-	for(auto& c : s)
-		c = toupper(c);
-	return s;
-}
-
-wstring tolower(wstring s)
-{
-	for(auto& c : s)
-		c = tolower(c);
-	return s;
-}
-
-std::wstring GetAbsolutePath(const std::wstring& path) {
-	wstring copypath = trim(path);
-	//handle empty strings or drives
-	if(copypath == L"")
-	{
-		wchar_t buffer[MAX_PATH];
-		GetCurrentDirectoryW(MAX_PATH, buffer);
-		return wstring(buffer);
-	}
-	else if((copypath.size() == 2) && (copypath.substr(1, 1) == L":"))
-	{
-		return copypath + L"\\";
-	}
-    wchar_t absolutePath[MAX_PATH];
-
-    DWORD length = GetFullPathNameW(path.c_str(), MAX_PATH, absolutePath, nullptr);
-
-    if (length == 0) {
-        // Handle error
-        std::wcerr << L"Error getting absolute path." << std::endl;
-        return L"";
-    }
-
-    return std::wstring(absolutePath);
-}
-
 void ListDirectories(const std::wstring& directory) {
 	if(isBlackListed(directory))
 	{
@@ -269,12 +170,12 @@ void ListDirectories(const std::wstring& directory) {
     	{
 			if(rpid == IO_REPARSE_TAG_MOUNT_POINT)
 			{
-				targ = L" [" + getTarget(currentPath) + L"]";
+				targ = L" [" + GetTarget(currentPath) + L"]";
 				type = L"<JUNCTION> ";
 			}
 			else if(rpid == IO_REPARSE_TAG_SYMLINK)
 			{
-				targ = L" [" + getTarget(currentPath) + L"]";
+				targ = L" [" + GetTarget(currentPath) + L"]";
 				type = isDIR ? L"<SYMLINKD> " : L"<SYMLINK> ";
 			}
 			else if(isDIR)
@@ -322,6 +223,23 @@ void ListDirectories(const std::wstring& directory) {
 		}
 		FindClose(hFind);
     }
+}
+
+bool isBlackListed(const wstring &c)
+{
+	//transform the path into an exclusion comparable path
+	wstring child = tolower(c);
+    if(child.substr(1, 1) == L":") {
+    	child = child.substr(2);
+    }
+	if(child.back() != L'\\') {
+		child = child + L"\\";
+	}
+
+	for(wstring parent : SRCHBL)
+		if(IndexOf(child, parent) == 0)
+			return true;
+	return false;
 }
 
 bool foundFile(wstring &path, wstring &name, DWORD &attr, DWORD &RPID)
@@ -396,7 +314,7 @@ DWORD GetRPTag(wstring &path)
     return tag;
 }
 
-wstring getTarget(wstring &path)
+wstring GetTarget(wstring &path)
 {
 	HANDLE hFile = CreateFileW(path.c_str(),
 			FILE_READ_EA, //0,
@@ -462,58 +380,30 @@ wstring getTarget(wstring &path)
     return targ;
 }
 
-bool EndsWith (const std::wstring &fullString, const std::wstring &ending) {
-    if (fullString.length() >= ending.length()) {
-        return (0 == fullString.compare (fullString.length() - ending.length(), ending.length(), ending));
-    } else {
-        return false;
+wstring GetAbsolutePath(const std::wstring& path) {
+	wstring copypath = trim(path);
+	//handle empty strings or drives
+	if(copypath == L"")
+	{
+		wchar_t buffer[MAX_PATH];
+		GetCurrentDirectoryW(MAX_PATH, buffer);
+		return wstring(buffer);
+	}
+	else if((copypath.size() == 2) && (copypath.substr(1, 1) == L":"))
+	{
+		return copypath + L"\\";
+	}
+    wchar_t absolutePath[MAX_PATH];
+
+    DWORD length = GetFullPathNameW(path.c_str(), MAX_PATH, absolutePath, nullptr);
+
+    if (length == 0) {
+        // Handle error
+        std::wcerr << L"Error getting absolute path." << std::endl;
+        return L"";
     }
-}
 
-DWORD fromHex(wstring v)
-{
-	return std::stoul(v, nullptr, 16);
-}
-
-wstring toHex(DWORD v)
-{
-	std::wstringstream ss;
-	ss << std::uppercase << L"0X" << std::setfill(L'0') << std::setw(8) << std::hex << v;
-	return ss.str();
-}
-
-int revIndexOf(wstring str, wstring key)
-{
-	size_t found = str.rfind(key);
-	if(found != std::string::npos)
-		 return static_cast<int>(found);
-	return -1;
-}
-
-int IndexOf(wstring str, wstring key)
-{
-	size_t found = str.find(key);
-	if(found != std::string::npos)
-		 return static_cast<int>(found);
-	return -1;
-}
-
-wstring parent(wstring path)
-{
-	int index = revIndexOf(path, L"\\");
-	return path.substr(0, index);
-}
-
-wstring trim(wstring str)
-{
-    str.erase(str.find_last_not_of(' ')+1);         //suffixing spaces
-    str.erase(0, str.find_first_not_of(' '));       //prefixing spaces
-    return str;
-}
-
-bool exists(const std::wstring& filePath) {
-    DWORD fileAttributes = GetFileAttributesW(filePath.c_str());
-    return fileAttributes != INVALID_FILE_ATTRIBUTES;
+    return std::wstring(absolutePath);
 }
 
 void LoadCFG(wstring workdir)
@@ -606,4 +496,118 @@ void help()
 	wcout << L"S System" << endl;
 	wcout << L"- Prefix meaning not" << endl;
 	exit(0);
+}
+
+//#####################
+//START UTILITY METHODS
+//#####################
+wstring AddSlash(wstring &s)
+{
+	if((s.size() > 1) && (s.back() != L'\\'))
+		s = s + L"\\";
+	return s;
+}
+
+bool EndsWith (const std::wstring &fullString, const std::wstring &ending) {
+    if (fullString.length() >= ending.length()) {
+        return (0 == fullString.compare (fullString.length() - ending.length(), ending.length(), ending));
+    } else {
+        return false;
+    }
+}
+
+bool exists(const std::wstring& filePath) {
+    DWORD fileAttributes = GetFileAttributesW(filePath.c_str());
+    return fileAttributes != INVALID_FILE_ATTRIBUTES;
+}
+
+DWORD fromHex(wstring v)
+{
+	return std::stoul(v, nullptr, 16);
+}
+
+int IndexOf(wstring str, wstring key)
+{
+	size_t found = str.find(key);
+	if(found != std::string::npos)
+		 return static_cast<int>(found);
+	return -1;
+}
+
+wstring parent(wstring path)
+{
+	int index = revIndexOf(path, L"\\");
+	return path.substr(0, index);
+}
+
+bool parseBool(wstring s)
+{
+	return s.size() > 0 ? (tolower(trim(s)) == L"true") : false;
+}
+
+wstring ReplaceAll(wstring& str, const wstring& from, const wstring& to) {
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+    }
+    return str;
+}
+
+int revIndexOf(wstring str, wstring key)
+{
+	size_t found = str.rfind(key);
+	if(found != std::string::npos)
+		 return static_cast<int>(found);
+	return -1;
+}
+
+vector<wstring> split(const std::wstring& input, wchar_t c) {
+	vector<wstring> arr;
+    size_t startPos = 0;
+    size_t foundPos = input.find(c, startPos);
+    while (foundPos != std::wstring::npos)
+    {
+        std::wstring sub = input.substr(startPos, foundPos - startPos);
+        arr.push_back(sub);
+        startPos = foundPos + 1;
+        foundPos = input.find(L';', startPos);
+    }
+    std::wstring lastSub = input.substr(startPos);
+    arr.push_back(lastSub);
+    return arr;
+}
+
+wstring toHex(DWORD v)
+{
+	std::wstringstream ss;
+	ss << std::uppercase << L"0X" << std::setfill(L'0') << std::setw(8) << std::hex << v;
+	return ss.str();
+}
+
+wstring tolower(wstring s)
+{
+	for(auto& c : s)
+		c = tolower(c);
+	return s;
+}
+
+wstring toupper(wstring s)
+{
+	for(auto& c : s)
+		c = toupper(c);
+	return s;
+}
+
+LPWSTR toLPWSTR(const std::wstring& str) {
+    LPWSTR lpwstr = new wchar_t[str.size() + 1];
+    wcscpy_s(lpwstr, str.size() + 1, str.c_str());
+    return lpwstr;
+}
+
+wstring trim(wstring str)
+{
+    str.erase(str.find_last_not_of(' ')+1);         //suffixing spaces
+    str.erase(0, str.find_first_not_of(' '));       //prefixing spaces
+    return str;
 }
