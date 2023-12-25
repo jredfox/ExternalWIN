@@ -109,7 +109,7 @@ int main() {
 
 		dirarg = GetAbsolutePath(dirarg);
 		//Handle Errors
-		if(dirarg.size() > 3 && EndsWith(dirarg, L"\\")) {
+		if(dirarg.size() > 1 && EndsWith(dirarg, L"\\")) {
 			dirarg = dirarg.substr(0, dirarg.length() - 1);
 		}
 	 }
@@ -199,7 +199,7 @@ void ListDirectories(const std::wstring& directory) {
 			//print the initial directory
 			if(!idir)
 			{
-				wcout << endl << L" Directory of " << directory << endl << endl;
+				wcout << endl << L" Directory of " << directory << (directory.size() < 3 ? (L"\\") : (L"")) << endl << endl;
 				idir = true;
 			}
 			if(Bare)
@@ -255,7 +255,7 @@ bool isBlackListed(const wstring &c)
 
 bool foundFile(wstring &path, wstring &name, DWORD &attr, DWORD &RPID)
 {
-	if ((name == L".") && (name == L".."))
+	if ((name == L".") || (name == L".."))
 	{
 		return false;
 	}
