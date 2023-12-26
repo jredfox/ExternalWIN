@@ -43,13 +43,14 @@ using namespace std;
 //Declare Vars here
 bool Recurse = false;
 bool Bare = false;
+bool HasRPF = false;
 wstring Attribs = L"";
 vector<DWORD> NoLNKS;
 vector<wstring> SRCHBL;
 vector<DWORD> AttribsFilter;
 vector<DWORD> AttribsFilterBL;
 vector<DWORD> RPFilter;
-bool HasRPF = false;
+
 //Declare program Methods here
 void ListDirectories(const std::wstring& directory);
 bool isBlackListed(const wstring &dir);
@@ -100,24 +101,29 @@ int main() {
 
 	//Parse Args
 	wstring WorkingDir = parent(wstring(args[0]));
-	wstring dirarg;
+	vector<wstring> dirpaths;
 	if(argc > 1)
 	{
-		dirarg = wstring(args[1]);
+		wstring dirstr = wstring(args[1]);
 		//Implement the Help command
-		wstring strhelp = tolower(trim(dirarg));
+		wstring strhelp = tolower(trim(dirstr));
 		if(strhelp == L"\\?" || strhelp == L"\\help")
 			help();
 
-		dirarg = GetAbsolutePath(dirarg);
-		//Handle Errors
-		if(dirarg.size() > 1 && EndsWith(dirarg, L"\\")) {
-			dirarg = dirarg.substr(0, dirarg.length() - 1);
+		vector<wstring> paths = split(dirstr, L';');
+		for(wstring d : paths)
+		{
+			wstring dirarg = GetAbsolutePath(d);
+			if(dirarg.size() > 1 && EndsWith(dirarg, L"\\"))
+			{
+				dirarg = dirarg.substr(0, dirarg.length() - 1);
+			}
+			dirpaths.push_back(dirarg);
 		}
 	 }
 	 else
 	 {
-		 dirarg = GetAbsolutePath(L"");
+		 dirpaths.push_back(GetAbsolutePath(L""));
 	 }
 	 if(argc > 2) {
     	Recurse = parseBool(trim(args[2]));
@@ -155,7 +161,10 @@ int main() {
 	 }
 	 //Get the working directory and load the config
 	 LoadCFG(WorkingDir);
-	 ListDirectories(dirarg);
+	 for(wstring d : dirpaths)
+	 {
+		 ListDirectories(d);
+	 }
 	 return 0;
 }
 
