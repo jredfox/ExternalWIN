@@ -111,7 +111,6 @@ int main() {
 		wstring strhelp = tolower(trim(dirstr));
 		if(strhelp == L"\\?" || strhelp == L"\\help")
 			help();
-
 		vector<wstring> paths = split(dirstr, L';');
 		for(wstring d : paths)
 		{
@@ -145,6 +144,9 @@ int main() {
 	 if(argc > 4) {
     	Attribs = toupper(trim(args[4]));
     	ParseAttribs(Attribs);
+	 }
+	 else {
+		 ParseAttribs(L"-HS");//Mimic Dir command by adding default attribute filter of not having hidden or system files
 	 }
 	 if(argc > 5) {
 		vector<wstring> rps = split(toupper(trim(args[5])), L';');
@@ -500,8 +502,8 @@ wstring GetAbsolutePath(const std::wstring& path) {
 
 void LoadCFG(wstring workdir)
 {
-	wstring cfg = workdir + L"\\DirNonShortcuts.cfg";
-	wstring cfgsrch = workdir + L"\\DirSRCHBlacklist.cfg";
+	wstring cfg = workdir + L"\\SRCHReparsePoints.cfg";
+	wstring cfgsrch = workdir + L"\\SRCHDirBlacklist.cfg";
 	//create config file if it doesn't exist and then read config file
 	if(!exists(cfg))
 	{
@@ -585,7 +587,7 @@ void help()
 	wcout << L"E Encrypted" << endl;
 	wcout << L"H Hidden" << endl;
 	wcout << L"I Not Indexed" << endl;
-	wcout << L"L Reparse Points" << endl;
+	wcout << L"L Reparse Point Links" << endl;
 	wcout << L"M Recall On Data Access" << endl;
 	wcout << L"O Offline" << endl;
 	wcout << L"P Pinned" << endl;
