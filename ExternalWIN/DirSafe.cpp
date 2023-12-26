@@ -43,6 +43,7 @@ using namespace std;
 //Declare Vars here
 bool Recurse = false;
 bool Bare = false;
+bool Parsible = false;
 bool HasRPF = false;
 bool FoundFile = false;
 wstring Attribs = L"";
@@ -129,8 +130,17 @@ int main() {
 	 if(argc > 2) {
     	Recurse = parseBool(trim(args[2]));
 	 }
-	 if(argc > 3) {
-    	Bare = parseBool(trim(args[3]));
+	 if(argc > 3)
+	 {
+    	wstring mode = toupper(trim(args[3])).substr(0, 1);
+    	if(mode == L"B")
+    	{
+    		Bare = true;
+    	}
+    	else if(mode == L"P")
+    	{
+    		Parsible = true;
+    	}
 	 }
 	 if(argc > 4) {
     	Attribs = toupper(trim(args[4]));
@@ -184,7 +194,7 @@ void ListDirectories(const std::wstring& directory) {
         wcerr << L"Access Denied: " << directory << std::endl;
         return;
     }
-    bool idir = Bare; //if bare is true don't print it
+    bool idir = false;
 
     do {
     	std::wstring currentPath = directory + L"\\" + findFileData.cFileName;
@@ -198,32 +208,42 @@ void ListDirectories(const std::wstring& directory) {
     	{
 			if(rpid == IO_REPARSE_TAG_MOUNT_POINT)
 			{
-				targ = L" [" + GetTarget(currentPath) + L"]";
+				targ = L" <" + GetTarget(currentPath) + L">";
 				type = L"<JUNCTION> ";
 			}
 			else if(rpid == IO_REPARSE_TAG_SYMLINK)
 			{
-				targ = L" [" + GetTarget(currentPath) + L"]";
+				targ = L" <" + GetTarget(currentPath) + L">";
 				type = isDIR ? L"<SYMLINKD> " : L"<SYMLINK> ";
 			}
 			else if(isDIR)
 			{
 				type = L"<DIR> ";
 			}
+			else if (Parsible)
+			{
+				type = L"<FILE> ";
+			}
     	}
 
 		if(foundFile(currentPath, name, att, rpid))
 		{
-			//print the initial directory
-			if(!idir)
-			{
-				wcout << endl << L" Directory of " << directory << (directory.size() < 3 ? (L"\\") : (L"")) << endl << endl;
-				idir = true;
+			if(Bare) {
+				wcout << currentPath << endl;
 			}
-			if(Bare)
-				wcout << type << currentPath << targ << endl;
+			else if(Parsible) {
+				wcout << type << "<" << currentPath << L">" << targ << endl;
+			}
 			else
-				wcout << type << findFileData.cFileName << targ << endl;
+			{
+				//print the initial directory
+				if(!idir)
+				{
+					wcout << endl << L" Directory of " << directory << (directory.size() < 3 ? (L"\\") : (L"")) << endl << endl;
+					idir = true;
+				}
+				wcout << type << name << targ << endl;
+			}
 		}
     } while (FindNextFileW(hFind, &findFileData) != 0);
     FindClose(hFind);

@@ -10,13 +10,31 @@ DirSafe.exe
 - WildCards seperated by | (support wildcard file names, wildcard blacklist directory and file names)
 
 TODO:
+- Printing Options
 - Attributes Advanced filter with OOP objects format:[SHA|OM-I--D] -Means not for that attr comparison --Means globally not.
 - RP Advanced filter that allows for disabling directory or file per tag F = Files or D = Directory and unspecified is both
-
-Additional Options:
-- Time and File Sizes for Normal and Parsible
+- Wildcards
 
 Printing options
-N = Normal <type> C:\path [target]
+N = Normal(DEFAULT) <type> C:\path [target]
 B = Bare C:\path
-P = Parsible everyting in <type> <path> <target>
+P = Parsible everyting <type> <path> <target>
+
+Missing featues With no plan on adding:
+- Sort Order(useful but not for ExternalWIN)
+- Timestamps(useful but not for ExternalWIN)
+- Non positional parameters(/A etc...)
+- 8dot names
+- File Ownership(unkown format unlike icalics command)
+- Random junk that shouldn't be there as it's useless like pause after each dir, /4 when the years are already 4 digets, wide list both varients etc...
+
+Improvements:
+- Safe Recursion on memory when walking through recursively of dirs
+- Safe Recursion that specifically avoids ReparsePoints that are not onedrive's
+- Parsible format for easy parsings
+- Multiple wildcards per directory entry
+- Directory entries are in argument one seperated by ";"
+- More Attributes like M or E to work with
+- Attribute filter allows for OR statements optimizing the time needed so you don't have to run the command multiple times for just comparing attributes
+- Reparse filter that allows you to filter all reparsepoint files of a certain reparse point id like symlinks or junctions
+- Dynamic Exclusions sep ";" (From command line argument 6) and Static(Configureable) exclusions from the config generated right next to it
