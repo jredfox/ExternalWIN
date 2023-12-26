@@ -43,7 +43,7 @@ using namespace std;
 //Declare Vars here
 bool Recurse = false;
 bool Bare = false;
-bool Parsible = false;
+bool Parseable = false;
 bool HasRPF = false;
 bool FoundFile = false;
 wstring Attribs = L"";
@@ -138,7 +138,7 @@ int main() {
     	}
     	else if(mode == L"P")
     	{
-    		Parsible = true;
+    		Parseable = true;
     	}
 	 }
 	 if(argc > 4) {
@@ -222,7 +222,7 @@ void ListDirectories(const std::wstring& directory) {
 			{
 				type = L"<DIR> ";
 			}
-			else if (Parsible)
+			else if (Parseable)
 			{
 				type = L"<FILE> ";
 			}
@@ -233,7 +233,7 @@ void ListDirectories(const std::wstring& directory) {
 			if(Bare) {
 				wcout << currentPath << endl;
 			}
-			else if(Parsible) {
+			else if(Parseable) {
 				wcout << type << "<" << currentPath << L">" << targ << endl;
 			}
 			else
@@ -578,8 +578,9 @@ void help()
 {
 	wcout << L"" << endl;
 	wcout << L"###################################################################################################################" << endl;
-	wcout << L"DirSafe.exe <DIR Or Dir;Dir2\\*PDF|File*.txt> <BOOL RECURSE> <BOOL BARE> <ATTRIBS> <REPARSEPOINTS> <Exclusion;Dir2>" << endl;
+	wcout << L"DirSafe.exe <DIR Or Dir;Dir2\\*PDF|File*.txt> <BOOL RECURSE> <PRINTTYPE> <ATTRIBS> <REPARSEPOINTS> <Exclusion;Dir2>" << endl;
 	wcout << L"###################################################################################################################" << endl;
+	wcout << L"PrintTypes:{N = Normal, B = Bare, P = Parseable}" << endl;
 	wcout << L"A Archiving" << endl;
 	wcout << L"B SMR Blob" << endl;
 	wcout << L"D Directories" << endl;
@@ -598,6 +599,7 @@ void help()
 	wcout << L"V Integrity(ReFS)" << endl;
 	wcout << L"X No Scrub(ReFS)" << endl;
 	wcout << L"- Prefix meaning not" << endl;
+	wcout << L"" << endl;
 	exit(0);
 }
 
