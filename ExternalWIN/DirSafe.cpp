@@ -44,6 +44,7 @@ using namespace std;
 bool Recurse = false;
 bool Bare = false;
 bool HasRPF = false;
+bool FoundFile = false;
 wstring Attribs = L"";
 vector<DWORD> NoLNKS;
 vector<wstring> SRCHBL;
@@ -165,7 +166,7 @@ int main() {
 	 {
 		 ListDirectories(d);
 	 }
-	 return 0;
+	 return FoundFile ? 0 : 404;
 }
 
 void ListDirectories(const std::wstring& directory) {
@@ -318,6 +319,7 @@ bool foundFile(wstring &path, wstring &name, DWORD &attr, DWORD &RPID)
 	{
 		return false;
 	}
+	FoundFile = true;
 	return true;
 }
 

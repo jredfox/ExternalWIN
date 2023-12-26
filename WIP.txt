@@ -10,14 +10,11 @@ DirSafe.exe
 - WildCards seperated by | (support wildcard file names, wildcard blacklist directory and file names)
 
 TODO:
-- Multi Dir seperated by ; in arg 1
 - Attributes Advanced filter with OOP objects format:[SHA|OM-I--D] -Means not for that attr comparison --Means globally not.
 - RP Advanced filter that allows for disabling directory or file per tag F = Files or D = Directory and unspecified is both
 
 Additional Options:
-- Throw file not found error if no files are found for for any directory searched
 - Time and File Sizes for Normal and Parsible
-- Wildcard filter seperated by |
 
 Printing options
 N = Normal <type> C:\path [target]
