@@ -10,7 +10,10 @@ DirSafe.exe
 - WildCards seperated by | (support wildcard file names, wildcard blacklist directory and file names)
 
 TODO:
+- RPFilter allow per file / directory choices instead of always both for example SYMBOLICLINK & Junction but not SYMBOLICLINK
 - Wildcards
+- Add Compatability Call to tell windows I am aware of OneDrive Reparse Points if the windows version is > then the min required build
+- TEST Attribute Filter fully
 
 Printing options
 N = Normal(DEFAULT) <type> C:\path <target>

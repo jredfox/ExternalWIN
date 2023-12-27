@@ -40,6 +40,10 @@ typedef struct _REPARSE_DATA_BUFFER {
 #endif
 using namespace std;
 
+//Declare classes here
+class AttFilter;
+class RPFilter;
+
 //Declare Vars here
 bool Recurse = false;
 bool Bare = false;
@@ -50,9 +54,6 @@ wstring Attribs = L"";
 vector<DWORD> NoLNKS;
 vector <DWORD> NoPrintLNKS;
 vector<wstring> SRCHBL;
-vector<DWORD> AttribsFilter;
-vector<DWORD> AttribsFilterBL;
-vector<DWORD> RPFilter;
 
 //Declare program Methods here
 void ListDirectories(const std::wstring& directory);
@@ -69,6 +70,8 @@ void LoadRPBL(wstring &cfg, vector<DWORD> &bl);
 void help();
 bool isAttr(DWORD &att, DWORD &RPID);
 void ParseAttribFilters(const wstring &attfilters);
+bool isRP(DWORD &attr, DWORD &RPID);
+void ParseRPFilters(const wstring &rpcmd);
 
 //Declare Utility methods here
 wstring AddSlash(wstring &s);
@@ -153,15 +156,7 @@ int main() {
 		 ParseAttribFilters(L"-HS");//Mimic Dir command by adding default attribute filter of not having hidden or system files
 	 }
 	 if(argc > 5) {
-		vector<wstring> rps = split(toupper(trim(args[5])), L';');
-		for(wstring r : rps)
-		{
-			if(!r.empty())
-			{
-				HasRPF = true;
-				RPFilter.push_back(fromHex(trim(r)));
-			}
-		}
+		ParseRPFilters(args[5]);
 	 }
 	 //Dynamic Exclusions
 	 if(argc > 6)
@@ -294,22 +289,6 @@ bool isBlackListed(const wstring &c)
 	for(wstring parent : SRCHBL)
 		if(IndexOf(child, parent) == 0)
 			return true;
-	return false;
-}
-
-/**
- * ReparsePoint Filter
- */
-bool isRP(DWORD &attr, DWORD &RPID)
-{
-	if(!HasRPF)
-		return true;
-	for(DWORD d : RPFilter)
-	{
-		//if it's the whitelisted RPID or if if NULL(0) is in the RPFilter and It's not a Link Print it
-		if(d == RPID || (d == 0 && !isPrintLink(RPID)))
-			return true;
-	}
 	return false;
 }
 
@@ -604,7 +583,6 @@ void help()
 //#####################
 //	START OOP METHODS
 //#####################
-class AttFilter;
 vector<DWORD> AttGlobalBL;
 vector<AttFilter> AttFilters;
 class AttFilter {
@@ -765,6 +743,77 @@ void ParseAttribFilters(const wstring &attfilters)
 	for(wstring attstr : attstrvec)
 	{
 		AttFilters.push_back(AttFilter(toupper(trim(attstr))));
+	}
+}
+
+vector<RPFilter> RPFilters;
+class RPFilter {
+public:
+	DWORD RPTag = -1;
+	bool File = false;
+	bool Dir = false;
+	RPFilter(){}
+	RPFilter(const wstring &e)
+	{
+		wstring entry = toupper(e);
+		vector<wstring> pair = split(entry, '=');
+		RPTag = fromHex(trim(pair[0]));
+		if(pair.size() > 1)
+		{
+			wstring var = trim(pair[1]);
+			for(wchar_t ch : var)
+			{
+				if(ch == L'D')
+				{
+					Dir = true;
+				}
+				else if(ch == L'F')
+				{
+					File = true;
+				}
+			}
+		}
+		else
+		{
+			Dir = true;
+			File = true;
+		}
+	}
+};
+
+/**
+ * ReparsePoint Filter
+ */
+bool isRP(DWORD &attr, DWORD &RPID)
+{
+	if(!HasRPF)
+		return true;
+	bool isDIR = attr & FILE_ATTRIBUTE_DIRECTORY;
+	for(RPFilter r : RPFilters)
+	{
+		if((isDIR ? r.Dir : r.File))
+		{
+			DWORD d = r.RPTag;
+			//if it's the whitelisted RPID or if if NULL(0) is in the RPFilter and It's not a Link Print it
+			if(d == RPID || (d == 0 && !isPrintLink(RPID)))
+				return true;
+		}
+	}
+	return false;
+}
+
+void ParseRPFilters(const wstring &rpstr)
+{
+	wstring rpcmd = rpstr;
+	ReplaceAll(rpcmd, L" ", L"");//remove all spaces
+	vector<wstring> rps = split(rpcmd, L';');
+	for(wstring rp : rps)
+	{
+		if(!rp.empty())
+		{
+			HasRPF = true;
+			RPFilters.push_back(RPFilter(rp));
+		}
 	}
 }
 
