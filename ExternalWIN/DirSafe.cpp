@@ -575,7 +575,9 @@ void help()
 	wcout << L"- Prefix meaning not" << endl;
 	wcout << L"-- Prefix meaning globally not" << endl;
 	wcout << L"| Separator Between Attribute Statements" << endl;
-	wcout << L"Example: \"LHS-O|OM--X\" Says L+H+S-O-X Or O+M-X" << endl;
+	wcout << L"Example Attributes: \"LHS-O|OM--X\" Says L+H+S-O-X Or O+M-X" << endl;
+	wcout << L"Example ReparsePoints: \"0;0xA0000003;0xA000000C=F;0xA000001D=D\" Says NormalFiles Or MountPoint(FD) Or SYMLINK as a File Or LX_SYMLINK as a DIR" << endl;
+	wcout << L"Example Exclusions: \"W:\\Windows\\System32;C:\\ExternalWIN\" Says Do not Search in System32 or ExternalWIN. Drives get Truncated" << endl;
 	wcout << L"" << endl;
 	exit(0);
 }
@@ -805,6 +807,7 @@ bool isRP(DWORD &attr, DWORD &RPID)
 void ParseRPFilters(const wstring &rpstr)
 {
 	wstring rpcmd = rpstr;
+	ReplaceAll(rpcmd, L"|", L";");//make RP filter user-freindly
 	ReplaceAll(rpcmd, L" ", L"");//remove all spaces
 	vector<wstring> rps = split(rpcmd, L';');
 	for(wstring rp : rps)
