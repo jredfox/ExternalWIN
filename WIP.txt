@@ -10,9 +10,7 @@ DirSafe.exe
 - WildCards seperated by | (support wildcard file names, wildcard blacklist directory and file names)
 
 TODO:
-- Attributes Advanced filter with OOP objects format:[SHA|OM-I--D] -Means not for that attr comparison --Means globally not.
-- RP Filter Advanced allow ; as sep per statement, | as statement seperator and - as a prefix not for that statement. -- for globally not
-- RP Filter Advanced example:0x80000021; -0x80000021 | 0x80000021 --0x80000021
+- RP Filter Advanced allow Not(-) Statements and don't return false if reparsepoint wasn't found if there are no required ones
 - Wildcards
 
 Printing options
