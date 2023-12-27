@@ -10,7 +10,6 @@ DirSafe.exe
 - WildCards seperated by | (support wildcard file names, wildcard blacklist directory and file names)
 
 TODO:
-- Attribute filter have blacklist of reparsepoints to not consider reparsepoints (ONEDRIVE)
 - Attributes Advanced filter with OOP objects format:[SHA|OM-I--D] -Means not for that attr comparison --Means globally not.
 - RP Filter Advanced allow ; as sep per statement, | as statement seperator and - as a prefix not for that statement. -- for globally not
 - RP Filter Advanced example:0x80000021; -0x80000021 | 0x80000021 --0x80000021
@@ -37,6 +36,6 @@ Changes/Improvements:
 - Directory entries are in argument one seperated by ";"
 - More Attributes like M or E to work with
 - Attribute filter allows for OR statements optimizing the time needed so you don't have to run the command multiple times for just comparing attributes
-- L for Reparsepoints only does reparse point links(onedrive files don't count) Windows 10 Update broke scripts using the dir command with the attribute of L this will fix it by default
+- L Reparsepoints links instead of any reparsepoints. Configureable. Windows 10 Update broke scripts using the dir command /vbscript with the attribute of L this will fix it by default
 - Reparse filter that allows you to filter all reparsepoint files of a certain reparse point id like symlinks or junctions
 - Dynamic Exclusions sep ";" (From command line argument 6) and Static(Configureable) exclusions from the config generated right next to it

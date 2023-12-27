@@ -48,6 +48,7 @@ bool HasRPF = false;
 bool FoundFile = false;
 wstring Attribs = L"";
 vector<DWORD> NoLNKS;
+vector <DWORD> NoPrintLNKS;
 vector<wstring> SRCHBL;
 vector<DWORD> AttribsFilter;
 vector<DWORD> AttribsFilterBL;
@@ -58,11 +59,13 @@ void ListDirectories(const std::wstring& directory);
 bool isBlackListed(const wstring &dir);
 bool foundFile(wstring &path, wstring &n, DWORD &attr, DWORD &RPID);
 bool isLink(DWORD &RPID);
+bool isPrintLink(DWORD &RPID);
 DWORD GetReparsePointId(wstring &path, DWORD &att);
 DWORD GetRPTag(wstring &path);
 wstring GetTarget(wstring &path);
 std::wstring GetAbsolutePath(const std::wstring& path);
-void LoadCFG(wstring cfg);
+void LoadCFG(wstring &cfg);
+void LoadRPBL(wstring &cfg, vector<DWORD> &bl);
 void help();
 void ParseAttribs(wstring att);
 
@@ -296,18 +299,20 @@ bool isBlackListed(const wstring &c)
 /**
  * The Attribute Filter
  */
-bool isAtt(DWORD &att)
+bool isAtt(DWORD &att, DWORD &RPID)
 {
 	for(DWORD d : AttribsFilterBL)
 	{
-		if(att & d)
+		bool isAtt = d == FILE_ATTRIBUTE_REPARSE_POINT ? ((att & d) && isPrintLink(RPID)) : (att & d);
+		if(isAtt)
 		{
 			return false;
 		}
 	}
 	for(DWORD d : AttribsFilter)
 	{
-		if(!(att & d))
+		bool isAtt = d == FILE_ATTRIBUTE_REPARSE_POINT ? ((att & d) && isPrintLink(RPID)) : (att & d);
+		if(!isAtt)
 		{
 			return false;
 		}
@@ -318,16 +323,15 @@ bool isAtt(DWORD &att)
 /**
  * ReparsePoint Filter
  */
-bool isRP(wstring &path, DWORD &attr)
+bool isRP(DWORD &attr, DWORD &RPID)
 {
 	if(!HasRPF)
 		return true;
-	DWORD tag = GetReparsePointId(path, attr);
-	if(tag != 0)
+	if(RPID != 0)
 	{
 		for(DWORD d : RPFilter)
 		{
-			if(d == tag)
+			if(d == RPID)
 				return true;
 		}
 	}
@@ -337,7 +341,7 @@ bool isRP(wstring &path, DWORD &attr)
 
 bool foundFile(wstring &path, wstring &name, DWORD &attr, DWORD &RPID)
 {
-	if ((name == L".") || (name == L"..") || !isAtt(attr) || !isRP(path, attr))
+	if ((name == L".") || (name == L"..") || !isAtt(attr, RPID) || !isRP(attr, RPID))
 	{
 		return false;
 	}
@@ -352,6 +356,14 @@ bool foundFile(wstring &path, wstring &name, DWORD &attr, DWORD &RPID)
 bool isLink(DWORD &RPID)
 {
 	for (DWORD n : NoLNKS)
+		if (n == RPID)
+			return false;
+	return RPID != 0;
+}
+
+bool isPrintLink(DWORD &RPID)
+{
+	for (DWORD n : NoPrintLNKS)
 		if (n == RPID)
 			return false;
 	return RPID != 0;
@@ -500,10 +512,45 @@ wstring GetAbsolutePath(const std::wstring& path) {
     return std::wstring(absolutePath);
 }
 
-void LoadCFG(wstring workdir)
+void LoadCFG(wstring &workdir)
 {
 	wstring cfg = workdir + L"\\SRCHReparsePoints.cfg";
-	wstring cfgsrch = workdir + L"\\SRCHDirBlacklist.cfg";
+	wstring cfgprint = workdir + L"\\PrintReparsePointsBL.cfg";
+	wstring cfgsrch = workdir + L"\\SRCHDirBL.cfg";
+	LoadRPBL(cfg, NoLNKS);
+	LoadRPBL(cfgprint, NoPrintLNKS);
+
+    //Parse Search Blacklist
+	if(!exists(cfgsrch))
+	{
+		std::wofstream filewriter(cfgsrch.c_str());
+		filewriter << L"C:\\Windows\\servicing" << endl;
+		filewriter << L"C:\\Windows\\WinSxS" << endl;
+		filewriter.close();
+	}
+    std::wifstream srchfile(cfgsrch.c_str());
+    if (srchfile.is_open())
+    {
+        std::wstring line;
+        while (std::getline(srchfile, line))
+        {
+        	line = tolower(trim(line));
+        	if(line.substr(1, 1) == L":")
+        		line = line.substr(2);
+        	if(line != L"")
+        		SRCHBL.push_back(AddSlash(line));
+        }
+    }
+    else
+    {
+        std::wcerr << L"Err Loading Dir Blacklist: " << GetLastError() << std::endl;
+    }
+    srchfile.close();
+}
+
+//Internal Do not use
+void LoadRPBL(wstring &cfg, vector<DWORD> &bl)
+{
 	//create config file if it doesn't exist and then read config file
 	if(!exists(cfg))
 	{
@@ -537,7 +584,7 @@ void LoadCFG(wstring workdir)
         {
         	line = trim(line.substr(IndexOf(line, L"=") + 1));
         	if(line != L"")
-        		NoLNKS.push_back(fromHex(line));
+        		bl.push_back(fromHex(line));
         }
     }
     else
@@ -545,33 +592,6 @@ void LoadCFG(wstring workdir)
         std::wcerr << L"Err Loading Config: " << GetLastError() << std::endl;
     }
     file.close();
-
-    //Parse Search Blacklist
-	if(!exists(cfgsrch))
-	{
-		std::wofstream filewriter(cfgsrch.c_str());
-		filewriter << L"C:\\Windows\\servicing" << endl;
-		filewriter << L"C:\\Windows\\WinSxS" << endl;
-		filewriter.close();
-	}
-    std::wifstream srchfile(cfgsrch.c_str());
-    if (srchfile.is_open())
-    {
-        std::wstring line;
-        while (std::getline(srchfile, line))
-        {
-        	line = tolower(trim(line));
-        	if(line.substr(1, 1) == L":")
-        		line = line.substr(2);
-        	if(line != L"")
-        		SRCHBL.push_back(AddSlash(line));
-        }
-    }
-    else
-    {
-        std::wcerr << L"Err Loading Blacklist: " << GetLastError() << std::endl;
-    }
-    srchfile.close();
 }
 
 void help()
