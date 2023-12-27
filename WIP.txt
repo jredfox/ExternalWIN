@@ -10,7 +10,6 @@ DirSafe.exe
 - WildCards seperated by | (support wildcard file names, wildcard blacklist directory and file names)
 
 TODO:
-- RP Filter Advanced allow Not(-) Statements and don't return false if reparsepoint wasn't found if there are no required ones
 - Wildcards
 
 Printing options

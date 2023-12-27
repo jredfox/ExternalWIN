@@ -304,13 +304,11 @@ bool isRP(DWORD &attr, DWORD &RPID)
 {
 	if(!HasRPF)
 		return true;
-	if(RPID != 0)
+	for(DWORD d : RPFilter)
 	{
-		for(DWORD d : RPFilter)
-		{
-			if(d == RPID)
-				return true;
-		}
+		//if it's the whitelisted RPID or if if NULL(0) is in the RPFilter and It's not a Link Print it
+		if(d == RPID || (d == 0 && !isPrintLink(RPID)))
+			return true;
 	}
 	return false;
 }
