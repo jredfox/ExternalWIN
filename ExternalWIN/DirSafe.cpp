@@ -50,6 +50,8 @@ bool Bare = false;
 bool Parseable = false;
 bool HasRPF = false;
 bool FoundFile = false;
+bool RPVal = false;
+bool ShowHL = false;
 wstring Attribs = L"";
 vector<DWORD> NoLNKS;
 vector <DWORD> NoPrintLNKS;
@@ -101,14 +103,24 @@ int main() {
 	ReplaceAll(cmdline, L"\\\\", L"\\");
 	ReplaceAll(cmdline, L"\\", L"/");
 	LPWSTR lpwstrcmd = toLPWSTR(cmdline);
-	int argc;
-	LPWSTR* cargs = CommandLineToArgvW(lpwstrcmd, &argc);
+	int argv;
+	LPWSTR* cargs = CommandLineToArgvW(lpwstrcmd, &argv);
 	vector<wstring> args;
-	for(int i=0; i < argc; i++)
+	for(int i=0; i < argv; i++)
 	{
 		wstring s = cargs[i];
-		args.push_back(ReplaceAll(s, L"/", L"\\"));
+		wstring t = toupper(trim(s));
+		if(t == L"/R") {
+			RPVal = true;
+		}
+		else if(t == L"/H") {
+			ShowHL = true;
+		}
+		else {
+			args.push_back(ReplaceAll(s, L"/", L"\\"));
+		}
 	}
+	int argc = args.size();
 
 	//Parse Args
 	wstring WorkingDir = parent(wstring(args[0]));
