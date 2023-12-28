@@ -11,8 +11,9 @@ DirSafe.exe
 - HardLinks printing /H flag
 
 TODO:
-- /K Literal Reparsepoints(*) including OneDrive's
+- /R show reparsepoints
 - /H print hard links(files with more then one path entry)
+- K Literal Reparsepoints(*) including OneDrive's
 - Wildcards
 - TEST Attribute Filter fully
 
@@ -24,6 +25,7 @@ P = Parsible everyting <type> <path> <target>
 Missing featues With no plan on adding:
 - Sort Order(useful but not for ExternalWIN)
 - Timestamps(useful but not for ExternalWIN)
+- File Sizes(useful but not for ExternalWIN)
 - Non positional parameters(/A etc...)
 - 8dot names
 - File Ownership(unkown format unlike icalics command)

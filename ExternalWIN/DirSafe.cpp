@@ -832,6 +832,12 @@ void ParseRPFilters(const wstring &rpstr)
  */
 void AddOneDriveCompat()
 {
+	//Disable WOW64 File Redirection in case people use the x86 version on x64 or ARM64
+    PVOID OldValue = NULL;
+	if (Wow64DisableWow64FsRedirection(&OldValue)) {
+		wcout << "Disabled WOW64 File Redirectrion" << endl;
+	}
+
     typedef NTSTATUS(WINAPI *RtlSetCompatFunc)(CHAR Mode);
     #define PHCM_EXPOSE_PLACEHOLDERS ((CHAR)2)
     HMODULE hmod = LoadLibraryW(L"ntdll.dll");
