@@ -116,6 +116,9 @@ int main() {
 		else if(t == L"/H") {
 			ShowHL = true;
 		}
+		else if(t == L"/?" || t == L"/HELP") {
+			help();
+		}
 		else {
 			args.push_back(ReplaceAll(s, L"/", L"\\"));
 		}
@@ -128,10 +131,6 @@ int main() {
 	if(argc > 1)
 	{
 		wstring dirstr = wstring(args[1]);
-		//Implement the Help command
-		wstring strhelp = tolower(trim(dirstr));
-		if(strhelp == L"\\?" || strhelp == L"\\help")
-			help();
 		vector<wstring> paths = split(dirstr, L';');
 		for(wstring d : paths)
 		{
@@ -568,6 +567,8 @@ void help()
 	wcout << L"###################################################################################################################" << endl;
 	wcout << L"DirSafe.exe <DIR Or Dir;Dir2\\*PDF|File*.txt> <BOOL RECURSE> <PRINTTYPE> <ATTRIBS> <REPARSEPOINTS> <Exclusion;Dir2>" << endl;
 	wcout << L"###################################################################################################################" << endl;
+	wcout << L"/H Show Hard Links" << endl;
+	wcout << L"/R Show Reparse Point Values" << endl;
 	wcout << L"PrintTypes:{N = Normal, B = Bare, P = Parseable}" << endl;
 	wcout << L"A Archiving" << endl;
 	wcout << L"B SMR Blob" << endl;
