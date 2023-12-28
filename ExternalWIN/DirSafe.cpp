@@ -74,6 +74,7 @@ bool isAttr(DWORD &att, DWORD &RPID);
 void ParseAttribFilters(const wstring &attfilters);
 bool isRP(DWORD &attr, DWORD &RPID);
 void ParseRPFilters(const wstring &rpcmd);
+void PrintHardLinks(const wstring &filePath);
 
 //Declare Utility methods here
 wstring AddSlash(wstring &s);
@@ -247,7 +248,16 @@ void ListDirectories(const std::wstring& directory) {
 			}
 			else if(Parseable) {
 				wstring rpv = RPVal ? (L" <" + toHex(rpid) + L">") : L"";
-				wcout << type << "<" << currentPath << L">" << rpv << targ << endl;
+				if(!ShowHL) {
+					wcout << type << "<" << currentPath << L">" << rpv << targ << endl;
+				}
+				else
+				{
+					wcout << type << "<" << currentPath;
+					if(!isDIR)
+						PrintHardLinks(currentPath);
+					wcout << L">" << rpv << targ << endl;
+				}
 			}
 			else
 			{
@@ -258,7 +268,16 @@ void ListDirectories(const std::wstring& directory) {
 					idir = true;
 				}
 				wstring rpv = RPVal ? (L" <" + toHex(rpid) + L">") : L"";
-				wcout << type << name << rpv << targ << endl;
+				if(!ShowHL) {
+					wcout << type << name << rpv << targ << endl;
+				}
+				else
+				{
+					wcout << type << name;
+					if(!isDIR)
+						PrintHardLinks(currentPath);
+					wcout << rpv << targ << endl;
+				}
 			}
 		}
     } while (FindNextFileW(hFind, &findFileData) != 0);
@@ -288,6 +307,34 @@ void ListDirectories(const std::wstring& directory) {
 		}
 		FindClose(hFind);
     }
+}
+
+/**
+ * Get All HardLinks given a file WIN32 API call
+ */
+void PrintHardLinks(const wstring &filePath) {
+	wstring drive = filePath.substr(0, 1) + L":";
+	wstring lpath = tolower(filePath);
+    HANDLE hFindFile;
+    WCHAR szBuffer[MAX_PATH];
+    DWORD dwBufferSize = sizeof(szBuffer);
+
+    hFindFile = FindFirstFileNameW(filePath.c_str(), 0, &dwBufferSize, szBuffer);
+    if (hFindFile == INVALID_HANDLE_VALUE) {
+//        wcerr << L"Error finding file names: " << filePath << L" " << GetLastError() << endl;
+    	FindClose(hFindFile);
+        return;
+    }
+
+    do {
+    	wstring hl = drive + wstring(szBuffer);
+    	if(tolower(hl) != lpath)
+    		wcout << L";" << hl;
+
+        dwBufferSize = sizeof(szBuffer);
+    } while (FindNextFileNameW(hFindFile, &dwBufferSize, szBuffer) != 0);
+
+    FindClose(hFindFile);
 }
 
 bool isBlackListed(const wstring &c)
