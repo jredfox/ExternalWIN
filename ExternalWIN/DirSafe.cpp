@@ -53,6 +53,7 @@ bool FoundFile = false;
 bool RPVal = false;
 bool ShowHL = false;
 bool HLFil = false;
+bool NHLFil = false;
 wstring Attribs = L"";
 vector<DWORD> NoLNKS;
 vector <DWORD> NoPrintLNKS;
@@ -121,6 +122,9 @@ int main() {
 		else if(t == L"/HF") {
 			HLFil = true;
 		}
+		else if(t == L"/-HF") {
+			NHLFil = true;
+		}
 		else if(t == L"/?" || t == L"/HELP") {
 			help();
 		}
@@ -128,6 +132,13 @@ int main() {
 			args.push_back(ReplaceAll(s, L"/", L"\\"));
 		}
 	}
+	//Check for Incompatible Filters
+	if(HLFil && NHLFil)
+	{
+		wcerr << "Incompatible Filters Hard Link Filter and No Hard Link Filters" << endl;
+		exit(1);
+	}
+
 	int argc = args.size();
 
 	//Parse Args
@@ -390,7 +401,7 @@ bool isBlackListed(const wstring &c)
 
 bool foundFile(wstring &path, wstring &name, DWORD &attr, DWORD &RPID)
 {
-	if ((name == L".") || (name == L"..") || !isAttr(attr, RPID) || !isRP(attr, RPID) || (HLFil && !isHardLink(path)))
+	if ((name == L".") || (name == L"..") || !isAttr(attr, RPID) || !isRP(attr, RPID) || (HLFil && !isHardLink(path)) || (NHLFil && isHardLink(path)))
 	{
 		return false;
 	}
