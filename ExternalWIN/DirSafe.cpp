@@ -246,7 +246,8 @@ void ListDirectories(const std::wstring& directory) {
 				wcout << currentPath << endl;
 			}
 			else if(Parseable) {
-				wcout << type << "<" << currentPath << L">" << targ << endl;
+				wstring rpv = RPVal ? (L" <" + toHex(rpid) + L">") : L"";
+				wcout << type << "<" << currentPath << L">" << rpv << targ << endl;
 			}
 			else
 			{
@@ -256,7 +257,8 @@ void ListDirectories(const std::wstring& directory) {
 					wcout << endl << L" Directory of " << directory << (directory.size() < 3 ? (L"\\") : (L"")) << endl << endl;
 					idir = true;
 				}
-				wcout << type << name << targ << endl;
+				wstring rpv = RPVal ? (L" <" + toHex(rpid) + L">") : L"";
+				wcout << type << name << rpv << targ << endl;
 			}
 		}
     } while (FindNextFileW(hFind, &findFileData) != 0);
