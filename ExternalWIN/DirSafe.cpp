@@ -52,6 +52,7 @@ bool HasRPF = false;
 bool FoundFile = false;
 bool RPVal = false;
 bool ShowHL = false;
+bool HLFil = false;
 wstring Attribs = L"";
 vector<DWORD> NoLNKS;
 vector <DWORD> NoPrintLNKS;
@@ -116,6 +117,9 @@ int main() {
 		}
 		else if(t == L"/H") {
 			ShowHL = true;
+		}
+		else if(t == L"/HF") {
+			HLFil = true;
 		}
 		else if(t == L"/?" || t == L"/HELP") {
 			help();
@@ -309,6 +313,35 @@ void ListDirectories(const std::wstring& directory) {
     }
 }
 
+bool isHardLink(const wstring &filePath)
+{
+	wstring drive = filePath.substr(0, 1) + L":";
+	wstring lpath = tolower(filePath);
+    HANDLE hFindFile;
+    WCHAR szBuffer[MAX_PATH];
+    DWORD dwBufferSize = sizeof(szBuffer);
+
+    hFindFile = FindFirstFileNameW(filePath.c_str(), 0, &dwBufferSize, szBuffer);
+    if (hFindFile == INVALID_HANDLE_VALUE) {
+    	FindClose(hFindFile);
+        return false;
+    }
+
+    do {
+    	wstring hl = drive + wstring(szBuffer);
+    	if(tolower(hl) != lpath)
+    	{
+    		FindClose(hFindFile);
+    		return true;
+    	}
+
+        dwBufferSize = sizeof(szBuffer);
+    } while (FindNextFileNameW(hFindFile, &dwBufferSize, szBuffer) != 0);
+
+    FindClose(hFindFile);
+    return false;
+}
+
 /**
  * Get All HardLinks given a file WIN32 API call
  */
@@ -357,7 +390,7 @@ bool isBlackListed(const wstring &c)
 
 bool foundFile(wstring &path, wstring &name, DWORD &attr, DWORD &RPID)
 {
-	if ((name == L".") || (name == L"..") || !isAttr(attr, RPID) || !isRP(attr, RPID))
+	if ((name == L".") || (name == L"..") || !isAttr(attr, RPID) || !isRP(attr, RPID) || (HLFil && !isHardLink(path)))
 	{
 		return false;
 	}
