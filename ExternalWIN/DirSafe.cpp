@@ -190,7 +190,7 @@ void ListDirectories(const std::wstring& directory) {
     WIN32_FIND_DATAW findFileData;
     HANDLE hFind = INVALID_HANDLE_VALUE;
 
-    std::wstring searchPath = directory + L"\\*";
+    std::wstring searchPath = directory + L"\\*.*";
     hFind = FindFirstFileW(searchPath.c_str(), &findFileData);
 
     if (hFind == INVALID_HANDLE_VALUE) {

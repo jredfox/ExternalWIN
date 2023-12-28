@@ -11,7 +11,7 @@ DirSafe.exe
 - HardLinks printing /H flag
 
 TODO:
-- /K For any Reparsepoints including OneDrive's
+- /K Literal Reparsepoints(*) including OneDrive's
 - /H print hard links(files with more then one path entry)
 - Wildcards
 - TEST Attribute Filter fully
