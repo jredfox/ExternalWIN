@@ -89,10 +89,12 @@ wstring tolower(wstring s);
 LPWSTR toLPWSTR(const std::wstring& str);
 wstring toupper(wstring s);
 wstring trim(wstring str);
+void AddOneDriveCompat();
 
 int main() {
 	setlocale(LC_CTYPE, "");
 	_setmode( _fileno(stdout), _O_U8TEXT );
+	AddOneDriveCompat();
 
 	//Make the command lines suitable for paths
 	wstring cmdline = GetCommandLineW();
@@ -824,6 +826,34 @@ void ParseRPFilters(const wstring &rpstr)
 //#####################
 //START UTILITY METHODS
 //#####################
+
+/**
+ * Safely Add OneDrive Compatibility Mode for (Windows 10 1709) 2017+ or higher
+ */
+void AddOneDriveCompat()
+{
+    typedef NTSTATUS(WINAPI *RtlSetCompatFunc)(CHAR Mode);
+    #define PHCM_EXPOSE_PLACEHOLDERS ((CHAR)2)
+    HMODULE hmod = LoadLibraryW(L"ntdll.dll");
+    if (hmod == NULL)
+    {
+        wprintf(L"LoadLibrary failed with %u\n", GetLastError());
+        FreeLibrary(hmod);
+        return;
+    }
+
+    RtlSetCompatFunc pRtlSetCompatMode;
+    pRtlSetCompatMode = (RtlSetCompatFunc)GetProcAddress(hmod, "RtlSetProcessPlaceholderCompatibilityMode");
+    if (pRtlSetCompatMode == NULL)
+    {
+        wprintf(L"GetProcAddress failed with %u\n", GetLastError());
+        FreeLibrary(hmod);
+        return;
+    }
+    pRtlSetCompatMode(PHCM_EXPOSE_PLACEHOLDERS);
+    FreeLibrary(hmod);
+}
+
 wstring AddSlash(wstring &s)
 {
 	if((s.size() > 1) && (s.back() != L'\\'))
