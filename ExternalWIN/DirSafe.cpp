@@ -662,6 +662,8 @@ void help()
 	wcout << L"###################################################################################################################" << endl;
 	wcout << L"/H Show Hard Links" << endl;
 	wcout << L"/R Show Reparse Point Values" << endl;
+	wcout << L"/HF Hard Links Filter" << endl;
+	wcout << L"/-HF No Hard Links Filter" << endl;
 	wcout << L"PrintTypes:{N = Normal, B = Bare, P = Parseable}" << endl;
 	wcout << L"A Archiving" << endl;
 	wcout << L"B SMR Blob" << endl;

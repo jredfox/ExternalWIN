@@ -46,3 +46,4 @@ Changes/Improvements:
 - /H flag to print all hardlinks for a given file. All files have one hardlink as it's the path. But if a file has more then one Path entry to a single file it's commonly called a Hard Link
 - /R flag to print all reparsepoint values where 0(NULL) meaning no reparsepoint. OneDrive reparsepoints will still print their values and scripters should be aware of this
 - /HF hard link filter
+- /-HF no hard link file filter
