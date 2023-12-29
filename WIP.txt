@@ -14,8 +14,8 @@ DirSafe.exe
 - /R Show Reparse Points
 
 TODO:
-- K Literal Reparsepoints(*) including OneDrive's
 - Wildcards
+- K Literal Reparsepoints(*) including OneDrive's
 - TEST Attribute Filter fully
 
 Printing options

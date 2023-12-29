@@ -7,7 +7,20 @@
 #include <vector>
 #include <iomanip>
 #include <fcntl.h>
-
+/**
+ * How to Add Libs: Eclipse --> Propterties  --> C/C++ Genernal --> Paths and Symbols --> Libraries Tab --> Add library without a an extension And select add to all configurations
+ * How to Add Linker Options: Eclipse --> Propterties  --> C/C++ Build --> Settings --> Mingw --> Miscellaneous --> Add new option
+ *
+ * Lib Deps:
+ * Shlwapi
+ *
+ * LINKER OPTIONS:
+ * -L shlwapi
+ * -static -static-libgcc -static-libstdc++
+ *
+ * IDE Debug(NOT RELEASE) Build Options:
+ * Eclipse --> Project --> Properties --> C/C++ General --> Paths and Symbols --> Symbols Tab --> select GNU C++ and add _ISECLIPSE but only for Debug configuration
+ */
 typedef struct _REPARSE_DATA_BUFFER {
   ULONG  ReparseTag;
   USHORT  ReparseDataLength;
@@ -38,11 +51,19 @@ typedef struct _REPARSE_DATA_BUFFER {
 #ifndef MAXIMUM_REPARSE_DATA_BUFFER_SIZE
 #define MAXIMUM_REPARSE_DATA_BUFFER_SIZE  ( 16 * 1024 )
 #endif
+
+#ifdef _ISECLIPSE
+	bool isEclipse = true;
+#else
+	bool isEclipse = false;
+#endif
+
 using namespace std;
 
 //Declare classes here
 class AttFilter;
 class RPFilter;
+class DirPath;
 
 //Declare Vars here
 bool Recurse = false;
@@ -94,7 +115,190 @@ wstring tolower(wstring s);
 LPWSTR toLPWSTR(const std::wstring& str);
 wstring toupper(wstring s);
 wstring trim(wstring str);
+int MinIndex(int a, int b);
 void AddOneDriveCompat();
+
+//##############################
+//	START OOP Object Definitions
+//##############################
+vector<wstring> EMPTYVEC;
+class DirPath {
+public:
+	wstring path;
+	vector<wstring> wildcards = EMPTYVEC;
+
+	DirPath(const wstring &p)
+	{
+		path = p;
+	}
+
+	DirPath(const wstring &p, vector<wstring> &wc)
+	{
+		path = p;
+		wildcards = wc;
+	}
+};
+
+vector<DWORD> AttGlobalBL;
+vector<AttFilter> AttFilters;
+class AttFilter {
+public:
+	vector<DWORD> req;
+	vector<DWORD> blacklist;
+	AttFilter(){}
+
+	AttFilter(const wstring &attribs)
+	{
+		ParseAttribs(attribs);
+	}
+
+	~AttFilter()
+	{
+		req.clear();
+		blacklist.clear();
+	}
+
+	/**
+	 * Doesn't Check the Global Blacklist
+	 */
+	bool isFile(DWORD &att, DWORD &RPID)
+	{
+		for(DWORD d : blacklist)
+		{
+			bool isAtt = d == FILE_ATTRIBUTE_REPARSE_POINT ? ((att & d) && isPrintLink(RPID)) : (att & d);
+			if(isAtt)
+			{
+				return false;
+			}
+		}
+		for(DWORD d : req)
+		{
+			bool isAtt = d == FILE_ATTRIBUTE_REPARSE_POINT ? ((att & d) && isPrintLink(RPID)) : (att & d);
+			if(!isAtt)
+			{
+				return false;
+			}
+		}
+		return true;//if att is not on the blacklist and has no attribute filter return true otherwise it's false
+	}
+	/**
+	 * parse the attributes variable from a string into the AttribsFilter & AttribsFilterBL
+	 */
+	void ParseAttribs(const wstring &atts)
+	{
+		vector<DWORD>* attribs = &req;
+		wchar_t lch = ' ';
+		for (wchar_t ch : atts)
+		{
+			switch (ch)
+			{
+				case L'-':
+					if(lch == L'-')
+					{
+						attribs = &AttGlobalBL;
+					}
+					else
+					{
+						attribs = &blacklist;
+					}
+				break;
+				case L'R':
+					attribs->push_back(FILE_ATTRIBUTE_READONLY);
+				break;
+				case L'H':
+					attribs->push_back(FILE_ATTRIBUTE_HIDDEN);
+				break;
+				case L'S':
+					attribs->push_back(FILE_ATTRIBUTE_SYSTEM);
+				break;
+				case L'D':
+					attribs->push_back(FILE_ATTRIBUTE_DIRECTORY);
+				break;
+				case L'A':
+					attribs->push_back(FILE_ATTRIBUTE_ARCHIVE);
+				break;
+				case L'L':
+					attribs->push_back(FILE_ATTRIBUTE_REPARSE_POINT);
+				break;
+				case L'O':
+					attribs->push_back(FILE_ATTRIBUTE_OFFLINE);
+				break;
+				case L'I':
+					attribs->push_back(FILE_ATTRIBUTE_NOT_CONTENT_INDEXED);
+				break;
+				//START Extended Attributes
+				case L'P':
+					attribs->push_back(FILE_ATTRIBUTE_PINNED);
+				break;
+				case L'U':
+					attribs->push_back(FILE_ATTRIBUTE_UNPINNED);
+				break;
+				//OneDrive or cloud files but they won't always have this attribute reparse points are more reliable in determining onedrive files
+				case L'M':
+					attribs->push_back(FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS);
+				break;
+				case L'Q':
+					attribs->push_back(FILE_ATTRIBUTE_RECALL_ON_OPEN);
+				break;
+				case L'C':
+					attribs->push_back(FILE_ATTRIBUTE_COMPRESSED);
+				break;
+				case L'E':
+					attribs->push_back(FILE_ATTRIBUTE_ENCRYPTED);
+				break;
+				//ReFS attribs
+				case L'X':
+					attribs->push_back(FILE_ATTRIBUTE_NO_SCRUB_DATA);
+				break;
+				case L'V':
+					attribs->push_back(FILE_ATTRIBUTE_INTEGRITY_STREAM);
+				break;
+				case L'B':
+					attribs->push_back(FILE_ATTRIBUTE_STRICTLY_SEQUENTIAL);
+				break;
+				default:
+	            // Do nothing or add cases for other characters if needed
+	            break;
+			}
+			lch = ch;
+		}
+	}
+};
+
+vector<RPFilter> RPFilters;
+class RPFilter {
+public:
+	DWORD RPTag = -1;
+	bool File = false;
+	bool Dir = false;
+	RPFilter(){}
+	RPFilter(const wstring &e)
+	{
+		wstring entry = toupper(e);
+		vector<wstring> pair = split(entry, '=');
+		RPTag = fromHex(trim(pair[0]));
+		if(pair.size() > 1)
+		{
+			wstring var = trim(pair[1]);
+			for(wchar_t ch : var)
+			{
+				if(ch == L'D')
+				{
+					Dir = true;
+				}
+				else if(ch == L'F')
+				{
+					File = true;
+				}
+			}
+		}
+		else
+		{
+			Dir = true;
+			File = true;
+		}
+	}
+};
 
 int main() {
 	setlocale(LC_CTYPE, "");
@@ -103,7 +307,11 @@ int main() {
 
 	//Make the command lines suitable for paths
 	wstring cmdline = GetCommandLineW();
-	ReplaceAll(cmdline, L"\\\\", L"\\");
+	if(isEclipse)
+	{
+		//Only Remove double slashes in IDE mode as double slashes in windows indicates a network path
+		ReplaceAll(cmdline, L"\\\\", L"\\");
+	}
 	ReplaceAll(cmdline, L"\\", L"/");
 	LPWSTR lpwstrcmd = toLPWSTR(cmdline);
 	int argv;
@@ -143,24 +351,42 @@ int main() {
 
 	//Parse Args
 	wstring WorkingDir = parent(wstring(args[0]));
-	vector<wstring> dirpaths;
+	vector<DirPath> dirpaths;
 	if(argc > 1)
 	{
-		wstring dirstr = wstring(args[1]);
-		vector<wstring> paths = split(dirstr, L';');
-		for(wstring d : paths)
+		vector<wstring> paths = split(args[1], ';');
+		for(wstring p : paths)
 		{
-			wstring dirarg = GetAbsolutePath(d);
-			if(dirarg.size() > 1 && EndsWith(dirarg, L"\\"))
+			// "\\" is a network path so make sure it only fixes paths with a character Inbetween like "\a\" before fixing it
+			if(p.size() > 2 && EndsWith(p, L"\\"))
 			{
-				dirarg = dirarg.substr(0, dirarg.length() - 1);
+				p = p.substr(0, p.length() - 1);
 			}
-			dirpaths.push_back(dirarg);
+			int index = revIndexOf(p, L"\\");
+			int indexStar = IndexOf(p, L"*");
+			int indexQ = IndexOf(p, L"?");
+			int indexW = MinIndex(indexStar, indexQ);
+			if(indexW < 0)
+			{
+				dirpaths.push_back(DirPath(GetAbsolutePath(p)));
+				continue;
+			}
+			if(index > indexW)
+			{
+				wcerr << L"Path SEP in Wildcard Name Path:" + p << endl;
+				exit(1);
+			}
+			int dirIndex = index;
+			if(dirIndex < 1)
+				dirIndex = p.substr(0, 1) == L"\\" ? 1 : 0;
+			wstring name = p.substr(index + 1);
+			vector<wstring> wildcards = split(name, L'|');
+			dirpaths.push_back(DirPath(GetAbsolutePath(p.substr(0, dirIndex)), wildcards));
 		}
 	 }
 	 else
 	 {
-		 dirpaths.push_back(GetAbsolutePath(L""));
+		 dirpaths.push_back(DirPath(GetAbsolutePath(L"")));
 	 }
 	 if(argc > 2) {
     	Recurse = parseBool(trim(args[2]));
@@ -202,9 +428,9 @@ int main() {
 	 }
 	 //Get the working directory and load the config
 	 LoadCFG(WorkingDir);
-	 for(wstring d : dirpaths)
+	 for(DirPath ds : dirpaths)
 	 {
-		 ListDirectories(d);
+		 ListDirectories(ds.path);
 	 }
 	 return FoundFile ? 0 : 404;
 }
@@ -692,134 +918,7 @@ void help()
 	exit(0);
 }
 
-//#####################
-//	START OOP METHODS
-//#####################
-vector<DWORD> AttGlobalBL;
-vector<AttFilter> AttFilters;
-class AttFilter {
-public:
-	vector<DWORD> req;
-	vector<DWORD> blacklist;
-	AttFilter(){}
 
-	AttFilter(const wstring &attribs)
-	{
-		ParseAttribs(attribs);
-	}
-
-	~AttFilter()
-	{
-		req.clear();
-		blacklist.clear();
-	}
-
-	/**
-	 * Doesn't Check the Global Blacklist
-	 */
-	bool isFile(DWORD &att, DWORD &RPID)
-	{
-		for(DWORD d : blacklist)
-		{
-			bool isAtt = d == FILE_ATTRIBUTE_REPARSE_POINT ? ((att & d) && isPrintLink(RPID)) : (att & d);
-			if(isAtt)
-			{
-				return false;
-			}
-		}
-		for(DWORD d : req)
-		{
-			bool isAtt = d == FILE_ATTRIBUTE_REPARSE_POINT ? ((att & d) && isPrintLink(RPID)) : (att & d);
-			if(!isAtt)
-			{
-				return false;
-			}
-		}
-		return true;//if att is not on the blacklist and has no attribute filter return true otherwise it's false
-	}
-	/**
-	 * parse the attributes variable from a string into the AttribsFilter & AttribsFilterBL
-	 */
-	void ParseAttribs(const wstring &atts)
-	{
-		vector<DWORD>* attribs = &req;
-		wchar_t lch = ' ';
-		for (wchar_t ch : atts)
-		{
-			switch (ch)
-			{
-				case L'-':
-					if(lch == L'-')
-					{
-						attribs = &AttGlobalBL;
-					}
-					else
-					{
-						attribs = &blacklist;
-					}
-				break;
-				case L'R':
-					attribs->push_back(FILE_ATTRIBUTE_READONLY);
-				break;
-				case L'H':
-					attribs->push_back(FILE_ATTRIBUTE_HIDDEN);
-				break;
-				case L'S':
-					attribs->push_back(FILE_ATTRIBUTE_SYSTEM);
-				break;
-				case L'D':
-					attribs->push_back(FILE_ATTRIBUTE_DIRECTORY);
-				break;
-				case L'A':
-					attribs->push_back(FILE_ATTRIBUTE_ARCHIVE);
-				break;
-				case L'L':
-					attribs->push_back(FILE_ATTRIBUTE_REPARSE_POINT);
-				break;
-				case L'O':
-					attribs->push_back(FILE_ATTRIBUTE_OFFLINE);
-				break;
-				case L'I':
-					attribs->push_back(FILE_ATTRIBUTE_NOT_CONTENT_INDEXED);
-				break;
-				//START Extended Attributes
-				case L'P':
-					attribs->push_back(FILE_ATTRIBUTE_PINNED);
-				break;
-				case L'U':
-					attribs->push_back(FILE_ATTRIBUTE_UNPINNED);
-				break;
-				//OneDrive or cloud files but they won't always have this attribute reparse points are more reliable in determining onedrive files
-				case L'M':
-					attribs->push_back(FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS);
-				break;
-				case L'Q':
-					attribs->push_back(FILE_ATTRIBUTE_RECALL_ON_OPEN);
-				break;
-				case L'C':
-					attribs->push_back(FILE_ATTRIBUTE_COMPRESSED);
-				break;
-				case L'E':
-					attribs->push_back(FILE_ATTRIBUTE_ENCRYPTED);
-				break;
-				//ReFS attribs
-				case L'X':
-					attribs->push_back(FILE_ATTRIBUTE_NO_SCRUB_DATA);
-				break;
-				case L'V':
-					attribs->push_back(FILE_ATTRIBUTE_INTEGRITY_STREAM);
-				break;
-				case L'B':
-					attribs->push_back(FILE_ATTRIBUTE_STRICTLY_SEQUENTIAL);
-				break;
-				default:
-	            // Do nothing or add cases for other characters if needed
-	            break;
-			}
-			lch = ch;
-		}
-	}
-};
 
 /**
  * Checks All Attribute Filters and The Global Blacklist for them
@@ -857,41 +956,6 @@ void ParseAttribFilters(const wstring &attfilters)
 		AttFilters.push_back(AttFilter(toupper(trim(attstr))));
 	}
 }
-
-vector<RPFilter> RPFilters;
-class RPFilter {
-public:
-	DWORD RPTag = -1;
-	bool File = false;
-	bool Dir = false;
-	RPFilter(){}
-	RPFilter(const wstring &e)
-	{
-		wstring entry = toupper(e);
-		vector<wstring> pair = split(entry, '=');
-		RPTag = fromHex(trim(pair[0]));
-		if(pair.size() > 1)
-		{
-			wstring var = trim(pair[1]);
-			for(wchar_t ch : var)
-			{
-				if(ch == L'D')
-				{
-					Dir = true;
-				}
-				else if(ch == L'F')
-				{
-					File = true;
-				}
-			}
-		}
-		else
-		{
-			Dir = true;
-			File = true;
-		}
-	}
-};
 
 /**
  * ReparsePoint Filter
@@ -1077,4 +1141,11 @@ wstring trim(wstring str)
     str.erase(str.find_last_not_of(' ')+1);         //suffixing spaces
     str.erase(0, str.find_first_not_of(' '));       //prefixing spaces
     return str;
+}
+
+int MinIndex(int a, int b)
+{
+    if (a < 0 || (b < a && b > -1))
+        return b;
+   return a;
 }
