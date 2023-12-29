@@ -82,6 +82,7 @@ bool RPVal = false;
 bool ShowHL = false;
 bool HLFil = false;
 bool NHLFil = false;
+bool QuietMode = false;
 wstring Attribs = L"";
 vector<DWORD> NoLNKS;
 vector <DWORD> NoPrintLNKS;
@@ -347,6 +348,9 @@ int main() {
 		else if(t == L"/-HF") {
 			NHLFil = true;
 		}
+		else if(t == L"/Q") {
+			QuietMode = true;
+		}
 		else if(t == L"/?" || t == L"/HELP") {
 			help();
 		}
@@ -357,7 +361,8 @@ int main() {
 	//Check for Incompatible Filters
 	if(HLFil && NHLFil)
 	{
-		wcerr << "Incompatible Filters Hard Link Filter and No Hard Link Filters" << endl;
+		if(!QuietMode)
+			wcerr << "Incompatible Filters Hard Link Filter and No Hard Link Filters" << endl;
 		exit(1);
 	}
 
@@ -384,7 +389,8 @@ int main() {
 			}
 			if(index > indexW)
 			{
-				wcerr << L"Path SEP in Wildcard Name Path:" + p << endl;
+				if(!QuietMode)
+					wcerr << L"Path SEP in Wildcard Name Path:" + p << endl;
 				exit(1);
 			}
 			int dirIndex = index;
@@ -441,6 +447,12 @@ int main() {
 	 LoadCFG(WorkingDir);
 	 for(DirPath ds : dirpaths)
 	 {
+		 if(!exists(ds.path))
+		 {
+			 if(!QuietMode)
+				 wcerr << L"Directory Not Found \"" << ds.path << "\"" << endl;
+			 continue;
+		 }
 		 ListDirectories(ds.path, ds.wildcards);
 	 }
 	 return FoundFile ? 0 : 404;
@@ -458,7 +470,8 @@ void ListDirectories(const std::wstring& directory, const vector<LPCWSTR> &pat) 
     hFind = FindFirstFileW(searchPath.c_str(), &findFileData);
 
     if (hFind == INVALID_HANDLE_VALUE) {
-        wcerr << L"Access Denied: " << directory << std::endl;
+    	if(!QuietMode)
+    		wcerr << L"Access Denied: " << directory << L" Err:" << GetLastError() << endl;
         return;
     }
     bool idir = false;
@@ -611,7 +624,6 @@ void PrintHardLinks(const wstring &filePath) {
 
     hFindFile = FindFirstFileNameW(filePath.c_str(), 0, &dwBufferSize, szBuffer);
     if (hFindFile == INVALID_HANDLE_VALUE) {
-//        wcerr << L"Error finding file names: " << filePath << L" " << GetLastError() << endl;
     	FindClose(hFindFile);
         return;
     }
@@ -705,7 +717,8 @@ DWORD GetRPTag(wstring &path)
 			FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, 0);
 
     if (hFile == INVALID_HANDLE_VALUE) {
-		wcerr << L"ReparsePoint Failed:" << GetLastError() << " " << path << endl;
+    	if(!QuietMode)
+    		wcerr << L"ReparsePoint Failed:" << GetLastError() << " " << path << endl;
         CloseHandle(hFile);
         return 0;
     }
@@ -725,7 +738,8 @@ DWORD GetRPTag(wstring &path)
         &bytesReturned,
         NULL
     )) {
-		wcerr << L"ReparsePoint Failed:" << GetLastError() << " " << path << endl;
+    	if(!QuietMode)
+    		wcerr << L"ReparsePoint Failed:" << GetLastError() << " " << path << endl;
         CloseHandle(hFile);
         return 0;
     }
@@ -745,7 +759,8 @@ wstring GetTarget(wstring &path)
 
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
-		wcerr << L"ReparsePoint Failed:" << GetLastError() << " " << path << endl;
+		if(!QuietMode)
+			wcerr << L"ReparsePoint Failed:" << GetLastError() << " " << path << endl;
 		CloseHandle(hFile);
 		return L"";
 	}
@@ -761,7 +776,8 @@ wstring GetTarget(wstring &path)
     CloseHandle(hFile);
     if (bRet == FALSE)
     {
-    	wcerr << L"ReparsePoint Failed:" << GetLastError() << " " << path << endl;
+    	if(!QuietMode)
+    		wcerr << L"ReparsePoint Failed:" << GetLastError() << " " << path << endl;
     	return L"";
     }
 
@@ -789,12 +805,14 @@ wstring GetTarget(wstring &path)
       }
       else
       {
-    	  wcerr << L"No Mount-Point or Symblic-Link..." << endl;
+    	  if(!QuietMode)
+    		  wcerr << L"No Mount-Point or Symblic-Link..." << endl;
       }
     }
     else
     {
-    	wcerr << L"Not a Microsoft-reparse point - could not query data!" << endl;
+    	if(!QuietMode)
+    		wcerr << L"Not a Microsoft-reparse point - could not query data!" << endl;
     }
     free(rdata);
     return targ;
@@ -819,7 +837,8 @@ wstring GetAbsolutePath(const wstring &path) {
 
     if (length == 0) {
         // Handle error
-        wcerr << L"Error getting absolute path." << endl;
+    	if(!QuietMode)
+    		wcerr << L"Error getting absolute path." << endl;
         return L"";
     }
 
@@ -857,7 +876,8 @@ void LoadCFG(wstring &workdir)
     }
     else
     {
-        std::wcerr << L"Err Loading Dir Blacklist: " << GetLastError() << std::endl;
+    	if(!QuietMode)
+    		wcerr << L"Err Loading Dir Blacklist: " << GetLastError() << std::endl;
     }
     srchfile.close();
 }
@@ -903,7 +923,8 @@ void LoadRPBL(wstring &cfg, vector<DWORD> &bl)
     }
     else
     {
-        std::wcerr << L"Err Loading Config: " << GetLastError() << std::endl;
+    	if(!QuietMode)
+    		wcerr << L"Err Loading Config: " << GetLastError() << std::endl;
     }
     file.close();
 }
@@ -918,6 +939,7 @@ void help()
 	wcout << L"/R Show Reparse Point Values" << endl;
 	wcout << L"/HF Hard Links Filter" << endl;
 	wcout << L"/-HF No Hard Links Filter" << endl;
+	wcout << L"/Q Quiet Mode Suppress Error Messages" << endl;
 	wcout << L"PrintTypes:{N = Normal, B = Bare, P = Parseable}" << endl;
 	wcout << L"A Archiving" << endl;
 	wcout << L"B SMR Blob" << endl;
@@ -1034,7 +1056,7 @@ void AddOneDriveCompat()
 	//Disable WOW64 File Redirection in case people use the x86 version on x64 or ARM64
     PVOID OldValue = NULL;
 	if (Wow64DisableWow64FsRedirection(&OldValue)) {
-		wcout << "Disabled WOW64 File Redirectrion" << endl;
+//		wcerr << "Disabled WOW64 File Redirectrion" << endl;
 	}
 
     typedef NTSTATUS(WINAPI *RtlSetCompatFunc)(CHAR Mode);
