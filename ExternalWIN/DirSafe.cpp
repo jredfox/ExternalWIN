@@ -72,6 +72,7 @@ class RPFilter;
 class DirPath;
 
 //Declare Vars here
+const wstring DirSafeVersion = L"1.0.0";
 bool Recurse = false;
 bool Bare = false;
 bool Parseable = false;
@@ -95,7 +96,7 @@ bool isPrintLink(DWORD &RPID);
 DWORD GetReparsePointId(wstring &path, DWORD &att);
 DWORD GetRPTag(wstring &path);
 wstring GetTarget(wstring &path);
-std::wstring GetAbsolutePath(const std::wstring& path);
+wstring GetAbsolutePath(const wstring &path);
 void LoadCFG(wstring &cfg);
 void LoadRPBL(wstring &cfg, vector<DWORD> &bl);
 void help();
@@ -125,6 +126,7 @@ wstring toupper(wstring s);
 wstring trim(wstring str);
 int MinIndex(int a, int b);
 vector<LPCWSTR> splitC(const std::wstring& input, wchar_t c);
+wstring RemSlash(wstring str);
 
 //##############################
 //	START OOP Object Definitions
@@ -370,10 +372,7 @@ int main() {
 		for(wstring p : paths)
 		{
 			// "\\" is a network path so make sure it only fixes paths with a character Inbetween like "\a\" before fixing it
-			if(p.size() > 2 && EndsWith(p, L"\\"))
-			{
-				p = p.substr(0, p.length() - 1);
-			}
+			p = RemSlash(p);
 			int index = revIndexOf(p, L"\\");
 			int indexStar = IndexOf(p, L"*");
 			int indexQ = IndexOf(p, L"?");
@@ -801,18 +800,18 @@ wstring GetTarget(wstring &path)
     return targ;
 }
 
-wstring GetAbsolutePath(const std::wstring& path) {
+wstring GetAbsolutePath(const wstring &path) {
 	wstring copypath = trim(path);
 	//handle empty strings or drives
 	if(copypath == L"")
 	{
 		wchar_t buffer[MAX_PATH];
 		GetCurrentDirectoryW(MAX_PATH, buffer);
-		return wstring(buffer);
+		return RemSlash(wstring(buffer));
 	}
 	else if((copypath.size() == 2) && (copypath.substr(1, 1) == L":"))
 	{
-		return copypath + L"\\";
+		return copypath;
 	}
     wchar_t absolutePath[MAX_PATH];
 
@@ -820,11 +819,11 @@ wstring GetAbsolutePath(const std::wstring& path) {
 
     if (length == 0) {
         // Handle error
-        std::wcerr << L"Error getting absolute path." << std::endl;
+        wcerr << L"Error getting absolute path." << endl;
         return L"";
     }
 
-    return std::wstring(absolutePath);
+    return RemSlash(wstring(absolutePath));
 }
 
 void LoadCFG(wstring &workdir)
@@ -1192,4 +1191,13 @@ int MinIndex(int a, int b)
     if (a < 0 || (b < a && b > -1))
         return b;
    return a;
+}
+
+wstring RemSlash(wstring str)
+{
+	if(str.size() > 2 && EndsWith(str, L"\\"))
+	{
+		str = str.substr(0, str.length() - 1);
+	}
+	return str;
 }
