@@ -59,6 +59,11 @@ typedef struct _REPARSE_DATA_BUFFER {
 	bool isEclipse = false;
 #endif
 
+//LITERAL REPARSEPOINT including OneDrive Cloud Files NON Link Files
+#ifndef DIRSAFE_LITERAL_REPARSE_POINT
+#define DIRSAFE_LITERAL_REPARSE_POINT 0x10000001
+#endif
+
 using namespace std;
 
 //Declare classes here
@@ -169,7 +174,7 @@ public:
 	{
 		for(DWORD d : blacklist)
 		{
-			bool isAtt = d == FILE_ATTRIBUTE_REPARSE_POINT ? ((att & d) && isPrintLink(RPID)) : (att & d);
+			bool isAtt = d == DIRSAFE_LITERAL_REPARSE_POINT ? (att & FILE_ATTRIBUTE_REPARSE_POINT) : (d == FILE_ATTRIBUTE_REPARSE_POINT ? ((att & d) && isPrintLink(RPID)) : (att & d));
 			if(isAtt)
 			{
 				return false;
@@ -177,7 +182,7 @@ public:
 		}
 		for(DWORD d : req)
 		{
-			bool isAtt = d == FILE_ATTRIBUTE_REPARSE_POINT ? ((att & d) && isPrintLink(RPID)) : (att & d);
+			bool isAtt = d == DIRSAFE_LITERAL_REPARSE_POINT ? (att & FILE_ATTRIBUTE_REPARSE_POINT) : (d == FILE_ATTRIBUTE_REPARSE_POINT ? ((att & d) && isPrintLink(RPID)) : (att & d));
 			if(!isAtt)
 			{
 				return false;
@@ -220,6 +225,9 @@ public:
 				break;
 				case L'A':
 					attribs->push_back(FILE_ATTRIBUTE_ARCHIVE);
+				break;
+				case L'K':
+					attribs->push_back(DIRSAFE_LITERAL_REPARSE_POINT);
 				break;
 				case L'L':
 					attribs->push_back(FILE_ATTRIBUTE_REPARSE_POINT);
@@ -910,6 +918,7 @@ void help()
 	wcout << L"E Encrypted" << endl;
 	wcout << L"H Hidden" << endl;
 	wcout << L"I Not Indexed" << endl;
+	wcout << L"K Reparse Point" << endl;
 	wcout << L"L Reparse Point Links" << endl;
 	wcout << L"M Recall On Data Access" << endl;
 	wcout << L"O Offline" << endl;
@@ -930,8 +939,6 @@ void help()
 	exit(0);
 }
 
-
-
 /**
  * Checks All Attribute Filters and The Global Blacklist for them
  */
@@ -940,7 +947,7 @@ bool isAttr(DWORD &att, DWORD &RPID)
 	//checks global blacklist
 	for(DWORD d : AttGlobalBL)
 	{
-		bool isAtt = d == FILE_ATTRIBUTE_REPARSE_POINT ? ((att & d) && isPrintLink(RPID)) : (att & d);
+		bool isAtt = d == DIRSAFE_LITERAL_REPARSE_POINT ? (att & FILE_ATTRIBUTE_REPARSE_POINT) : (d == FILE_ATTRIBUTE_REPARSE_POINT ? ((att & d) && isPrintLink(RPID)) : (att & d));
 		if(isAtt)
 		{
 			return false;
