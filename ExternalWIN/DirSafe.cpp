@@ -497,7 +497,16 @@ void ListDirectories(const std::wstring& directory, const vector<LPCWSTR> &pat) 
 		if(foundFile(currentPath, name, pat, att, rpid))
 		{
 			if(Bare) {
-				wcout << currentPath << endl;
+				if(!ShowHL) {
+					wcout << currentPath << endl;
+				}
+				else
+				{
+					wcout << currentPath;
+					if(!isDIR)
+						PrintHardLinks(currentPath);
+					wcout << endl;
+				}
 			}
 			else if(Parseable) {
 				wstring rpv = RPVal ? (L" <" + toHex(rpid) + L">") : L"";
