@@ -7,6 +7,7 @@
 #include <vector>
 #include <iomanip>
 #include <fcntl.h>
+#include <shlwapi.h> //MS-DOS Pattern Matching
 /**
  * How to Add Libs: Eclipse --> Propterties  --> C/C++ Genernal --> Paths and Symbols --> Libraries Tab --> Add library without a an extension And select add to all configurations
  * How to Add Linker Options: Eclipse --> Propterties  --> C/C++ Build --> Settings --> Mingw --> Miscellaneous --> Add new option
@@ -81,9 +82,9 @@ vector <DWORD> NoPrintLNKS;
 vector<wstring> SRCHBL;
 
 //Declare program Methods here
-void ListDirectories(const std::wstring& directory);
+void ListDirectories(const std::wstring& directory, const vector<LPCWSTR> &pat);
 bool isBlackListed(const wstring &dir);
-bool foundFile(wstring &path, wstring &n, DWORD &attr, DWORD &RPID);
+bool foundFile(wstring &path, wstring &n, const vector<LPCWSTR> &pat, DWORD &attr, DWORD &RPID);
 bool isLink(DWORD &RPID);
 bool isPrintLink(DWORD &RPID);
 DWORD GetReparsePointId(wstring &path, DWORD &att);
@@ -98,6 +99,8 @@ void ParseAttribFilters(const wstring &attfilters);
 bool isRP(DWORD &attr, DWORD &RPID);
 void ParseRPFilters(const wstring &rpcmd);
 void PrintHardLinks(const wstring &filePath);
+void AddOneDriveCompat();
+bool Matches(wstring &name, const vector<LPCWSTR> &pat);
 
 //Declare Utility methods here
 wstring AddSlash(wstring &s);
@@ -116,23 +119,24 @@ LPWSTR toLPWSTR(const std::wstring& str);
 wstring toupper(wstring s);
 wstring trim(wstring str);
 int MinIndex(int a, int b);
-void AddOneDriveCompat();
+vector<LPCWSTR> splitC(const std::wstring& input, wchar_t c);
 
 //##############################
 //	START OOP Object Definitions
 //##############################
-vector<wstring> EMPTYVEC;
+vector<LPCWSTR> EMPTYVEC;
 class DirPath {
 public:
 	wstring path;
-	vector<wstring> wildcards = EMPTYVEC;
+	vector<LPCWSTR> wildcards;
 
 	DirPath(const wstring &p)
 	{
 		path = p;
+		wildcards = EMPTYVEC;
 	}
 
-	DirPath(const wstring &p, vector<wstring> &wc)
+	DirPath(const wstring &p, vector<LPCWSTR> &wc)
 	{
 		path = p;
 		wildcards = wc;
@@ -380,7 +384,7 @@ int main() {
 			if(dirIndex < 1)
 				dirIndex = p.substr(0, 1) == L"\\" ? 1 : 0;
 			wstring name = p.substr(index + 1);
-			vector<wstring> wildcards = split(name, L'|');
+			vector<LPCWSTR> wildcards = splitC(name, L'|');
 			dirpaths.push_back(DirPath(GetAbsolutePath(p.substr(0, dirIndex)), wildcards));
 		}
 	 }
@@ -430,12 +434,12 @@ int main() {
 	 LoadCFG(WorkingDir);
 	 for(DirPath ds : dirpaths)
 	 {
-		 ListDirectories(ds.path);
+		 ListDirectories(ds.path, ds.wildcards);
 	 }
 	 return FoundFile ? 0 : 404;
 }
 
-void ListDirectories(const std::wstring& directory) {
+void ListDirectories(const std::wstring& directory, const vector<LPCWSTR> &pat) {
 	if(isBlackListed(directory))
 	{
 		return;
@@ -482,7 +486,7 @@ void ListDirectories(const std::wstring& directory) {
 			}
     	}
 
-		if(foundFile(currentPath, name, att, rpid))
+		if(foundFile(currentPath, name, pat, att, rpid))
 		{
 			if(Bare) {
 				wcout << currentPath << endl;
@@ -541,7 +545,7 @@ void ListDirectories(const std::wstring& directory) {
 		            	std::wstring currentPath = directory + L"\\" + name;
 		            	DWORD rp = GetReparsePointId(currentPath, att);
 		            	if (!isLink(rp))
-		                	ListDirectories(currentPath);
+		                	ListDirectories(currentPath, pat);
 		            }
 				}
 			} while (FindNextFileW(hFind, &findFileData) != 0);
@@ -624,10 +628,18 @@ bool isBlackListed(const wstring &c)
 	return false;
 }
 
-
-bool foundFile(wstring &path, wstring &name, DWORD &attr, DWORD &RPID)
+bool Matches(wstring &name, const vector<LPCWSTR> &pat)
 {
-	if ((name == L".") || (name == L"..") || !isAttr(attr, RPID) || !isRP(attr, RPID) || (HLFil && !isHardLink(path)) || (NHLFil && isHardLink(path)))
+	LPCWSTR cname = name.c_str();
+	for(LPCWSTR p : pat)
+		if(PathMatchSpecW(cname, p))
+			return true;
+	return pat.empty();
+}
+
+bool foundFile(wstring &path, wstring &name, const vector<LPCWSTR> &pat, DWORD &attr, DWORD &RPID)
+{
+	if ((name == L".") || (name == L"..") || !Matches(name, pat) || !isAttr(attr, RPID) || !isRP(attr, RPID) || (HLFil && !isHardLink(path)) || (NHLFil && isHardLink(path)))
 	{
 		return false;
 	}
@@ -1091,6 +1103,22 @@ int revIndexOf(wstring str, wstring key)
 	if(found != std::string::npos)
 		 return static_cast<int>(found);
 	return -1;
+}
+
+vector<LPCWSTR> splitC(const std::wstring& input, wchar_t c) {
+	vector<LPCWSTR> arr;
+    size_t startPos = 0;
+    size_t foundPos = input.find(c, startPos);
+    while (foundPos != std::wstring::npos)
+    {
+        LPCWSTR sub = _wcsdup(input.substr(startPos, foundPos - startPos).c_str());
+        arr.push_back(sub);
+        startPos = foundPos + 1;
+        foundPos = input.find(c, startPos);
+    }
+    LPCWSTR lastSub = _wcsdup(input.substr(startPos).c_str());
+    arr.push_back(lastSub);
+    return arr;
 }
 
 vector<wstring> split(const std::wstring& input, wchar_t c) {
