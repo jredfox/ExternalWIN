@@ -31,6 +31,8 @@ Changelog 1.0.12 (BUG MUNCHER II):
 - Changed LoadConfig.bat now gets called in WinPE as most of the config options are now both for WinPE and Windows
 
 Issues:
+- Check Why WinPE is assigning Drive letters to FAT32 Boot Partitions
+- Test ShortCutFixer.bat
 - Option for All offline files O|M|Q when enabled(additional search to WDI and dropping reparsepoints of main search)
 - Almost all Batch For Commands need to be changed to type if it's reading from a file that may contain special characters
 
