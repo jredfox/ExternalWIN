@@ -109,6 +109,7 @@ void ParseRPFilters(const wstring &rpcmd);
 void PrintHardLinks(const wstring &filePath);
 void AddOneDriveCompat();
 bool Matches(wstring &name, const vector<LPCWSTR> &pat);
+wstring GetPAttrs(DWORD &att);
 
 //Declare Utility methods here
 wstring AddSlash(wstring &s);
