@@ -128,6 +128,7 @@ wstring trim(wstring str);
 int MinIndex(int a, int b);
 vector<LPCWSTR> splitC(const std::wstring& input, wchar_t c);
 wstring RemSlash(wstring str);
+wstring toString(bool b);
 
 //##############################
 //	START OOP Object Definitions
@@ -384,7 +385,21 @@ int main() {
 			int indexW = MinIndex(indexStar, indexQ);
 			if(indexW < 0)
 			{
-				dirpaths.push_back(DirPath(GetAbsolutePath(p)));
+				wstring path = GetAbsolutePath(p);
+				//If Path is a file and exists get the parent directory and set the wildcard to the file name itself
+				if(!PathIsDirectoryW(path.c_str()) && exists(path))
+				{
+					int dirIndex = index;
+					if(dirIndex < 1)
+						dirIndex = p.substr(0, 1) == L"\\" ? 1 : 0;
+					wstring path = GetAbsolutePath(p.substr(0, dirIndex));
+					wstring name = p.substr(index + 1);
+					vector<LPCWSTR> pat = {toLPWSTR(name)};
+					dirpaths.push_back(DirPath(path, pat));
+				}
+				else {
+					dirpaths.push_back(DirPath(path));
+				}
 				continue;
 			}
 			if(index > indexW)
@@ -449,9 +464,9 @@ int main() {
 	 {
 		 if(!exists(ds.path))
 		 {
-			 if(!QuietMode)
-				 wcerr << L"Directory Not Found \"" << ds.path << "\"" << endl;
-			 continue;
+			if(!QuietMode)
+				wcerr << L"Directory Not Found \"" << ds.path << "\"" << endl;
+			continue;
 		 }
 		 ListDirectories(ds.path, ds.wildcards);
 	 }
@@ -1222,4 +1237,9 @@ wstring RemSlash(wstring str)
 		str = str.substr(0, str.length() - 1);
 	}
 	return str;
+}
+
+wstring toString(bool b)
+{
+	return b ? L"true" : L"false";
 }

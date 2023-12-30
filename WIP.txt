@@ -12,6 +12,10 @@ DirSafe.exe
 - /-HF No Hard Link File Filter
 - /H Show Hard links
 - /R Show Reparse Points
+- /Q Quiet Mode Suppresses Error Messages
+
+TODO:
+- Handle when the path is an indivdual file
 
 Printing options
 N = Normal(DEFAULT) <type> C:\path <target>
