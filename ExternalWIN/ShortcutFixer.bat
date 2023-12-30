@@ -17,6 +17,22 @@ set /p newpath="Enter New Drive Letter(C Normally):"
 )
 REM ## Set the Default search to include All Types JUNCTIONS SYMDIRS AND SYMFILES ##
 IF "!lnkSearch!" EQU "" (set lnkSearch=JDF)
+REM ##Process JDF Booleans from lnkSearch var ##
+IF "!lnkSearch:J=!" NEQ "!lnkSearch!" (set JSrch=0xA0000003)
+IF "!lnkSearch:D=!" NEQ "!lnkSearch!" (
+set DSrch=D
+set SYMSrch=0xA000000C^=
+)
+IF "!lnkSearch:F=!" NEQ "!lnkSearch!" (
+set FSrch=F
+set SYMSrch=0xA000000C^=
+)
+set Symval=!SYMSrch!!DSrch!!FSrch!
+IF "!JSrch!" NEQ "" (
+If "!Symval!" NEQ "" (
+set JSrch=!JSrch!^;
+)
+)
 REM ## Remove Quotes Safley from the path without screwing things up ##
 set scandir=!scandir:"=!
 set oldpath=!oldpath:"=!
@@ -29,7 +45,7 @@ REM ## Ensure the Scan Dir, Old Path, New Path all end in backslash ##
 IF "!scandir:~-1!" NEQ "\" (SET scandir=!scandir!^\)
 IF "!oldpath:~-1!" NEQ "\" (SET oldpath=!oldpath!^\)
 IF "!newpath:~-1!" NEQ "\" (SET newpath=!newpath!^\)
-IF /I "!reecurse:~0,1!" NEQ "F" (set reflag=/S )
+IF /I "!reecurse:~0,1!" NEQ "F" (set reflag=TRUE) ELSE (set reflag=FALSE)
 set JLinks=%TMP%\JLinks.txt
 del /F /Q /A "!JLinks!" >nul 2>&1
 set NewDrive=!newpath:~0,1!
@@ -39,7 +55,9 @@ set /p createDummy="Create Dummy Drive to Patch Junctions And SYMLINKS [Y/N]?"
 IF /I "!createDummy!" EQU "Y" (call :CREATEDUMMY "!NewDrive!" "!scandir:~0,1!")
 )
 echo Scanning for Juntions and Symbolic Links in "!scandir!"
-dir !reflag!/A^:L-O "!scandir!" >"!JLinks!"
+call :GETDIRSAFE
+call "!direxe!" "!scandir!" "!reflag!" "P" "K" "!JSrch!!Symval!" 2>nul>"!JLinks!"
+pause
 cscript /nologo "%~dp0PatchJLinks.vbs" "!JLinks!" "!oldpath!" "!newpath!" "!lnkSearch!"
 pause
 exit /b
@@ -106,4 +124,11 @@ FOR /f "delims=" %%a in ('POWERCFG -GETACTIVESCHEME') DO @SET powerplan="%%a"
 powercfg /s 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
 echo changed powerplan of !powerplan! to high performance 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
 )
+exit /b
+
+:GETDIRSAFE
+set dirsafedir=%~dp0DirSafe
+set direxe=!dirsafedir!\DirSafe-x64.exe
+call "!direxe!" "/?" >nul 2>&1
+IF !ERRORLEVEL! NEQ 0 (set direxe=!dirsafedir!\DirSafe-x86.exe)
 exit /b
