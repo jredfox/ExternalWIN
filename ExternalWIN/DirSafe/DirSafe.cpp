@@ -83,6 +83,7 @@ bool ShowHL = false;
 bool HLFil = false;
 bool NHLFil = false;
 bool QuietMode = false;
+bool PAttr = false;
 wstring Attribs = L"";
 vector<DWORD> NoLNKS;
 vector <DWORD> NoPrintLNKS;
@@ -316,6 +317,13 @@ public:
 	}
 };
 
+template<typename T, typename U>
+struct Pair {
+	T K;
+	U V;
+};
+vector<Pair<DWORD, wchar_t>> patts;
+
 int main() {
 	setlocale(LC_CTYPE, "");
 	_setmode( _fileno(stdout), _O_U8TEXT );
@@ -351,6 +359,75 @@ int main() {
 		}
 		else if(t == L"/Q") {
 			QuietMode = true;
+		}
+		else if(t.size() > 6 && t.substr(0, 6) == L"/ATTR:") {
+			PAttr = true;
+			wstring AAtt = t.substr(6);
+			if(AAtt.substr(0, 1) == L"*")
+			{
+				AAtt = L"RHSDALOIPUMQCEXVB";
+			}
+			for (wchar_t c : AAtt) {
+				switch (c) {
+				case L'R':
+					patts.push_back( { FILE_ATTRIBUTE_READONLY, c });
+					break;
+				case L'H':
+					patts.push_back( { FILE_ATTRIBUTE_HIDDEN, c });
+					break;
+				case L'S':
+					patts.push_back( { FILE_ATTRIBUTE_SYSTEM, c });
+					break;
+				case L'D':
+					patts.push_back( { FILE_ATTRIBUTE_DIRECTORY, c });
+					break;
+				case L'A':
+					patts.push_back( { FILE_ATTRIBUTE_ARCHIVE, c });
+					break;
+				case L'L':
+					patts.push_back( { FILE_ATTRIBUTE_REPARSE_POINT, c });
+					break;
+				case L'O':
+					patts.push_back( { FILE_ATTRIBUTE_OFFLINE, c });
+					break;
+				case L'I':
+					patts.push_back( { FILE_ATTRIBUTE_NOT_CONTENT_INDEXED, c });
+					break;
+					//START Extended Attributes
+				case L'P':
+					patts.push_back( { FILE_ATTRIBUTE_PINNED, c });
+					break;
+				case L'U':
+					patts.push_back( { FILE_ATTRIBUTE_UNPINNED, c });
+					break;
+					//OneDrive or cloud files but they won't always have this attribute reparse points are more reliable in determining onedrive files
+				case L'M':
+					patts.push_back(
+							{ FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS, c });
+					break;
+				case L'Q':
+					patts.push_back( { FILE_ATTRIBUTE_RECALL_ON_OPEN, c });
+					break;
+				case L'C':
+					patts.push_back( { FILE_ATTRIBUTE_COMPRESSED, c });
+					break;
+				case L'E':
+					patts.push_back( { FILE_ATTRIBUTE_ENCRYPTED, c });
+					break;
+					//ReFS attribs
+				case L'X':
+					patts.push_back( { FILE_ATTRIBUTE_NO_SCRUB_DATA, c });
+					break;
+				case L'V':
+					patts.push_back( { FILE_ATTRIBUTE_INTEGRITY_STREAM, c });
+					break;
+				case L'B':
+					patts.push_back( { FILE_ATTRIBUTE_STRICTLY_SEQUENTIAL, c });
+					break;
+				default:
+					break;
+				}
+			}
 		}
 		else if(t == L"/?" || t == L"/HELP") {
 			help();
@@ -473,6 +550,20 @@ int main() {
 	 return FoundFile ? 0 : 404;
 }
 
+bool contains(wstring str, wstring srch)
+{
+	return str.find(srch) != std::wstring::npos;
+}
+
+wstring GetPAttrs(DWORD &att)
+{
+	wstring pattr = L"";
+	for(auto a : patts)
+		if(a.K & att)
+			pattr += a.V;
+	return pattr;
+}
+
 void ListDirectories(const std::wstring& directory, const vector<LPCWSTR> &pat) {
 	if(isBlackListed(directory))
 	{
@@ -537,15 +628,16 @@ void ListDirectories(const std::wstring& directory, const vector<LPCWSTR> &pat) 
 			}
 			else if(Parseable) {
 				wstring rpv = RPVal ? (L" <" + toHex(rpid) + L">") : L"";
+				wstring pattr = PAttr ? (L" <" + GetPAttrs(att) + L">") : L"";
 				if(!ShowHL) {
-					wcout << type << "<" << currentPath << L">" << rpv << targ << endl;
+					wcout << type << "<" << currentPath << L">" << pattr << rpv << targ << endl;
 				}
 				else
 				{
 					wcout << type << "<" << currentPath;
 					if(!isDIR)
 						PrintHardLinks(currentPath);
-					wcout << L">" << rpv << targ << endl;
+					wcout << L">" << pattr << rpv << targ << endl;
 				}
 			}
 			else
@@ -557,15 +649,16 @@ void ListDirectories(const std::wstring& directory, const vector<LPCWSTR> &pat) 
 					idir = true;
 				}
 				wstring rpv = RPVal ? (L" <" + toHex(rpid) + L">") : L"";
+				wstring pattr = PAttr ? (L" <" + GetPAttrs(att) + L">") : L"";
 				if(!ShowHL) {
-					wcout << type << name << rpv << targ << endl;
+					wcout << type << name << pattr << rpv << targ << endl;
 				}
 				else
 				{
 					wcout << type << name;
 					if(!isDIR)
 						PrintHardLinks(currentPath);
-					wcout << rpv << targ << endl;
+					wcout << pattr << rpv << targ << endl;
 				}
 			}
 		}
@@ -955,6 +1048,7 @@ void help()
 	wcout << L"/HF Hard Links Filter" << endl;
 	wcout << L"/-HF No Hard Links Filter" << endl;
 	wcout << L"/Q Quiet Mode Suppress Error Messages" << endl;
+	wcout << L"/ATTR:{Attributes to Display}" << endl;
 	wcout << L"PrintTypes:{N = Normal, B = Bare, P = Parseable}" << endl;
 	wcout << L"A Archiving" << endl;
 	wcout << L"B SMR Blob" << endl;
