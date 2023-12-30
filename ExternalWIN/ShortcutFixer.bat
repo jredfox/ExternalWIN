@@ -57,8 +57,7 @@ IF /I "!createDummy!" EQU "Y" (call :CREATEDUMMY "!NewDrive!" "!scandir:~0,1!")
 echo Scanning for Juntions and Symbolic Links in "!scandir!"
 call :GETDIRSAFE
 call "!direxe!" "!scandir!" "!reflag!" "P" "K" "!JSrch!!Symval!" 2>nul>"!JLinks!"
-pause
-cscript /nologo "%~dp0PatchJLinks.vbs" "!JLinks!" "!oldpath!" "!newpath!" "!lnkSearch!"
+cscript /nologo "%~dp0PatchJLinks.vbs" "!JLinks!" "!oldpath!" "!newpath!"
 pause
 exit /b
 
