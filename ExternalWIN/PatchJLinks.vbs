@@ -1,7 +1,13 @@
+Const ForReading = 1, ForAppending = 8
 linksfile = WScript.Arguments(0)
 PathOld = WScript.Arguments(1)
 PathNew = WScript.Arguments(2)
-PathOldJunc = Mid(PathOld, InStrRev(PathOld, ":\") - 1)
+JIndex = InStrRev(PathOld, ":\")
+If JIndex > 0 Then
+	PathOldJunc = Mid(PathOld, JIndex - 1)
+Else
+	PathOldJunc = PathOld
+End If
 ' Initialize REGEX Pattern
 Dim regex
 Set regex = New RegExp
@@ -13,6 +19,11 @@ PathDir = ""
 WScript.Echo "Patching:" & PathOld & " With:" & PathNew
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 Set oShell = WScript.CreateObject("WScript.Shell")
+TMPDIR = oShell.ExpandEnvironmentStrings("%TMP%")
+SCGen = TMPDIR & "\ShortcutFixerGen.bat"
+Call DelFile(SCGen)
+Set BFile = objFSO.OpenTextFile(SCGen, ForAppending, True)
+BFile.WriteLine "@ECHO OFF" & vbCrlf & "setlocal ENABLEDELAYEDEXPANSION"
 Set objFile = objFSO.OpenTextFile(linksfile, 1, False)
 Do Until objFile.AtEndOfStream
 	line = objFile.ReadLine
@@ -28,8 +39,11 @@ Do Until objFile.AtEndOfStream
 				InEndP = InStr(UnParsedP, ">")
 				InStartP = InStr(UnParsedP, "<")
 				LinkDir = Mid(UnParsedP, InStartP + 1, InEndP - InStartP - 1)
-				UnParsedT = Mid(line, IndexEnd + InEndP + 2)
-				TargOrg = Mid(UnParsedT, InStr(UnParsedT, "<") + 1, InStrRev(UnParsedT, ">") - 2)
+				UnParsedA = Mid(line, IndexEnd + InEndP + 2)
+				' Get Attributes
+				StrAttrs = Mid(UnParsedA, InStr(UnParsedA, "<") + 1, InStr(UnParsedA, ">") - 2)
+				' Get Target
+				TargOrg = Mid(UnParsedA, InStrRev(UnParsedA, "<") + 1, InStrRev(UnParsedA, ">") - InStrRev(UnParsedA, "<") - 1)
 				' Start the Actual Patching here
 				If InStr(TargOrg, PathOld) > 0 Then
 					' All other NT Meta paths are fine using MKLNK /J command Except for This Prefix due to a bug with MKLINK with Junctions Tested Win 10-11
@@ -39,7 +53,7 @@ Do Until objFile.AtEndOfStream
 					Else
 						TargNew = Replace(TargOrg, PathOld, PathNew, 1, 1)
 					End If
-					WScript.Echo LinkDir & " " & LinkType & " """ & TargOrg & """ To: """ & TargNew & """"
+					' WScript.Echo LinkDir & " " & LinkType & " """ & TargOrg & """ To: """ & TargNew & """"
 					' Generate the Commands
 					DELCMD = "RD """ & LinkDir & """"
 					IF LinkType = "JUNCTION" Then
@@ -51,11 +65,11 @@ Do Until objFile.AtEndOfStream
 						DELCMD = "DEL /F /Q /A """ & LinkDir & """"
 					End If
 					MKCMD = "MKLINK" & MKFlags & " """ & LinkDir & """ " & """" & TargNew & """"
-					LNKAttribs = GetLnkAttr(LinkDir)
-					runCMD("cmd /c echo " & DELCMD)
-					runCMD("cmd /c echo " & MKCMD)
-					IF LNKAttribs <> "" THEN
-						runCMD("cmd /c echo attrib /L " & LNKAttribs & " """ & LinkDir & """")
+					BFile.WriteLine "cmd /c echo " & DELCMD
+					BFile.WriteLine "cmd /c echo " & MKCMD
+					IF StrAttrs <> "" THEN
+						LNKAttribs = GetLnkAttr(StrAttrs)
+						BFile.WriteLine "cmd /c echo attrib /L " & LNKAttribs & " """ & LinkDir & """"
 					End If
 				'Else
 					'WScript.Echo "Skipping: " & TargOrg
@@ -64,6 +78,9 @@ Do Until objFile.AtEndOfStream
 		End If
 	End If
 Loop
+BFile.Close
+Call runCMD("cmd /c call """ & SCGen & """")
+Call DelFile(SCGen)
 
 ' Run A DAM COMMAND WITH OUTPUT
 Function runCMD(strRunCmd)
@@ -84,21 +101,16 @@ Function runCMDOut(strRunCmd)
 End Function
 
 ' Get a Link's Attributes
-Function GetLnkAttr(FileLNK)
-Attribs = ""
-AttLine = runCMDOut("cmd /c attrib /L """ & FileLNK & """")
-indexAtt = InStr(AttLine, ":\") - 2
-IF indexAtt > 0 Then
-	Attribs = Replace(Left(AttLine, indexAtt), " ", "")
-	' Attrib Command has File or Path Not Found
-	IF Right(Attribs, 1) = "-" Then
-		Attribs = ""
-	Else
-		For i = 1 To Len(Attribs)
-			result = result & "+" & Mid(Attribs, i, 1) & " "
-		Next
-		Attribs = Trim(result)
-	End If
-End If
-GetLnkAttr = Attribs
+Function GetLnkAttr(Attribs)
+	For i = 1 To Len(Attribs)
+		result = result & "+" & Mid(Attribs, i, 1) & " "
+	Next
+	GetLnkAttr = Trim(result)
 End Function
+
+' Del A file Safely
+Sub DelFile(File)
+  If objFSO.FileExists(File) Then
+     objFSO.DeleteFile(File)
+  End If
+End Sub
