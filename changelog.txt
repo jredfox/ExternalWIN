@@ -31,8 +31,7 @@ Changelog 1.0.12 (BUG MUNCHER II):
 - Changed LoadConfig.bat now gets called in WinPE as most of the config options are now both for WinPE and Windows
 
 Issues:
-- WDI search should search only for OneDrive ReparsePoint tags and not file attributes
-- Option for All offline files or just OneDrive ReparsePoints outside of the OneDrive folder
+- Option for All offline files O|M|Q when enabled(additional search to WDI and dropping reparsepoints of main search)
 - Almost all Batch For Commands need to be changed to type if it's reading from a file that may contain special characters
 
 MASTER TODOO:
