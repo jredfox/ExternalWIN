@@ -13,6 +13,7 @@ DirSafe.exe
 - /H Show Hard links
 - /R Show Reparse Points
 - /Q Quiet Mode Suppresses Error Messages
+- /ATTR:<Printable Attributes>
 
 Printing options
 N = Normal(DEFAULT) <type> C:\path <target>
@@ -45,3 +46,5 @@ Changes/Improvements:
 - /R flag to print all reparsepoint values where 0(NULL) meaning no reparsepoint. OneDrive reparsepoints will still print their values and scripters should be aware of this
 - /HF hard link filter
 - /-HF no hard link file filter
+- /ATTR:{Printable ATTRIBUTES} Displays what attributes you want to show if the file has them or * for all attributes. This isn't a filter but a useful utility function for scripting
+- /Q to suppress errors

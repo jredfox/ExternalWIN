@@ -65,11 +65,11 @@ Do Until objFile.AtEndOfStream
 						DELCMD = "DEL /F /Q /A """ & LinkDir & """"
 					End If
 					MKCMD = "MKLINK" & MKFlags & " """ & LinkDir & """ " & """" & TargNew & """"
-					BFile.WriteLine "cmd /c echo " & DELCMD
-					BFile.WriteLine "cmd /c echo " & MKCMD
+					BFile.WriteLine "cmd /c " & DELCMD
+					BFile.WriteLine "cmd /c " & MKCMD
 					IF StrAttrs <> "" THEN
 						LNKAttribs = GetLnkAttr(StrAttrs)
-						BFile.WriteLine "cmd /c echo attrib /L " & LNKAttribs & " """ & LinkDir & """"
+						BFile.WriteLine "cmd /c attrib /L " & LNKAttribs & " """ & LinkDir & """"
 					End If
 				'Else
 					'WScript.Echo "Skipping: " & TargOrg
@@ -89,15 +89,6 @@ Function runCMD(strRunCmd)
    cline = objExec.StdOut.ReadLine()
    WScript.Echo cline
  Loop
-End Function
-
-' Run A CMD and Get it's output as a single line
-Function runCMDOut(strRunCmd)
- Set objExec = oShell.Exec(strRunCmd)
- Do While Not objExec.StdOut.AtEndOfStream
-   cmdline = cmdline & objExec.StdOut.ReadLine()
- Loop
- runCMDOut = cmdline
 End Function
 
 ' Get a Link's Attributes
