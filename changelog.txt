@@ -10,7 +10,7 @@ Changelog 1.0.12 (BUG MUNCHER II):
 - Fixed having the S flag for del command when it was working with single file deletions and made the code more readable
 - Fixed CleanupPar.bat (fixed always having c drive as true, fixed check logic method and main for loop)
 - Added Dynamic Exclusion Lists Capture/Apply Configs that change based on relative path of the target drive for example \Windows\System32 and the target is \Windows\ it would change to \System32
-- Added Static exclusions that start with S:\target instead of C:\target or \target this is implemented for both Apply and Capture Exclusions. This means it will always be the same path and always get added to the generated exclusion list
+- Added Static exclusions that start with S:\target instead of (C:\target or \target) this is implemented for both Apply and Capture Exclusions. This means it will always be the same path and always get added to the generated exclusion list
 - Added Config Option OptimizedWIMCapture when true if no onedrive accounts are detected it will skip the scanning of the target drive/dir
 - Added Config Option OneDriveLinkScan when true scans for offline onedrive links on the target drive/dir
 - Added Config Option /EA (Extended Attributes) that when true will capture and apply Extended Attributes that's almost only used by WSL (Windows Sub Linux System)
@@ -19,9 +19,11 @@ Changelog 1.0.12 (BUG MUNCHER II):
 - Added forward slash support for WinInstall.bat, WinInstallVHDX-Custom.bat, WinInstallVHDX.bat, WIM-Capture.bat, WIMApply-Universal.bat, WIMApply-W.bat in case user error when inputting files
 - Added WARNINGS to Dangerous scripts such as WIM-Extract.bat and forcedelete.bat
 - Added ShortCutFixer.bat Command Line Utility & User Script. This will fix previous Windows Installations installed from ExternalWIN causing Junctions, SYMLINK Dirs, SYMLINK FILES to have W:\ instead of what they are suppose to be
+- Added DirSafe-x64.exe and DirSafe-x86.exe (arm64 not supported till mingw supports it). This is the enhanced version of the dir comamnd and actually works with recursion properly
+- Added DirSafe.bat to ensure the right DirSafe.exe gets called for the right arch else it won't work in WinPE
 - Improved LoadConfig.bat to automatically re-add missing config options without manual deletion
 - Improved Better Directory Paths of ExternalWIN's WIM Images and VDISKS to C:\ExternalWIN\ImageBackups\<COMPUTER>\WIMS and C:\ExternalWIN\ImageBackups\<COMPUTER>\VDISKS for when there isn't a Absolute Path Specified in Regular Windows
-- Improved WIM-Capture.bat Logic No longer Saves anything from C:\ExternalWIN\* as there is VDISKS WIM Images and Backup of reg/boots that aren't really needed in a backup of the C Drive and will save hundreds of GB of space. You can still use WIM-Capture.bat to Capture C:\ExteranlWIN by only capturing it
+- Improved WIM-Capture.bat Logic not saving C:\ExternalWIN\* as there is VDISKS WIM Images and Backup of reg/boots that aren't really needed in a backup of the C Drive and will save hundreds of GB of space. You can still use WIM-Capture.bat to Capture C:\ExteranlWIN by only capturing it
 - Improved WIMApply-W.bat it now enforces the volume as an Integer
 - Improved WIM-Extract.bat. It now supports it's own Apply Exclusion List, EA flag, config options
 - Improved WIM-Merge.bat, WIM-Extract.bat and ESD2WIM.bat in how it gets the WIM Size. It also fixes the error messages when the index > wim index size
@@ -29,14 +31,11 @@ Changelog 1.0.12 (BUG MUNCHER II):
 - Changed LoadConfig.bat now gets called in WinPE as most of the config options are now both for WinPE and Windows
 
 Issues:
-- finish dirsafe.exe 
-- Dection of which DirSafe.exe to use and extraction to %SYSTEMROOT% if not winpe and cloud compat fails
 - WDI search should search only for OneDrive ReparsePoint tags and not file attributes
 - Option for All offline files or just OneDrive ReparsePoints outside of the OneDrive folder
 - Almost all Batch For Commands need to be changed to type if it's reading from a file that may contain special characters
 
 MASTER TODOO:
-- dir /S recursion issue
-- PatchJLinks.vbs use parseable search from DirSafe.exe
+- ShortcutFixer.bat & PatchJLinks.vbs use DirSafe.exe parseable format
 - Make WinInstallVHDX.bat work in WinPE again
 - Improve Logic of WinInstallVHDX.bat's VDISK location in WinPE

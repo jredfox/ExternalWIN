@@ -14,9 +14,6 @@ DirSafe.exe
 - /R Show Reparse Points
 - /Q Quiet Mode Suppresses Error Messages
 
-TODO:
-- Handle when the path is an indivdual file
-
 Printing options
 N = Normal(DEFAULT) <type> C:\path <target>
 B = Bare C:\path

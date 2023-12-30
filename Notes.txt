@@ -145,7 +145,7 @@ You can also run any main script that format or partitions the hard drive and be
   - WinAssignRecovery.bat may not work on an offline windows version and should only ever be called from the current boot this is due to REAGENTC ignoring the /target for /enable or /disable I also tried the /OSGUID and that didn't work either
   - IMG2WIM.bat will not work in WinPE due to the fact that powershell doesn't exist in WinPE
   - Can't Rename WIM Images Name or Description Without Recapture and or WIM Rebuild
-  - Can't set Recovery Partition path on USB Flash Drive on when using WinInstall.bat. This is a bug of REAGENTC assuming the computer is your computer and ignores the target value. It doesn't know the target was windows go nor does it care it ignores everything
+  - Can't set Recovery Partition path on USB Flash Drive on when using WinInstall.bat. This is a bug of REAGENTC assuming the computer is your computer and ignores the target value. It doesn't know the target was windows nor does it care it ignores everything
 5. Q:DISM Error When Applying Custom Captured WIM Image
    A:This occurs When a security descriptor on the captured drive is invalid. Please Capture all WIM images in WinPE(Installation Media) USB to avoid this
 6. Q:Help I Captured the WIM Image in WinPE(USB) and I am still getting the security error when Applying the WIM image to an External Hard drive / USB
@@ -158,6 +158,8 @@ You can also run any main script that format or partitions the hard drive and be
    - If the error goes away and looks like it came with the computer please create a new issue called "dir cfg" to github.com/jredfox/ExternalWIN/issues
 7. Q:Help File Explorer Popups are still happening during the Installation Process
    A:Older Computers need a higher sleep time change SleepDisable to 2500 and SleepEnable to 5500 and if it still doesn't work set them both to 0 and set RestartExplorer to true
+8. Q: After ExternalWIN 1.0.12+ hangs too long on Generating Exclusions List
+   A: Disable OneDriveLinkScan in the config. Leaving it on garentees that there are no offline onedrive files outside of the onedrive folder but if you don't have errors you can disable this safely for your HDD drive. It will still scan the C:\Windows\System32\WDI folder but generally it's less then 1GB
 
 Dictionary
 __________________

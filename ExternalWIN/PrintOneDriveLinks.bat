@@ -15,8 +15,9 @@ IF /I "!OptimizedWIMCapture!" EQU "TRUE" (
 call :ISBLANK "!dirs!"
 IF "!isBlank!" EQU "T" (exit /b)
 )
-dir /S /B /A^:LO "!drive!" 2>nul>"!EXTIndex!"
-dir /S /B /A^:L-O "!drive:~0,1!^:\Windows\System32\WDI" 2>nul>>"!EXTIndex!"
+call :GETDIRSAFE
+call "!direxe!" "!drive!" "TRUE" "B" "O" "0x9000601A;0x9000001A;0x9000101A;0x9000201A;0x9000301A;0x9000401A;0x9000501A;0x9000701A;0x9000801A;0x9000901A;0x9000A01A;0x9000B01A;0x9000C01A;0x9000D01A;0x9000E01A;0x9000F01A;0x80000021;0x0000F000" 2>nul>"!EXTIndex!"
+call "!direxe!" "!drive:~0,1!^:\Windows\System32\WDI" "TRUE" "B" "K" "0x9000601A;0x9000001A;0x9000101A;0x9000201A;0x9000301A;0x9000401A;0x9000501A;0x9000701A;0x9000801A;0x9000901A;0x9000A01A;0x9000B01A;0x9000C01A;0x9000D01A;0x9000E01A;0x9000F01A;0x80000021;0x0000F000" 2>nul>>"!EXTIndex!"
 cscript /nologo "%~dp0PrintOneLinks.vbs" "!EXTIndex!" "!dirs!" "!drive!"
 exit /b
 
@@ -31,4 +32,11 @@ set isBlank=F
 exit /b
 )
 )
+exit /b
+
+:GETDIRSAFE
+set dirsafedir=%~dp0DirSafe
+set direxe=!dirsafedir!\DirSafe-x64.exe
+call "!direxe!" "/?" >nul 2>&1
+IF !ERRORLEVEL! NEQ 0 (set direxe=!dirsafedir!\DirSafe-x86.exe)
 exit /b

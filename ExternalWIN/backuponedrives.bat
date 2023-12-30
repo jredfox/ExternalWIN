@@ -22,7 +22,8 @@ set capwim=!drive!^:!capwim:~2!
 del /F /Q /A "!EXTIndex!" >nul 2>&1
 del /F /Q /A "!capwim!" >nul 2>&1
 del /F /Q /A "!cfgone!" >nul 2>&1
-dir /S /B /A^:LO "!capdrive!" 2>nul>"!EXTIndex!"
+call :GETDIRSAFE
+call "!direxe!" "!capdrive!" "TRUE" "B" "O" "0x9000601A;0x9000001A;0x9000101A;0x9000201A;0x9000301A;0x9000401A;0x9000501A;0x9000701A;0x9000801A;0x9000901A;0x9000A01A;0x9000B01A;0x9000C01A;0x9000D01A;0x9000E01A;0x9000F01A;0x80000021;0x0000F000" 2>nul>"!EXTIndex!"
 REM create the offline onedrive exclusion list before backup
 (
 echo ^[ExclusionList^]
@@ -51,4 +52,11 @@ set isBlank=F
 exit /b
 )
 )
+exit /b
+
+:GETDIRSAFE
+set dirsafedir=%~dp0DirSafe
+set direxe=!dirsafedir!\DirSafe-x64.exe
+call "!direxe!" "/?" >nul 2>&1
+IF !ERRORLEVEL! NEQ 0 (set direxe=!dirsafedir!\DirSafe-x86.exe)
 exit /b

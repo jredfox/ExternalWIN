@@ -13,3 +13,6 @@ ExternalWIN/ApplyExclusions.cfg
 ExternalWIN/CaptureExclusions.cfg
 ExternalWIN/ExtractExclusions.cfg
 ExternalWIN/test2.vbs
+ExternalWIN/DirSafe/PrintReparsePointsBL.cfg
+ExternalWIN/DirSafe/SRCHDirBL.cfg
+ExternalWIN/DirSafe/SRCHReparsePoints.cfg
