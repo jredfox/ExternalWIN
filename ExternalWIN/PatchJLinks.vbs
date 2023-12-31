@@ -65,11 +65,11 @@ Do Until objFile.AtEndOfStream
 						DELCMD = "DEL /F /Q /A """ & LinkDir & """"
 					End If
 					MKCMD = "MKLINK" & MKFlags & " """ & LinkDir & """ " & """" & TargNew & """"
-					BFile.WriteLine "cmd /c " & DELCMD
-					BFile.WriteLine "cmd /c " & MKCMD
+					BFile.WriteLine DELCMD
+					BFile.WriteLine MKCMD
 					IF StrAttrs <> "" THEN
 						LNKAttribs = GetLnkAttr(StrAttrs)
-						BFile.WriteLine "cmd /c attrib /L " & LNKAttribs & " """ & LinkDir & """"
+						BFile.WriteLine "attrib /L " & LNKAttribs & " """ & LinkDir & """"
 					End If
 				'Else
 					'WScript.Echo "Skipping: " & TargOrg
@@ -80,7 +80,7 @@ Do Until objFile.AtEndOfStream
 Loop
 BFile.Close
 Call runCMD("cmd /c call """ & SCGen & """")
-Call DelFile(SCGen)
+' Call DelFile(SCGen)
 
 ' Run A DAM COMMAND WITH OUTPUT
 Function runCMD(strRunCmd)
