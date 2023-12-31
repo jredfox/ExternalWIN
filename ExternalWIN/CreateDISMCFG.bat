@@ -50,7 +50,7 @@ IF NOT EXIST "!DISMCAPCFG!" (type NUL >"!DISMCAPCFG!")
 exit /b
 
 :CUSTOMEXCLUSIONS
-FOR /F "usebackq delims=" %%i IN ("!DISMCAPCFG!") DO (
+FOR /F "delims=" %%i IN ('type "!DISMCAPCFG!"') DO (
 set dir=%%i
 set dir=!dir:^/=^\!
 IF "!dir:~-1!" EQU "\" (SET dir=!dir:~0,-1!)

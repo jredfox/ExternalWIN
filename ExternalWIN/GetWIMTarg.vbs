@@ -26,3 +26,4 @@ Do While Not objExec.StdOut.AtEndOfStream
 		WScript.Quit
     End If
 Loop
+WScript.Echo "$"
