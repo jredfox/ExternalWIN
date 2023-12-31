@@ -46,7 +46,7 @@ IF NOT EXIST "!DISMAPPLYCFG!" (type NUL >"!DISMAPPLYCFG!")
 exit /b
 
 :CUSTOMEXCLUSIONS
-FOR /F "usebackq delims=" %%i IN ("!DISMAPPLYCFG!") DO (
+FOR /F "delims=" %%i IN ('type "!DISMAPPLYCFG!"') DO (
 set dir=%%i
 set dir=!dir:^/=^\!
 IF "!dir:~-1!" EQU "\" (SET dir=!dir:~0,-1!)
