@@ -268,7 +268,8 @@ exit /b
 
 :GETHOMEDRIVE
 IF "!HOMEDRIVE!" EQU "" (
-set wkdir="%~dp0"
+diskpart /s "%~dp0lv.txt"
+set /p wkdir="Enter VDISK TMP Drive:"
 set HOMEDRIVE=!wkdir:~0,1!
 )
 exit /b
