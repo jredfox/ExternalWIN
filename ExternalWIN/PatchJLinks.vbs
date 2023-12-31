@@ -80,7 +80,7 @@ Do Until objFile.AtEndOfStream
 Loop
 BFile.Close
 Call runCMD("cmd /c call """ & SCGen & """")
-' Call DelFile(SCGen)
+Call DelFile(SCGen)
 
 ' Run A DAM COMMAND WITH OUTPUT
 Function runCMD(strRunCmd)
