@@ -1,8 +1,4 @@
 Issues:
-- Batch For Loop Issues when Iterating through any PATHS all Scripts need to change to type
 - Option for All offline files O|M|Q when enabled(additional search to WDI and dropping reparsepoints of main search)
 - Make WinInstallVHDX.bat work in WinPE again
 - Improve Logic of WinInstallVHDX.bat's VDISK location in WinPE
-
-TODO:
-- remove config option OptimizedWIMCapture
