@@ -15,7 +15,7 @@ IF "!isBlank!" EQU "T" (exit /b)
 set /p onebackup="Backup All Users Downloaded Offline OneDrive Files [Y\N]?"
 IF /I "!onebackup:~0,1!" NEQ "Y" (exit /b)
 REM create backups of all OneDrives on all accounts
-FOR /F "usebackq delims=" %%I IN ("!dirs!") DO (
+FOR /F "delims=" %%I IN ('type "!dirs!"') DO (
 set capdrive=!drive!^:%%I
 set capwim=%%~dpIOneDriveOld.WIM
 set capwim=!drive!^:!capwim:~2!
@@ -44,7 +44,7 @@ exit /b
 :ISBLANK
 set isBlank=T
 set file=%~1
-FOR /F "usebackq delims=" %%A IN ("%file%") DO (
+FOR /F "delims=" %%A IN ('type "%file%"') DO (
 set line=%%A
 set line=!line: =!
 IF "!line!" NEQ "" (

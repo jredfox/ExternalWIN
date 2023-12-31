@@ -1,50 +1,5 @@
-Download and install MinGWxARCH(x64 x86 arm64) with win32(API TYPE) and msvcrt(THREAD MODEL)
-Project --> Properties --> C/C++ Build --> Settings --> MinGW C++ Linker --> Miscellaneous --> Add option "-static -static-libgcc -static-libstdc++"
-
-DirSafe.exe
-- Recursion safe directory walker
-- Dynamic & Static Exclusions
-- Attribute Filter
-- Reparse Point Filter (Junction / Mount Point, Symlink, Symlinkd)
-- Multi Directory seperated by ;
-- WildCards seperated by | (support wildcard file names, wildcard blacklist directory and file names)
-- /HF Hard Link Filter
-- /-HF No Hard Link File Filter
-- /H Show Hard links
-- /R Show Reparse Points
-- /Q Quiet Mode Suppresses Error Messages
-- /ATTR:<Printable Attributes>
-
-Printing options
-N = Normal(DEFAULT) <type> C:\path <target>
-B = Bare C:\path
-P = Parsible everyting <type> <path> <target>
-
-Missing featues With no plan on adding:
-- Sort Order(useful but not for ExternalWIN)
-- Timestamps(useful but not for ExternalWIN)
-- File Sizes(useful but not for ExternalWIN)
-- Non positional parameters(/A etc...)
-- 8dot names
-- File Ownership(unkown format unlike icalics command)
-- Random junk that shouldn't be there as it's useless like pause after each dir, /4 when the years are already 4 digets, wide list both varients etc...
-
-Changes/Improvements:
-- Safe Recursion on memory when walking through recursively of dirs
-- Safe Recursion that specifically avoids ReparsePoints that are not onedrive's
-- Parsible format for easy parsings
-- Multiple wildcards per directory entry
-- MS-DOS Wildcards are more accurrate then the dir command as *.txt will not yeild *.txte or *.txt1 you would have to use *.txt* or *.txt?
-- Directory entries are in argument one seperated by ";"
-- More Attributes like M or E to work with
-- Attribute filter allows for OR statements optimizing the time needed so you don't have to run the command multiple times for just comparing attributes
-- L Reparsepoints links instead of any reparsepoints.
-- K Literal Reparse Points or any reparse points including onedrive's
-- Reparse filter that allows you to filter all reparsepoint files of a certain reparse point id like symlinks or junctions
-- Dynamic Exclusions sep ";" (From command line argument 6) and Static(Configureable) exclusions from the config generated right next to it
-- /H flag to print all hardlinks for a given file. All files have one hardlink as it's the path. But if a file has more then one Path entry to a single file it's commonly called a Hard Link
-- /R flag to print all reparsepoint values where 0(NULL) meaning no reparsepoint. OneDrive reparsepoints will still print their values and scripters should be aware of this
-- /HF hard link filter
-- /-HF no hard link file filter
-- /ATTR:{Printable ATTRIBUTES} Displays what attributes you want to show if the file has them or * for all attributes. This isn't a filter but a useful utility function for scripting
-- /Q to suppress errors
+Issues:
+- Batch For Loop Issues when Iterating through any PATHS all Scripts need to change to type
+- Option for All offline files O|M|Q when enabled(additional search to WDI and dropping reparsepoints of main search)
+- Make WinInstallVHDX.bat work in WinPE again
+- Improve Logic of WinInstallVHDX.bat's VDISK location in WinPE
