@@ -6,7 +6,7 @@ set drive=%~1
 set drive=!drive:"=!
 set drive=!drive:~0,1!
 )
-FOR /F "usebackq delims=" %%i IN ("!rmatt!") DO (
+FOR /F "delims=" %%i IN ('type "!rmatt!"') DO (
 set dir=%%i
 set dir=!dir:"=!
 REM re-assign the drive letter to the correct one

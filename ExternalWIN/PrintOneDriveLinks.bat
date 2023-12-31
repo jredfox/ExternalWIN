@@ -25,7 +25,7 @@ exit /b
 :ISBLANK
 set isBlank=T
 set file=%~1
-FOR /F "usebackq delims=" %%A IN ("%file%") DO (
+FOR /F "delims=" %%A IN ('type "%file%"') DO (
 set line=%%A
 set line=!line: =!
 IF "!line!" NEQ "" (
