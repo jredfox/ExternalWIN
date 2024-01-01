@@ -1,3 +1,4 @@
 Issues:
+- forcedelete.exe
 - Compile for arm64
 - Option for All offline files O|M|Q when enabled(additional search to WDI and dropping reparsepoints of main search)

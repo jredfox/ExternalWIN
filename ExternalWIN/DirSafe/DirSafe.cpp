@@ -84,6 +84,7 @@ bool HLFil = false;
 bool NHLFil = false;
 bool QuietMode = false;
 bool PAttr = false;
+bool SecureSRCH = false;
 wstring Attribs = L"";
 vector<DWORD> NoLNKS;
 vector <DWORD> NoPrintLNKS;
@@ -429,6 +430,9 @@ int main() {
 					break;
 				}
 			}
+		}
+		else if(t == L"/S") {
+			SecureSRCH = true;
 		}
 		else if(t == L"/?" || t == L"/HELP") {
 			help();
@@ -962,6 +966,10 @@ void LoadCFG(wstring &workdir)
 	LoadRPBL(cfg, NoLNKS);
 	LoadRPBL(cfgprint, NoPrintLNKS);
 
+	//If Secure Search is on don't load Config Exclusions
+	if(SecureSRCH)
+		return;
+
     //Parse Search Blacklist
 	if(!exists(cfgsrch))
 	{
@@ -986,7 +994,7 @@ void LoadCFG(wstring &workdir)
     else
     {
     	if(!QuietMode)
-    		wcerr << L"Err Loading Dir Blacklist: " << GetLastError() << std::endl;
+    		wcerr << L"Err Search Config Blacklist: " << GetLastError() << std::endl;
     }
     srchfile.close();
 }
@@ -1046,6 +1054,7 @@ void help()
 	wcout << L"###################################################################################################################" << endl;
 	wcout << L"/H Show Hard Links" << endl;
 	wcout << L"/R Show Reparse Point Values" << endl;
+	wcout << L"/S Secure Search Doesn't Load Exclusions from the Config" << endl;
 	wcout << L"/HF Hard Links Filter" << endl;
 	wcout << L"/-HF No Hard Links Filter" << endl;
 	wcout << L"/Q Quiet Mode Suppress Error Messages" << endl;

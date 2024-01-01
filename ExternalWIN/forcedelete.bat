@@ -14,8 +14,8 @@ FOR /F "delims=" %%I IN ('call "!direxe!" "!dir!" "TRUE" "B" "DL" 2^>nul') DO (
 echo RD^:%%I
 RD "%%I"
 )
-takeown /F "%dir%" /R /D Y
-icacls "%dir%" /T /C /grant administrators:F System:F everyone:F
+takeown /A /SKIPSL /R /F "%dir%" /D Y
+icacls "%dir%" /L /T /C /grant administrators:F System:F everyone:F
 REM Delete JUNCTION and SYMLIND Dirs to prevent accidental deletion of unintended folders
 FOR /F "delims=" %%I IN ('call "!direxe!" "!dir!" "TRUE" "B" "DL" 2^>nul') DO (
 echo RD^:%%I
