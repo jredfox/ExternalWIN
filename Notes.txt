@@ -26,6 +26,19 @@ __________________________
 - How to Delete a boot entry
   1. Run BootEntry-Delete.bat
 
+- How to Fix Symoblic Links and Junctions after Running ExternalWIN < 1.0.12
+  ____________________
+  For Normal Installs
+  ____________________
+  1. Boot into WinPE(Installation Media)
+  2. Run ShortcutFixer.bat fallow prompts with C W C
+  ____________________
+  For VHDX Installs
+  ____________________
+  1. Run MountVDISK.bat with prompt of M for mount of said VDISK
+  2. Run ShortcutFixer.bat fallow prompts with C <VDISK DRIVE> C
+  3. Run MountVISK.bat with prompt of D for Dismount
+
 - How to Repair boot
 ##################################
 NOTE: This will replace the current boot loader with the targeted windows. 

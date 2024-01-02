@@ -22,7 +22,7 @@ Changelog 1.0.12 (BUG MUNCHER II):
 - Added WARNINGS to Dangerous scripts such as WIM-Extract.bat and forcedelete.bat
 - Added ShortCutFixer.bat Command Line Utility & User Script. This will fix previous Windows Installations installed from ExternalWIN causing Junctions, SYMLINK Dirs, SYMLINK FILES to have W:\ instead of what they are suppose to be
 - Added DirSafe-x64.exe and DirSafe-x86.exe (arm64 not supported till mingw supports it). This is the enhanced version of the dir comamnd and actually works with recursion properly
-- Added DirSafe.bat to ensure the right DirSafe.exe gets called for the right arch else it won't work in WinPE
+- Added MountVDISK.bat(also unmounts) to mount VDISKS in WinPE for use of stuff like ShortCutFixer.bat
 - Improved LoadConfig.bat to automatically re-add missing config options without manual deletion
 - Improved Better Directory Paths of ExternalWIN's WIM Images and VDISKS to C:\ExternalWIN\ImageBackups\<COMPUTER>\WIMS and C:\ExternalWIN\ImageBackups\<COMPUTER>\VDISKS for when there isn't a Absolute Path Specified in Regular Windows
 - Improved WIM-Capture.bat Logic not saving C:\ExternalWIN\* as there is VDISKS WIM Images and Backup of reg/boots that aren't really needed in a backup of the C Drive and will save hundreds of GB of space. You can still use WIM-Capture.bat to Capture C:\ExteranlWIN by only capturing it
