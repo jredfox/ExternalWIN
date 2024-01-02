@@ -1,6 +1,6 @@
 @ECHO OFF
 setlocal enableDelayedExpansion
-call :checkAdmin
+call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 IF !ERRORLEVEL! NEQ 0 (exit /b !ERRORLEVEL!)
 call :PP
 set reecurse=T
