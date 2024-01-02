@@ -20,7 +20,6 @@ echo DEL Dir^: "!dir!"
 del /F "%dir%" /s /q /a >nul 2>&1
 echo RMDIR Dir^: "!dir!"
 rmdir /s /q "%dir%" >nul 2>&1
-pause
 exit /b
 
 :checkAdmin
