@@ -1,6 +1,6 @@
 Issues:
-- DirSafe.exe fix *. not displaying files with no extension
-- DirSafe.exe add illegal ending wildcards of " " or "."
 - Create a MountVDISK.bat which will mount/dismount a VHDX file
-- Compile for arm64
+- DirSafe.exe fix *. not displaying files with no extension (also if file doesn't have extension for dir file path add a dot to the end)
+- DirSafe.exe add illegal ending wildcards of " " or "."
 - Option for All offline files O|M|Q when enabled(additional search to WDI and dropping reparsepoints of main search)
+- Compile for arm64

@@ -31,13 +31,14 @@ __________________________
   For Normal Installs
   ____________________
   1. Boot into WinPE(Installation Media)
-  2. Run ShortcutFixer.bat fallow prompts with C W C
+  2. Run ShortcutFixer.bat fallow prompts with <ComputerDrive> W C
   ____________________
   For VHDX Installs
   ____________________
-  1. Run MountVDISK.bat with prompt of M for mount of said VDISK
-  2. Run ShortcutFixer.bat fallow prompts with C <VDISK DRIVE> C
-  3. Run MountVISK.bat with prompt of D for Dismount
+  1. Boot Into WinPE
+  2. Run MountVDISK.bat with prompt Y for Mount
+  3. Run ShortcutFixer.bat fallow prompts with <VDISK Drive> V C
+  4. Run MountVISK.bat with prompt N for Mount (Dismounts it)
 
 - How to Repair boot
 ##################################
