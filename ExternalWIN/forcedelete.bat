@@ -2,8 +2,6 @@
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 call :GETGRANT
-echo !grantexe!
-exit /b
 IF !ERRORLEVEL! NEQ 0 (exit /b !ERRORLEVEL!)
 set dir=%~1
 REM Stop Accidental Deletion of System32 or current directory of Command Prompt
