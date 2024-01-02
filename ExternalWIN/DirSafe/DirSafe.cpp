@@ -452,7 +452,7 @@ int main() {
 	int argc = args.size();
 
 	//Parse Args
-	wstring WorkingDir = parent(wstring(args[0]));
+	wstring WorkingDir = parent(GetAbsolutePath(wstring(args[0])));
 	vector<DirPath> dirpaths;
 	if(argc > 1)
 	{
