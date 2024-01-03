@@ -1,5 +1,5 @@
 Issues:
 - DirSafe.exe fix *. not displaying files with no extension (also if file doesn't have extension for dir file path add a dot to the end)
 - DirSafe.exe add illegal ending wildcards of " " or "."
+- Compile for arm64 and add support for DirSafe.exe
 - Option for All offline files O|M|Q when enabled(additional search to WDI and dropping reparsepoints of main search)
-- Compile for arm64
