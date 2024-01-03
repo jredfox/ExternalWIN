@@ -37,6 +37,10 @@ exit /b
 
 :GETDIRSAFE
 set dirsafedir=%~dp0DirSafe
+IF /I "!PROCESSOR_ARCHITECTURE!" EQU "ARM64" (
+set direxe=!dirsafedir!\DirSafe-ARM64.exe
+exit /b
+)
 set direxe=!dirsafedir!\DirSafe-x64.exe
 call "!direxe!" "/?" >nul 2>&1
 IF !ERRORLEVEL! NEQ 0 (set direxe=!dirsafedir!\DirSafe-x86.exe)

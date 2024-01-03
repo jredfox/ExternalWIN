@@ -771,11 +771,13 @@ bool isBlackListed(const wstring &c)
 
 bool Matches(wstring &name, const vector<LPCWSTR> &pat)
 {
-	LPCWSTR cname = name.c_str();
+	if(pat.empty())
+		return true;
+	LPCWSTR cname = name.rfind(L'.') != std::wstring::npos ? name.c_str() : wstring(name + L'.').c_str();
 	for(LPCWSTR p : pat)
 		if(PathMatchSpecW(cname, p))
 			return true;
-	return pat.empty();
+	return false;
 }
 
 bool foundFile(wstring &path, wstring &name, const vector<LPCWSTR> &pat, DWORD &attr, DWORD &RPID)
