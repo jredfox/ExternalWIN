@@ -105,11 +105,11 @@ void LoadRPBL(wstring &cfg, vector<DWORD> &bl);
 void help();
 bool isAttr(DWORD &att, DWORD &RPID);
 void ParseAttribFilters(const wstring &attfilters);
-bool isRP(DWORD &attr, DWORD &RPID);
+bool isRP(DWORD &attr, bool &d, DWORD &RPID);
 void ParseRPFilters(const wstring &rpcmd);
 void PrintHardLinks(const wstring &filePath);
 void AddOneDriveCompat();
-bool Matches(wstring &name, const vector<LPCWSTR> &pat);
+bool Matches(wstring &name, bool &d, const vector<LPCWSTR> &pat);
 wstring GetPAttrs(DWORD &att);
 
 //Declare Utility methods here
@@ -769,11 +769,11 @@ bool isBlackListed(const wstring &c)
 	return false;
 }
 
-bool Matches(wstring &name, const vector<LPCWSTR> &pat)
+bool Matches(wstring &name, bool &d, const vector<LPCWSTR> &pat)
 {
 	if(pat.empty())
 		return true;
-	LPCWSTR cname = name.rfind(L'.') != std::wstring::npos ? name.c_str() : wstring(name + L'.').c_str();
+	LPCWSTR cname = (d ? name.find(L'.') : name.rfind(L'.')) != std::wstring::npos ? name.c_str() : wstring(name + L'.').c_str();
 	for(LPCWSTR p : pat)
 		if(PathMatchSpecW(cname, p))
 			return true;
@@ -782,7 +782,8 @@ bool Matches(wstring &name, const vector<LPCWSTR> &pat)
 
 bool foundFile(wstring &path, wstring &name, const vector<LPCWSTR> &pat, DWORD &attr, DWORD &RPID)
 {
-	if ((name == L".") || (name == L"..") || !Matches(name, pat) || !isAttr(attr, RPID) || !isRP(attr, RPID) || (HLFil && !isHardLink(path)) || (NHLFil && isHardLink(path)))
+	bool d = attr & FILE_ATTRIBUTE_DIRECTORY;
+	if ((name == L".") || (name == L"..") || !Matches(name, d, pat) || !isAttr(attr, RPID) || !isRP(attr, d, RPID) || (HLFil && !isHardLink(path)) || (NHLFil && isHardLink(path)))
 	{
 		return false;
 	}
@@ -1130,11 +1131,10 @@ void ParseAttribFilters(const wstring &attfilters)
 /**
  * ReparsePoint Filter
  */
-bool isRP(DWORD &attr, DWORD &RPID)
+bool isRP(DWORD &attr, bool &isDIR, DWORD &RPID)
 {
 	if(!HasRPF)
 		return true;
-	bool isDIR = attr & FILE_ATTRIBUTE_DIRECTORY;
 	for(RPFilter r : RPFilters)
 	{
 		if((isDIR ? r.Dir : r.File))
