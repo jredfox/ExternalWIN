@@ -8,6 +8,16 @@
 #include <iomanip>
 #include <fcntl.h>
 #include <shlwapi.h> //MS-DOS Pattern Matching
+//Start Visual Studio BS
+/*
+#include <io.h>
+#ifndef FILE_SHARE_VALID_FLAGS
+#define FILE_SHARE_VALID_FLAGS 0x00000007
+#endif
+#pragma comment(lib, "Shlwapi.lib")
+#pragma comment(lib, "Shell32.lib")
+*/
+
 /**
  * How to Add Libs: Eclipse --> Propterties  --> C/C++ Genernal --> Paths and Symbols --> Libraries Tab --> Add library without a an extension And select add to all configurations
  * How to Add Linker Options: Eclipse --> Propterties  --> C/C++ Build --> Settings --> Mingw --> Miscellaneous --> Add new option
