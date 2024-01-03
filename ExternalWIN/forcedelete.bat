@@ -13,13 +13,16 @@ IF "!dir:~-1!" EQU "\" (set dir=!dir:~0,-1!)
 echo WARNING^: Forcibly Deleting Files Is Dangerous If You Do Not Know What you are doing
 set /p warn="Do you Wish To Continue [Y/N]?"
 IF /I "!warn!" NEQ "Y" (exit /b)
+set glp=^\^\^?^\
 echo Takeown Dir^: "!dir!"
 takeown /A /SKIPSL /R /F "%dir%" /D Y >nul 2>&1
 "!grantexe!" "!dir!"
 echo DEL Dir^: "!dir!"
 del /F "%dir%" /s /q /a >nul 2>&1
+del /F "!glp!!dir!" /s /q /a >nul 2>&1
 echo RMDIR Dir^: "!dir!"
 rmdir /s /q "%dir%" >nul 2>&1
+rmdir /s /q "!glp!!dir!" >nul 2>&1
 exit /b
 
 :checkAdmin
