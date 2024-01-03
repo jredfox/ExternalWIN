@@ -85,6 +85,8 @@ bool NHLFil = false;
 bool QuietMode = false;
 bool PAttr = false;
 bool SecureSRCH = false;
+bool ILLFil = false;
+bool NILLFil = false;
 wstring Attribs = L"";
 vector<DWORD> NoLNKS;
 vector <DWORD> NoPrintLNKS;
@@ -111,6 +113,7 @@ void PrintHardLinks(const wstring &filePath);
 void AddOneDriveCompat();
 bool Matches(wstring &name, bool &d, const vector<LPCWSTR> &pat);
 wstring GetPAttrs(DWORD &att);
+bool isILL(const wstring &name);
 
 //Declare Utility methods here
 wstring AddSlash(wstring &s);
@@ -434,6 +437,12 @@ int main() {
 		else if(t == L"/S") {
 			SecureSRCH = true;
 		}
+		else if(t == L"/ILL") {
+			ILLFil = true;
+		}
+		else if(t == L"/-ILL") {
+			NILLFil = true;
+		}
 		else if(t == L"/?" || t == L"/HELP") {
 			help();
 		}
@@ -442,10 +451,10 @@ int main() {
 		}
 	}
 	//Check for Incompatible Filters
-	if(HLFil && NHLFil)
+	if((HLFil && NHLFil) || (ILLFil && NILLFil))
 	{
 		if(!QuietMode)
-			wcerr << "Incompatible Filters Hard Link Filter and No Hard Link Filters" << endl;
+			wcerr << L"Incompatible Filters:" << ((HLFil && NHLFil) ? L" /HF /-HF" : L"") << ((ILLFil && NILLFil) ? L" /ILL /-ILL" : L"") << endl;
 		exit(1);
 	}
 
@@ -784,7 +793,7 @@ bool Matches(wstring &name, bool &d, const vector<LPCWSTR> &pat)
 bool foundFile(wstring &path, wstring &name, const vector<LPCWSTR> &pat, DWORD &attr, DWORD &RPID)
 {
 	bool d = attr & FILE_ATTRIBUTE_DIRECTORY;
-	if ((name == L".") || (name == L"..") || !Matches(name, d, pat) || !isAttr(attr, RPID) || !isRP(attr, d, RPID) || (HLFil && !isHardLink(path)) || (NHLFil && isHardLink(path)))
+	if ((name == L".") || (name == L"..") || !Matches(name, d, pat) || !isAttr(attr, RPID) || !isRP(attr, d, RPID) || (HLFil && !isHardLink(path)) || (NHLFil && isHardLink(path)) || (ILLFil && !isILL(name)) || (NILLFil && isILL(name)))
 	{
 		return false;
 	}
@@ -1059,9 +1068,11 @@ void help()
 	wcout << L"/H Show Hard Links" << endl;
 	wcout << L"/R Show Reparse Point Values" << endl;
 	wcout << L"/S Secure Search Doesn't Load Exclusions from the Config" << endl;
+	wcout << L"/Q Quiet Mode Suppress Error Messages" << endl;
 	wcout << L"/HF Hard Links Filter" << endl;
 	wcout << L"/-HF No Hard Links Filter" << endl;
-	wcout << L"/Q Quiet Mode Suppress Error Messages" << endl;
+	wcout << L"/ILL Illegal File Filter" << endl;
+	wcout << L"/-ILL No Illegal File Filter" << endl;
 	wcout << L"/ATTR:{Attributes to Display}" << endl;
 	wcout << L"PrintTypes:{N = Normal, B = Bare, P = Parseable}" << endl;
 	wcout << L"A Archiving" << endl;
@@ -1163,6 +1174,20 @@ void ParseRPFilters(const wstring &rpstr)
 			RPFilters.push_back(RPFilter(rp));
 		}
 	}
+}
+
+vector<wstring> ills = {L"COM0", L"COM1", L"COM2", L"COM3", L"COM4", L"COM5", L"COM6", L"COM7", L"COM8", L"COM9", L"COM¹", L"COM²", L"COM³", L"CON", L"PRN", L"AUX", L"NUL", L"LPT0", L"LPT1", L"LPT2", L"LPT3", L"LPT4", L"LPT5", L"LPT6", L"LPT7", L"LPT8", L"LPT9", L"LPT¹", L"LPT²", L"LPT³"};
+bool isILL(const wstring &name)
+{
+	int index = IndexOf(name, L".");
+	wstring n = index > 0 ? toupper(name.substr(0, index)) : toupper(name);
+	for(wstring w : ills)
+	{
+		if(w == n)
+			return true;
+	}
+	auto l = name.back();
+	return name.front() == L' ' || l == L' ' || l == L'.' || IndexOf(name, L":") > -1;
 }
 
 
