@@ -773,7 +773,7 @@ bool Matches(wstring &name, bool &d, const vector<LPCWSTR> &pat)
 {
 	if(pat.empty())
 		return true;
-	const wstring& n = (d ? name.find(L'.') : name.rfind(L'.')) != std::wstring::npos ? name : wstring(name + L'.');
+	wstring n = (d ? name.find(L'.') : name.rfind(L'.')) != std::wstring::npos ? name : (name + L'.');
 	LPCWSTR cname = n.c_str();
 	for(LPCWSTR p : pat)
 		if(PathMatchSpecW(cname, p))
