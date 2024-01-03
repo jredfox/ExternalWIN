@@ -1,8 +1,8 @@
 @Echo off
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
-call :GETGRANT
 IF !ERRORLEVEL! NEQ 0 (exit /b !ERRORLEVEL!)
+call :GETGRANT
 set dir=%~1
 REM Stop Accidental Deletion of System32 or current directory of Command Prompt
 IF "!dir:~1,1!" NEQ ":" (exit /b)
@@ -32,6 +32,7 @@ exit /b 1
 exit /b
 
 :GETGRANT
+IF /I "!PROCESSOR_ARCHITECTURE!" EQU "ARM64" (set grantexe=%~dp0Grant-ARM64.exe)
 set grantexe=%~dp0Grant-x64.exe
 call "!grantexe!" "/?" >nul 2>&1
 IF !ERRORLEVEL! NEQ 0 (set grantexe=%~dp0Grant-x86.exe)

@@ -1,6 +1,7 @@
 @ECHO OFF
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
+IF !ERRORLEVEL! NEQ 0 (exit /b !ERRORLEVEL!)
 IF /I "!TMP:~0,1!" EQU "X" (set winpe=T) ELSE (set winpe=F)
 set /p vdisk="Enter VDISK File:"
 set /p mnt="Mount Drive [Y/N]?"
