@@ -12,6 +12,17 @@
 #include <tchar.h>
 #include <Accctrl.h>
 #include <Aclapi.h>
+#include <shlwapi.h> //PathIsDirectoryW
+/*
+ * Visual Studio BS
+#include <io.h>
+#ifndef FILE_SHARE_VALID_FLAGS
+#define FILE_SHARE_VALID_FLAGS 0x00000007
+#endif
+#pragma comment(lib, "Shlwapi.lib")
+#pragma comment(lib, "Shell32.lib")
+#pragma comment(lib, "Advapi32.lib")
+ */
 
 using namespace std;
 vector<DWORD> OneLinks = {0x9000601A, 0x9000001A, 0x9000101A, 0x9000201A, 0x9000301A, 0x9000401A, 0x9000501A, 0x9000701A, 0x9000801A, 0x9000901A, 0x9000A01A, 0x9000B01A, 0x9000C01A, 0x9000D01A, 0x9000E01A, 0x9000F01A, 0x80000021, 0x0000F000};
@@ -130,7 +141,6 @@ void SetFilePermission(const wstring &FileName)
 
 void ListDirectories(const std::wstring& directory) {
 	SetFilePermission(directory);
-//	wcout << L"Granted:" << directory << endl;
 
     WIN32_FIND_DATAW findFileData;
     HANDLE hFind = INVALID_HANDLE_VALUE;
@@ -269,6 +279,14 @@ int main() {
 
 	//Main Program
 	wstring dir = GetAbsolutePath(args[1]);
-	wcout << L"Granting Dir:" << dir << endl;
-	ListDirectories(dir);
+	if(PathIsDirectoryW(dir.c_str()))
+	{
+		wcout << L"Granting Dir:" << dir << endl;
+		ListDirectories(dir);
+	}
+	else
+	{
+		wcout << L"Granting File:" << dir << endl;
+		SetFilePermission(dir);
+	}
 }

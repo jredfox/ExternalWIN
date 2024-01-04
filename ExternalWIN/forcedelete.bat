@@ -15,8 +15,10 @@ set glp=^\^\^?^\
 call :ISDIR "!dir!"
 REM ## Handle indivdual file deletion requests ##
 IF "!ISDIR!" EQU "F" (
+echo Takeown^: "!dir!"
 takeown /A /SKIPSL /F "!dir!" >nul 2>&1
 "!grantexe!" "!dir!"
+echo DEL^: "!dir!"
 del /F "!glp!!dir!" /S /Q /A >nul 2>&1
 exit /b
 )
