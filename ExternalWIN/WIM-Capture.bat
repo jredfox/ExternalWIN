@@ -24,6 +24,7 @@ diskpart /s "%~dp0dd.txt"
 set /p let="Enter Capture Drive:"
 set let=!let:"=!
 set let=!let:^/=^\!
+set drive=!let:~0,1!
 REM ## Remove Extra Backslash In case of User Error ##
 IF "!let:~-1!" EQU "\" (SET let=!let:~0,-1!)
 REM IF We are only capturing the whole drive fix the drive letter to make DISM happy
@@ -31,31 +32,10 @@ IF "!let:~3,1!" EQU "" (
 set let=!let:~0,1!^:
 set ISROOT=T
 )
-set drive=!let:~0,1!
 REM ## REMOVE ATTRIBUTES Of Configurable Directories ##
 IF "%winpe%" EQU "T" (call "%~dp0removeatt.bat" "!drive!")
-
-REM ######## Find the ComputerName ############
-set comp=!drive!:\Windows\System32\Config\SYSTEM
-IF NOT EXIST "!comp!" (
-set /p drive="Enter Windows Drive Letter:"
-set drive=!drive:"=!
-set drive=!drive:~0,1!
-set comp=!drive!:\Windows\System32\Config\SYSTEM
-)
-IF NOT EXIST "!comp!" (
-set /p COMPNAME="AutoDetection Failed Enter Computer Name:"
-set COMPNAME=!COMPNAME:"=!
-GOTO INSTALL
-)
-reg load HKLM\OfflineSystem "!comp!" >nul 2>&1
-IF !ERRORLEVEL! NEQ 0 (GOTO CHK)
-for /f "tokens=3*" %%a in ('reg query HKLM\OfflineSystem\ControlSet001\Control\ComputerName\ComputerName /v ComputerName') do (set COMPNAME=%%a)
-reg unload HKLM\OfflineSystem
-
-:CHK
-REM ### IF Computer Name is Still Blank It Means We are Capturing on the Same Computer As We are Currently Running On ###
-IF "!COMPNAME!" EQU "" (set COMPNAME=!ComputerName!)
+REM ## Get the Computer Name ##
+call :GETCOMPNAME "!drive!"
 
 :INSTALL
 echo Capturing "!let!" on Computer "!COMPNAME!"
@@ -164,4 +144,28 @@ set str=!str:"=!
 set strs=!strs:"=!
 set strnew=!str:%strs%=!
 IF "!str!" EQU "!strnew!" (set STRCONTAINS=F) ELSE (set STRCONTAINS=T)
+exit /b
+
+:GETCOMPNAME
+set wdrive=%~1
+set wdrive=!wdrive:~0,1!
+set COMPNAME=!ComputerName!
+set comp=!wdrive!:\Windows\System32\Config\SYSTEM
+IF NOT EXIST "!comp!" (
+set ISROOT=F
+set /p wdrive="Enter Windows Drive Letter:"
+set wdrive=!wdrive:"=!
+set wdrive=!wdrive:~0,1!
+set comp=!wdrive!:\Windows\System32\Config\SYSTEM
+)
+IF NOT EXIST "!comp!" (
+set /p COMPNAME="AutoDetection Failed Enter Computer Name:"
+set COMPNAME=!COMPNAME:"=!
+exit /b
+)
+reg load HKLM\OfflineSystem "!comp!" >nul 2>&1
+IF !ERRORLEVEL! NEQ 0 (exit /b)
+for /f "tokens=3*" %%a in ('reg query HKLM\OfflineSystem\ControlSet001\Control\ComputerName\ComputerName /v ComputerName') do (set COMPNAME=%%a)
+reg unload HKLM\OfflineSystem >nul 2>&1
+IF "!COMPNAME!" EQU "" (set COMPNAME=!ComputerName!)
 exit /b

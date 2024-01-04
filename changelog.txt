@@ -21,7 +21,7 @@ Changelog 1.0.12 (BUG MUNCHER II):
 - Added forward slash support for WinInstall.bat, WinInstallVHDX-Custom.bat, WinInstallVHDX.bat, WIM-Capture.bat, WIMApply-Universal.bat, WIMApply-W.bat in case user error when inputting files
 - Added WARNINGS to Dangerous scripts such as WIM-Extract.bat and forcedelete.bat
 - Added ShortCutFixer.bat Command Line Utility & User Script. This will fix previous Windows Installations installed from ExternalWIN causing Junctions, SYMLINK Dirs, SYMLINK FILES to have W:\ instead of what they are suppose to be
-- Added DirSafe-x64.exe and DirSafe-x86.exe (arm64 not supported till mingw supports it). This is the enhanced version of the dir comamnd and actually works with recursion properly
+- Added DirSafe-x64.exe, DirSafe-x86.exe And DirSafe-ARM64.exe. This is the enhanced version of the dir comamnd and actually works with recursion properly
 - Added MountVDISK.bat(also unmounts) to mount VDISKS in WinPE for use of stuff like ShortCutFixer.bat
 - Improved LoadConfig.bat to automatically re-add missing config options without manual deletion
 - Improved Better Directory Paths of ExternalWIN's WIM Images and VDISKS to C:\ExternalWIN\ImageBackups\<COMPUTER>\WIMS and C:\ExternalWIN\ImageBackups\<COMPUTER>\VDISKS for when there isn't a Absolute Path Specified in Regular Windows
