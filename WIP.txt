@@ -1,2 +1,16 @@
 Issues:
+- forcedelete.bat should use \\?\ prefix and Grant.exe should also support that prefix preventing the posibility of it not getting deleted from malware
 - Option for All offline files O|M|Q when enabled(additional search to WDI and dropping reparsepoints of main search)
+
+ISSUES:
+
+PrintOneLinks.vbs
+ExternalWIN/EchoRealtivePath.vbs
+
+In:	   TARG:
+C:\Arr\Arr C:\Arr\
+C:\Arr     C:\Arr\
+
+PatchJLinks.vbs:
+test C:\??\C:\ with \??\C:\
+test \\?\C:\ with \\?\C:\
