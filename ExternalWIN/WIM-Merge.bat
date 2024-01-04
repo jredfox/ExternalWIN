@@ -22,7 +22,7 @@ GOTO END
 REM Do All Indexes Merge
 FOR /L %%i IN (1, 1, !WIMSIZE!) Do (
 dism /Export-Image /SourceImageFile:"%wimFrom%" /SourceIndex:%%i /DestinationImageFile:"%wimTarget%" /compress:%comp%
-IF !ERRORLEVEL! NEQ 0 GOTO END
+IF !ERRORLEVEL! NEQ 0 (GOTO END)
 echo Merged "%wimFrom%" at index %%i of !WIMSIZE! to "%wimTarget%"
 )
 

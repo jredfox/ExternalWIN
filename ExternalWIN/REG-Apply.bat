@@ -1,6 +1,6 @@
 @Echo off
 setlocal enableDelayedExpansion
-call :ISWINPE
+IF /I "!TMP:~0,1!" EQU "X" (set winpe=T) ELSE (set winpe=F)
 IF "!winpe!" NEQ "F" (exit /b)
 set regdir=%HOMEDRIVE%\ExternalWIN\Backups\REG
 FOR /D %%D in ("%regdir%\*") DO (echo %%D)
@@ -21,15 +21,4 @@ regedit /s "!regbackup!\HKU.reg"
 regedit /s "!regbackup!\HKCC.reg"
 echo Finished Importing REG Backups
 pause
-exit /b
-
-:ISWINPE
-REM ######## WinPE support change the power plan to maximize perforamnce #########
-set winpe=F
-REM Check if we are in WINPE. If Either where or powershell is missing and X Drive Exists we are in WinPE
-IF NOT EXIST "X:\" (exit /b)
-where powershell >nul 2>&1
-IF !ERRORLEVEL! NEQ 0 (
-set winpe=T
-)
 exit /b

@@ -30,10 +30,7 @@ mkdir "%dir%\%%i"
 set index=%%i
 call :APPLYCFG
 dism /apply-image /imagefile:"%wim%" /index:%%i /NoRpFix!extattrib! /applydir:"%dir%\%%i"!cmdcfg!
-IF !ERRORLEVEL! NEQ 0 (
-rmdir /s /q "%dir%\%%i"
-GOTO END
-)
+IF !ERRORLEVEL! NEQ 0 (GOTO END)
 echo Extracted Index %%i of !WIMSIZE! Successfully from "%wim%"
 )
 
