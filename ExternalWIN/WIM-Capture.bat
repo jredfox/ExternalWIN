@@ -28,9 +28,10 @@ set drive=!let:~0,1!
 REM ## Remove Extra Backslash In case of User Error ##
 IF "!let:~-1!" EQU "\" (SET let=!let:~0,-1!)
 REM IF We are only capturing the whole drive fix the drive letter to make DISM happy
+set ISROOT=F
 IF "!let:~3,1!" EQU "" (
 set let=!let:~0,1!^:
-set ISROOT=T
+IF EXIST "!let!\Windows" (set ISROOT=T)
 )
 REM ## REMOVE ATTRIBUTES Of Configurable Directories ##
 IF "%winpe%" EQU "T" (call "%~dp0removeatt.bat" "!drive!")
@@ -152,7 +153,6 @@ set wdrive=!wdrive:~0,1!
 set COMPNAME=!ComputerName!
 set comp=!wdrive!:\Windows\System32\Config\SYSTEM
 IF NOT EXIST "!comp!" (
-set ISROOT=F
 set /p wdrive="Enter Windows Drive Letter:"
 set wdrive=!wdrive:"=!
 set wdrive=!wdrive:~0,1!
