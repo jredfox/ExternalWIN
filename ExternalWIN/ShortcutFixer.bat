@@ -66,7 +66,7 @@ REM ## USAGE TARGDRIVE, SCANDRIVE ONE SINGLE DRIVE LETTER ##
 set TargDrive=%~1
 set ScanDrive=%~2
 set WORKINGDRIVE=!HOMEDRIVE!
-IF "!WORKINGDRIVE!" EQU "" (set WORKINGDRIVE=!ScanDrive!)
+IF "!WORKINGDRIVE!" EQU "" (set WORKINGDRIVE=!ScanDrive!) ELSE (set WORKINGDRIVE=!WORKINGDRIVE:~0,1!)
 call :GETDUMMY
 IF "!DummyDrive!" EQU "" (
 echo Creating Dummy Drive^.^.^.

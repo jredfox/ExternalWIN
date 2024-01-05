@@ -11,6 +11,7 @@ Changelog 1.0.12 (BUG MUNCHER II):
 - Fixed CleanupPar.bat (fixed always having c drive as true, fixed check logic method and main for loop)
 - Fixed Batch for loops special characters such as $ in file paths would mess up the scripts in WinPE. We Use Type command instead of usebaq and builtin forloop
 - Fixed forcedelete.bat fallowing junctions / symlink dirs which would result in unintended files being deleted. It now Removes the Junction and SYMLINKD Dirs before starting the proccess. And I checked the del command with the flags I had deleted the link itself and not the file it was linking to
+- Fixed removeatt.bat using %~1 instead of %1 which causes issues in some long paths or paths with special characters
 - Added Dynamic Exclusion Lists Capture/Apply Configs that change based on relative path of the target drive for example \Windows\System32 and the target is \Windows\ it would change to \System32
 - Added Static exclusions that start with S:\target instead of (C:\target or \target) this is implemented for both Apply and Capture Exclusions. This means it will always be the same path and always get added to the generated exclusion list
 - Added Config Option OptimizedWIMCapture when true if no onedrive accounts are detected it will skip the scanning of the target drive/dir
@@ -22,6 +23,7 @@ Changelog 1.0.12 (BUG MUNCHER II):
 - Added WARNINGS to Dangerous scripts such as WIM-Extract.bat and forcedelete.bat
 - Added ShortCutFixer.bat Command Line Utility & User Script. This will fix previous Windows Installations installed from ExternalWIN causing Junctions, SYMLINK Dirs, SYMLINK FILES to have W:\ instead of what they are suppose to be
 - Added DirSafe-x64.exe, DirSafe-x86.exe And DirSafe-ARM64.exe. This is the enhanced version of the dir comamnd and actually works with recursion properly
+- Added Grant-x64.exe, Grant-x86.exe and Grant-ARM64.exe. This is to help ForceDelete.bat work correctly without having unintended results fallowing symlinks
 - Added MountVDISK.bat(also unmounts) to mount VDISKS in WinPE for use of stuff like ShortCutFixer.bat
 - Improved LoadConfig.bat to automatically re-add missing config options without manual deletion
 - Improved Better Directory Paths of ExternalWIN's WIM Images and VDISKS to C:\ExternalWIN\ImageBackups\<COMPUTER>\WIMS and C:\ExternalWIN\ImageBackups\<COMPUTER>\VDISKS for when there isn't a Absolute Path Specified in Regular Windows

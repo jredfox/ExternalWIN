@@ -17,7 +17,7 @@ exit /b
 
 :REMOVEATT
 REM ##### Copies Dir A to Dir B Replacing Existing and Not Keeping Attirbutes By Default like is hidden or security things#####
-set host=%~1
+set host=%1
 echo removing attr on path^:!host!
 xcopy "!host!" "!host!2" /S /E /I /G /H /R /B /Y /Q
 del /F "!host!" /s /q /a >nul 2>&1
