@@ -1,21 +1,12 @@
 links = WScript.Arguments(0)
 dirs = WScript.Arguments(1)
-target = WScript.Arguments(2)
-' Fix the Target's Directory to be in the proper root "\" format instead of Drive format
-IF Mid(target, 2, 1) = ":" Then
-	target = Mid(target, 3)
-	IF target = "" THEN
-	   target = "\"
-	End If
-END IF
-' Ensure the target ends with a backslash
-IF Len(target) > 1 And Not Right(target, 1) = "\" THEN
-    target = target & "\"
-END IF
+target = RootForm(AddSlash(WScript.Arguments(2)))
+SizeTarg = Len(target)
+LTarget = LCase(target)
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 
+' Check if the file path starts with the parent directory path
 Function IsChildOfFile(parentDirectory, filePath)
-    ' Check if the file path starts with the parent directory path
     If InStr(1, filePath, parentDirectory, vbTextCompare) = 1 Then
         IsChildOfFile = True
     Else
@@ -32,7 +23,7 @@ Do Until objFile.AtEndOfStream
     line = objFile.ReadLine
     If Trim(line) <> "" Then ' Check if the line is not empty
         ReDim Preserve OneDirs(counter)
-        OneDirs(counter) = line
+        OneDirs(counter) = RootForm(AddSlash(line))
         counter = counter + 1
     End If
 Loop
@@ -42,21 +33,37 @@ End If
 ' Print OneDrive Links if and only if they are not a child of a onedrive directory
 Set objFile = objFSO.OpenTextFile(links, 1, False)
 Do Until objFile.AtEndOfStream
-	line = objFile.ReadLine
-	IF Mid(line, 2, 1) = ":" Then
-		line = Mid(line, 3)
-	End If
+	line = RootForm(objFile.ReadLine)
+	SLine = LCase(AddSlash(line))
 	ShouldPrint = true
 	FOR EACH OneDir IN OneDirs
-		IF IsChildOfFile(OneDir, line) Then
+		IF IsChildOfFile(OneDir, SLine) Then
 			ShouldPrint = false
 			EXIT FOR
 		END IF
 	NEXT
 	IF ShouldPrint Then
-		IF InStr(1, LCase(line), LCase(target)) = 1 Then
-			WScript.Echo Mid(line, Len(target)) ' Convert The Path to the Perspective of the Target's Root folder Case Sensitive
+		IF (SLine <> LTarget) And (InStr(1, SLine, LTarget) = 1) Then
+			WScript.Echo Mid(line, SizeTarg) ' Prints only children of the root target
 		END IF
 	END IF
 Loop
 objFile.Close
+
+' Convert The Paths to Root Form
+Function RootForm(ByRef str)
+	IF Mid(str, 2, 1) = ":" Then
+		RootForm = Mid(str, 3)
+	Else
+		RootForm = str
+	End IF
+End Function
+
+' Add a Slash to the paths if required
+Function AddSlash(ByRef str)
+    If Right(str, 1) <> "\" Then
+        AddSlash = str & "\"
+	Else
+		AddSlash = str
+    End If
+End Function

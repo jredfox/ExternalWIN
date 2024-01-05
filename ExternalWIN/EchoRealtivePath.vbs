@@ -1,20 +1,25 @@
-input = WScript.Arguments(0)
-target = WScript.Arguments(1)
-' Convert to a root Path of the input string
-IF Mid(input, 2, 1) = ":" Then
-	input = Mid(input, 3)
-End IF
-' Fix the Target's Directory to be in the proper root "\" format instead of Drive format
-IF Mid(target, 2, 1) = ":" Then
-	target = Mid(target, 3)
-	IF target = "" THEN
-	   target = "\"
-	End If
-END IF
-' Ensure the target ends with a backslash
-IF Len(target) > 1 And Not Right(target, 1) = "\" THEN
-    target = target & "\"
-END IF
-IF InStr(1, LCase(input), LCase(target)) = 1 Then
-	WScript.Echo Mid(input, Len(target)) ' Convert The Path to the Perspective of the Target's Root folder
+input = RootForm(WScript.Arguments(0))
+target = RootForm(AddSlash(WScript.Arguments(1)))
+
+' Echo Realtive Path here
+LInput = AddSlash(LCase(input))
+LTarget = LCase(target)
+IF (LInput <> LTarget) And (InStr(1, LInput, LTarget) = 1) Then
+	WScript.Echo Mid(input, Len(target)) ' Prints only children of the target
 End If
+' Convert The Paths to Root Form
+Function RootForm(ByRef str)
+	IF Mid(str, 2, 1) = ":" Then
+		RootForm = Mid(str, 3)
+	Else
+		RootForm = str
+	End IF
+End Function
+' Add a Slash to the paths if required
+Function AddSlash(ByRef str)
+    If Right(str, 1) <> "\" Then
+        AddSlash = str & "\"
+	Else
+		AddSlash = str
+    End If
+End Function
