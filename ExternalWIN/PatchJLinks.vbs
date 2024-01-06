@@ -2,18 +2,19 @@ Const ForReading = 1, ForAppending = 8
 linksfile = WScript.Arguments(0)
 PathOld = WScript.Arguments(1)
 PathNew = WScript.Arguments(2)
-JIndex = InStrRev(PathOld, ":\")
-If JIndex > 0 Then
-	PathOldJunc = Mid(PathOld, JIndex - 1)
+PathOldJunc = GetPathJunc(PathOld)
+APatchJunc = InStr(PathNew, "\??\") > 0
+If APatchJunc Then
+	PathNewJunc = GetPathJunc(PathNew)
 Else
-	PathOldJunc = PathOld
+	PathNewJunc = PathNew
 End If
 ' Initialize REGEX Pattern
 Dim regex
 Set regex = New RegExp
 regex.Global = True
 regex.IgnoreCase = True
-regex.Pattern = "[\*\?\""\<\>\|]"
+regex.Pattern = "[\*\""\<\>\|]"
 ' Start The Program
 PathDir = ""
 WScript.Echo "Patching:" & PathOld & " With:" & PathNew
@@ -47,9 +48,9 @@ Do Until objFile.AtEndOfStream
 				' Start the Actual Patching here
 				If InStr(TargOrg, PathOld) > 0 Then
 					' All other NT Meta paths are fine using MKLNK /J command Except for This Prefix due to a bug with MKLINK with Junctions Tested Win 10-11
-					IF LinkType = "JUNCTION" And InStr(TargOrg, "\??\") > 0 Then
+					IF LinkType = "JUNCTION" And (APatchJunc Or InStr(TargOrg, "\??\") > 0) Then
 						indexJun = InStrRev(TargOrg, ":\")
-						TargNew = regex.Replace(Replace(Mid(TargOrg, indexJun - 1), PathOldJunc, PathNew, 1, 1), "")
+						TargNew = regex.Replace(Replace(Mid(TargOrg, indexJun - 1), PathOldJunc, PathNewJunc, 1, 1), "")
 					Else
 						TargNew = Replace(TargOrg, PathOld, PathNew, 1, 1)
 					End If
@@ -80,7 +81,7 @@ Do Until objFile.AtEndOfStream
 Loop
 BFile.Close
 Call runCMD("cmd /c call """ & SCGen & """")
-Call DelFile(SCGen)
+'Call DelFile(SCGen)
 
 ' Run A DAM COMMAND WITH OUTPUT
 Function runCMD(strRunCmd)
@@ -105,3 +106,13 @@ Sub DelFile(File)
      objFSO.DeleteFile(File)
   End If
 End Sub
+
+' Get Junction freindly OldPath or NewPath
+Function GetPathJunc(strPath)
+	JIndex = InStrRev(strPath, ":\")
+	If JIndex > 0 Then
+		GetPathJunc = Mid(strPath, JIndex - 1)
+	Else
+		GetPathJunc = strPath
+	End If
+End Function
