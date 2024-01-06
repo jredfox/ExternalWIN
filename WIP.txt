@@ -1,4 +1,6 @@
 Issues:
-- DirSafe.exe fix not finding junction target if only the subsitute name exists (created with junction.exe)
+- Look at EchoRelativePaths.vbs & PrintOneLinks.vbs
+- Re-Test ShortCutFixer.bat
+- PatchJLinks.vbs Uncomment deleting of ShortCutFixerGen.bat
 - Option for All offline files O|M|Q when enabled(additional search to WDI and dropping reparsepoints of main search)
 

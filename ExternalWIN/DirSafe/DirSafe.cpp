@@ -928,22 +928,40 @@ wstring GetTarget(wstring &path)
     		wcsncpy_s(szPrintName, plen+1, &rdata->SymbolicLinkReparseBuffer.PathBuffer[rdata->SymbolicLinkReparseBuffer.PrintNameOffset / sizeof(WCHAR)], plen);
     		szPrintName[plen] = 0;
     		targ = szPrintName;
+    		if(targ == L"")
+    		{
+    			size_t slen = rdata->SymbolicLinkReparseBuffer.SubstituteNameLength / sizeof(WCHAR);
+    			WCHAR *szSubName = new WCHAR[slen+1];
+    		    wcsncpy_s(szSubName, slen+1, &rdata->SymbolicLinkReparseBuffer.PathBuffer[rdata->SymbolicLinkReparseBuffer.SubstituteNameOffset / sizeof(WCHAR)], slen);
+    		    szSubName[slen] = 0;
+    		    targ = szSubName;
+    		    delete [] szSubName;
+    		}
     		delete [] szPrintName;
-      }
-      else if (ReparseTag == IO_REPARSE_TAG_MOUNT_POINT)
-      {
-    	  size_t plen = rdata->MountPointReparseBuffer.PrintNameLength / sizeof(WCHAR);
-    	  WCHAR *szPrintName = new WCHAR[plen+1];
-    	  wcsncpy_s(szPrintName, plen+1, &rdata->MountPointReparseBuffer.PathBuffer[rdata->MountPointReparseBuffer.PrintNameOffset / sizeof(WCHAR)], plen);
-    	  szPrintName[plen] = 0;
-    	  targ = szPrintName;
-    	  delete [] szPrintName;
-      }
-      else
-      {
+    	}
+    	else if (ReparseTag == IO_REPARSE_TAG_MOUNT_POINT)
+    	{
+    		size_t plen = rdata->MountPointReparseBuffer.PrintNameLength / sizeof(WCHAR);
+    		WCHAR *szPrintName = new WCHAR[plen+1];
+    		wcsncpy_s(szPrintName, plen+1, &rdata->MountPointReparseBuffer.PathBuffer[rdata->MountPointReparseBuffer.PrintNameOffset / sizeof(WCHAR)], plen);
+    		szPrintName[plen] = 0;
+    		targ = szPrintName;
+    		if(targ == L"")
+    		{
+        	    size_t slen = rdata->MountPointReparseBuffer.SubstituteNameLength / sizeof(WCHAR);
+        	    WCHAR *szSubName = new WCHAR[slen+1];
+        	    wcsncpy_s(szSubName, slen+1, &rdata->MountPointReparseBuffer.PathBuffer[rdata->MountPointReparseBuffer.SubstituteNameOffset / sizeof(WCHAR)], slen);
+        	    szSubName[slen] = 0;
+        	    targ = szSubName;
+        	    delete [] szSubName;
+    		}
+    		delete [] szPrintName;
+    	}
+    	else
+    	{
     	  if(!QuietMode)
     		  wcerr << L"No Mount-Point or Symblic-Link..." << endl;
-      }
+    	}
     }
     else
     {
