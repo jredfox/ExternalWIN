@@ -2,7 +2,7 @@
 setlocal enableDelayedExpansion
 call :checkAdmin "You Need to run ExternalWIN Scripts as Administrator in order to use them"
 IF !ERRORLEVEL! NEQ 0 (exit /b !ERRORLEVEL!)
-title ExternalWin Version 1.0.12
+title ExternalWin Version 1.0.13
 call :PP
 call :LOADCFG
 call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
