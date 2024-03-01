@@ -1,3 +1,7 @@
+Changelog 1.0.13:
+- Fixed Getting Instruction Set Arc on ARM64 Devices if CMD wasn't launched on the ARM64 version of it
+- Fixed Windows Defender False Virus Postive on all Exes by adding the -O3 flag to the MingW compiler options
+
 Changelog 1.0.12 (BUG MUNCHER II):
 - Fixed your online OneDrive Accidently Getting Erased After Re-Applying an Image with a OneDrive Account
 - Fixed OneDrive Offline Files Causing WINPE 11 to fail if it was Captured on a WinPE 10 Image
