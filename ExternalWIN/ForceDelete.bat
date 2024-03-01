@@ -61,11 +61,17 @@ exit /b 1
 exit /b
 
 :GETGRANT
-IF /I "!PROCESSOR_ARCHITECTURE!" EQU "ARM64" (
+call :GETISA
+IF /I "!ARC!" EQU "ARM64" (
 set grantexe=%~dp0Grant-ARM64.exe
 exit /b
 )
 set grantexe=%~dp0Grant-x64.exe
 call "!grantexe!" "/?" >nul 2>&1
 IF !ERRORLEVEL! NEQ 0 (set grantexe=%~dp0Grant-x86.exe)
+exit /b
+
+:GETISA
+set ARC=%PROCESSOR_ARCHITEW6432%
+IF "!ARC!" EQU "" (set ARC=%PROCESSOR_ARCHITECTURE%)
 exit /b

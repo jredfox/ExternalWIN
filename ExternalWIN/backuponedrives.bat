@@ -55,12 +55,18 @@ exit /b
 exit /b
 
 :GETDIRSAFE
+call :GETISA
 set dirsafedir=%~dp0DirSafe
-IF /I "!PROCESSOR_ARCHITECTURE!" EQU "ARM64" (
+IF /I "!ARC!" EQU "ARM64" (
 set direxe=!dirsafedir!\DirSafe-ARM64.exe
 exit /b
 )
 set direxe=!dirsafedir!\DirSafe-x64.exe
 call "!direxe!" "/?" >nul 2>&1
 IF !ERRORLEVEL! NEQ 0 (set direxe=!dirsafedir!\DirSafe-x86.exe)
+exit /b
+
+:GETISA
+set ARC=%PROCESSOR_ARCHITEW6432%
+IF "!ARC!" EQU "" (set ARC=%PROCESSOR_ARCHITECTURE%)
 exit /b
