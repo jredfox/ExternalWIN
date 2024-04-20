@@ -8,4 +8,5 @@ online disk NOERR
 select disk "%disk%"
 select disk "%disk%"
 select par "%parrecovery%"
+remove NOERR
 assign letter="%letrecovery%"

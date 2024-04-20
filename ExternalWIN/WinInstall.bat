@@ -6,7 +6,6 @@ title ExternalWin Version 1.0.13
 call :PP
 call :LOADCFG
 call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
-Reagentc /enable >nul 2>&1
 rem #######Disk Image Selection#########
 set /p wim="Mount Windows ISO & Input (Install.esd / Install.wim) located in sources:"
 set wim=%wim:"=%

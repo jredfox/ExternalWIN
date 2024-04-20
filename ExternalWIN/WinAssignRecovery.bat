@@ -5,7 +5,6 @@ IF !ERRORLEVEL! NEQ 0 (exit /b !ERRORLEVEL!)
 call :PP
 call :LOADCFG
 call "%~dp0FileExplorerPopUp-Enable.bat" >nul 2>&1
-Reagentc /enable >nul 2>&1
 diskpart /s "%~dp0ld.txt"
 set /p disk="Input Disk:"
 set /p legacy="MBR LEGACY Installation [Y/N]?"
@@ -35,7 +34,13 @@ IF !ERRORLEVEL! NEQ 0 (
 echo "Can't Run !agent! on this computer is the ISA Incompatible?"
 set agent=Reagentc
 )
+
+REM ## HACK REAGENTC Into Always Working ##
+del /F !let!^:\Windows\System32\Recovery\ReAgent.xml /S /Q /A
+xcopy /H /K /Y "R:\Recovery\WindowsRE\WinRE.wim" "!let!:\WinRE.wim.bak*"
 !agent! /disable
+xcopy /H /K /Y "!let!:\WinRE.wim.bak" "R:\Recovery\WindowsRE\WinRE.wim*"
+del /F "!let!:\WinRE.wim.bak" /S /Q /A >nul 2>&1
 !agent! /Setreimage /Path R:\Recovery\WindowsRE /Target !let!:\Windows
 !agent! /enable
 mountvol R: /d >nul
