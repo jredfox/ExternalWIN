@@ -36,6 +36,8 @@ set agent=Reagentc
 )
 
 REM ## HACK REAGENTC Into Always Working ##
+takeown /A /SKIPSL /F "R:\Recovery\WindowsRE"
+call "%~dp0Grant-x86.exe" "R:\Recovery\WindowsRE"
 del /F !let!^:\Windows\System32\Recovery\ReAgent.xml /S /Q /A
 xcopy /H /K /Y "R:\Recovery\WindowsRE\WinRE.wim" "!let!:\WinRE.wim.bak*"
 !agent! /disable
