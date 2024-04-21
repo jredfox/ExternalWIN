@@ -160,17 +160,12 @@ xcopy /h W:\Windows\System32\Recovery\Winre.wim R:\Recovery\WindowsRE\
 
 REM ########## BACKUP SYSTEM BOOT #####################
 set backupdir=W:\ExternalWIN\Backups
-set rbackupdir=R:\ExternalWIN\Backups
 md "%backupdir%" >nul 2>&1
 set bootfile=%backupdir%\boot.wim
 set name=Boot of Windows %wnum%
 echo Backuping Up Boot to %bootfile%
 dism /capture-image /imagefile:"%bootfile%" /capturedir:"S:" /name:"%name%" /Description:"%name%" /NoRpFix!extattrib! /compress:maximum
-IF EXIST "R:\" (
-md "%rbackupdir%" >nul 2>&1
-copy "%bootfile%" "%rbackupdir%\boot.wim"
-)
-echo It's Recommended to use REG-Capture.bat for your new Windows Installation as well as WIM-Capture.bat to backup your Windows Partition
+echo It is Recommended to use WIM-Capture.bat to backup your Windows Partition Post Install and to Backup your Registry Using System Restore
 
 rem #######POST INSTALL############
 :POSTINSTALL
