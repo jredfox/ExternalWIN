@@ -42,7 +42,7 @@ del /F !let!^:\Windows\System32\Recovery\ReAgent.xml /S /Q /A
 xcopy /H /K /Y "R:\Recovery\WindowsRE\WinRE.wim" "!let!:\WinRE.wim.bak*"
 !agent! /disable
 xcopy /H /K /Y "!let!:\WinRE.wim.bak" "R:\Recovery\WindowsRE\WinRE.wim*"
-del /F "!let!:\WinRE.wim.bak" /S /Q /A >nul 2>&1
+del /F "!let!:\WinRE.wim.bak" /Q /A >nul 2>&1
 !agent! /Setreimage /Path R:\Recovery\WindowsRE /Target !let!:\Windows
 !agent! /enable
 mountvol R: /d >nul
