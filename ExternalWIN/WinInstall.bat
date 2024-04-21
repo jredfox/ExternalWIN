@@ -153,9 +153,7 @@ echo "Can't Run !agent! on this computer is the ISA Incompatible?"
 set agent=Reagentc
 )
 xcopy /h W:\Windows\System32\Recovery\Winre.wim R:\Recovery\WindowsRE\
-!agent! /disable
-!agent! /Setreimage /Path R:\Recovery\WindowsRE /Target W:\Windows
-!agent! /enable
+Rem TODO Make WinAssignRecovery.bat Run Once During OOBE and minimized after confirmed it works
 :ENDRECOVERY
 
 REM ########## BACKUP SYSTEM BOOT #####################
