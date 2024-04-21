@@ -1,17 +1,23 @@
-﻿<?xml version='1.0' encoding='utf-8' standalone='yes'?>
+﻿<?xml version='1.0' encoding='utf-8'?>
+
 <WindowsRE version="2.0">
-	<WinreBCD id=""></WinreBCD>
-	<WinreLocation path="" id="0" offset="0"></WinreLocation>
-	<ImageLocation path="" id="0" offset="0"></ImageLocation>
-	<PBRImageLocation path="" id="0" offset="0" index="0"></PBRImageLocation>
-	<PBRCustomImageLocation path="" id="0" offset="0" index="0"></PBRCustomImageLocation>
-	<InstallState state="0"></InstallState>
-	<OsInstallAvailable state="0"></OsInstallAvailable>
-	<CustomImageAvailable state="0"></CustomImageAvailable>
-	<WinREStaged state="0"></WinREStaged>
-	<ScheduledOperation state="4"></ScheduledOperation>
-	<OperationParam path=""></OperationParam>
-	<OperationPermanent state="0"></OperationPermanent>
-	<OsBuildVersion path=""></OsBuildVersion>
-	<OemTool state="0"></OemTool>
+  <WinreBCD id="{00000000-0000-0000-0000-000000000000}"/>
+  <WinreLocation path="" id="0" offset="0" guid="{00000000-0000-0000-0000-000000000000}"/>
+  <ImageLocation path="" id="0" offset="0" guid="{00000000-0000-0000-0000-000000000000}"/>
+  <PBRImageLocation path="" id="0" offset="0" guid="{00000000-0000-0000-0000-000000000000}" index="0"/>
+  <PBRCustomImageLocation path="" id="0" offset="0" guid="{00000000-0000-0000-0000-000000000000}" index="0"/>
+  <InstallState state="0"/>
+  <OsInstallAvailable state="0"/>
+  <CustomImageAvailable state="0"/>
+  <IsAutoRepairOn state="0"/>
+  <WinREStaged state="0"/>
+  <OperationParam path=""/>
+  <OperationPermanent state="0"/>
+  <OsBuildVersion path=""/>
+  <OemTool state="0"/>
+  <IsServer state="0"/>
+  <DownlevelWinreLocation path="" id="0" offset="0" guid="{00000000-0000-0000-0000-000000000000}"/>
+  <IsWimBoot state="0"/>
+  <NarratorScheduled state="0"/>
+  <ScheduledOperation state="4"/>
 </WindowsRE>
