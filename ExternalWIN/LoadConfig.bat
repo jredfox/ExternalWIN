@@ -58,8 +58,8 @@ set ApplyExclusions=true
 echo ApplyExclusions^:true
 )
 IF "!ExtendedAttrib!" EQU "" (
-set ExtendedAttrib=false
-echo ExtendedAttrib^:false
+set ExtendedAttrib=true
+echo ExtendedAttrib^:true
 )
 )>>"!cfg!"
 REM PRINT OUTPUT
@@ -79,6 +79,6 @@ exit /b
   echo OptimizedWIMCapture^:true
   echo OneDriveLinkScan^:true
   echo ApplyExclusions^:true
-  echo ExtendedAttrib^:false
+  echo ExtendedAttrib^:true
 ) >"!cfg!"
 exit /b
